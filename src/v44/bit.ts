@@ -179,8 +179,8 @@ export function mountBit(
   button.addEventListener("click", () => {
     line.textContent = remark || LINES[current()] || LINES.arrival;
     remark = "";
-    // Offer only the stations the visitor is not already at.
-    goButtons.forEach((b) => (b.hidden = b.dataset.bitGo === current()));
+    // Offer only the places the visitor is not already at: each button names the station it belongs to.
+    goButtons.forEach((b) => (b.hidden = (b.dataset.bitStation || b.dataset.bitGo) === current()));
     glow = 1;
     dialog.show();
     wake();

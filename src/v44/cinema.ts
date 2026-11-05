@@ -49,7 +49,7 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
   const title = screen.querySelector<HTMLElement>("[data-screen-title]")!;
   const status = screen.querySelector<HTMLElement>("[data-screen-status]");
   // Each film has its own text alternative: the trailer's words, or a description of the silent shorts.
-  const texts = [...document.querySelectorAll<HTMLDetailsElement>("[data-film-words]")];
+  const texts = [...document.querySelectorAll<HTMLElement>("[data-film-words]")];
   const reel = [...document.querySelectorAll<HTMLButtonElement>("[data-film]")];
   const films = new Map(reel.map((b) => [b.dataset.film || "", readFilm(b)]));
   let film = films.get("trailer") || readFilm(reel[0]);
@@ -97,7 +97,7 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
     texts.forEach((text) => {
       const mine = text.dataset.filmWords === f.id;
       text.hidden = !mine;
-      if (!mine) text.open = false;
+      if (!mine && text instanceof HTMLDetailsElement) text.open = false;
     });
     reel.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.film === id)));
   };

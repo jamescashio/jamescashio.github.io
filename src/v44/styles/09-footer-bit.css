@@ -110,7 +110,7 @@
   width: min(380px, calc(100vw - 32px));
   padding: 18px;
   border: 1px solid var(--line-strong);
-  background: rgba(9, 11, 17, 0.98);
+  background: #090b11;
   color: var(--platinum);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
 }

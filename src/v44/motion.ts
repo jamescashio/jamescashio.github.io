@@ -15,9 +15,12 @@ function stored(): string | null {
   }
 }
 
-// The visitor's own choice this visit, kept in memory so a blocked storage cannot undo it.
+// The visitor's own choice this visit wins over what storage says, so a refused write cannot undo it.
+// A new value written by another page of the site (a storage event) becomes the choice.
 let chosen: string | null = null;
-const initial = () => (stored() ?? chosen) !== "off" && !reduce.matches;
+// What this page last read from or wrote to storage; a different value later means another page changed it.
+let seen = stored();
+const initial = () => (chosen ?? stored()) !== "off" && !reduce.matches;
 let enabled = initial();
 
 export function motionEnabled(): boolean {
@@ -29,6 +32,7 @@ export function setMotion(on: boolean) {
   chosen = on ? "on" : "off";
   try {
     localStorage.setItem(KEY, on ? "on" : "off");
+    seen = on ? "on" : "off";
   } catch {
     /* Private windows can refuse storage; the choice still holds for this visit. */
   }
@@ -49,8 +53,18 @@ const resync = () => {
   document.documentElement.dataset.motion = enabled ? "on" : "off";
   listeners.forEach((fn) => fn());
 };
-addEventListener("storage", (e) => e.key === KEY && resync());
-addEventListener("pageshow", (e) => e.persisted && resync());
+addEventListener("storage", (e) => {
+  if (e.key !== KEY) return;
+  chosen = seen = e.newValue;
+  resync();
+});
+// Back from another page: what that page stored is the latest choice, if storage could keep it.
+addEventListener("pageshow", (e) => {
+  if (!e.persisted) return;
+  const saved = stored();
+  if (saved !== seen) chosen = seen = saved;
+  resync();
+});
 reduce.addEventListener("change", () => {
   enabled = initial();
   document.documentElement.dataset.motion = enabled ? "on" : "off";

@@ -91,6 +91,12 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
     transcript("WEBVTT\n\n00:00.000 --> 00:01.000\nIn a world...\n\n00:01.000 --> 00:02.000\nDon't panic."),
     ["In a world...", "Don't panic."],
   );
+  assert.deepEqual(
+    transcript(
+      "WEBVTT\n\nNOTE a note\n\nSTYLE\n::cue { color: lime }\n\ncue-1\n00:00.000 --> 00:01.000 line:90%\nHello.\nAgain.",
+    ),
+    ["Hello. Again."],
+  );
   const filled = fillStatus(await read("index.html"), root);
   assert.doesNotMatch(filled, /\{\{status\./);
   const record = JSON.parse(
@@ -124,6 +130,9 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
     { backup: { ...status.backup, latestChecked: status.backup.snapshotsListed + 1 } },
     { cluster: { ...status.cluster, hostsOnline: null } },
     { verified: "2026-02-30" },
+    { withheldReasons: undefined },
+    { withheldReasons: {} },
+    { withheldReasons: { routingVerified: "" } },
   ];
   for (const change of broken) assert.throws(() => checkStatus({ ...status, ...change }), JSON.stringify(change));
   assert.equal(checkStatus(status), status);

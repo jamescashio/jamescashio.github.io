@@ -12,6 +12,8 @@ const UNIFORMS = [
   "uTransit",
   "uIgnite",
   "uSweep",
+  "uPulse",
+  "uPulseColor",
   "uWarp",
   "uDim",
   "uPointer",
@@ -55,6 +57,10 @@ export class Sky {
   /** The ignition front's place around the ring, 0 when no front is running. */
   private sweep = 0;
   private sweepStart = -1;
+  /** A short flare of the far gate, in a lane's color, when the visitor routes a request at the helm. */
+  private pulseStart = -1;
+  private pulseLevel = 0;
+  private pulseColor: [number, number, number] = [0.45, 0.65, 1];
   private warp = 0;
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
@@ -94,7 +100,8 @@ export class Sky {
     }
     const coarse = matchMedia("(pointer: coarse)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.maxScale = dpr * (coarse ? 0.62 : 0.85);
+    // Phones start close to their poster's sharpness; a slow frame still steps the backing store down at once.
+    this.maxScale = dpr * (coarse ? 0.8 : 0.85);
     this.scale = this.maxScale * 0.85;
 
     // A lost context shows the poster at once and comes back only once the scene is rebuilt.
@@ -185,6 +192,14 @@ export class Sky {
     this.sweepStart = performance.now() + 1100;
   }
 
+  /** Flare the far gate once; red for a request held for a person, blue for every lane. */
+  pulse(held: boolean) {
+    if (!motionEnabled()) return;
+    this.pulseColor = held ? [1, 0.32, 0.42] : [0.45, 0.65, 1];
+    this.pulseStart = performance.now();
+    this.wake();
+  }
+
   /** When the live scene steps aside for the poster mid entrance, the gate still opens. */
   private finishEntrance() {
     if (this.sweepStart < 0) return;
@@ -238,7 +253,7 @@ export class Sky {
     if (!this.running) return;
     const s = this.state();
     const deep = s.transit >= 1;
-    const settled = this.warp < 0.02 && this.sweepStart < 0 && this.nebulaShift < 0.002;
+    const settled = this.warp < 0.02 && this.sweepStart < 0 && this.nebulaShift < 0.002 && this.pulseLevel < 0.01;
     if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && settled) {
       this.hold("idle", true);
       return;
@@ -306,6 +321,9 @@ export class Sky {
       this.onIgnited();
     }
     this.warp = Math.max(s.warpBoost, this.warp * 0.94);
+    // The pulse rises in a tenth of a second and fades over about a second and a half.
+    const since = this.pulseStart < 0 ? Infinity : now - this.pulseStart;
+    this.pulseLevel = motion && since < 1600 ? Math.min(1, since / 100) * Math.exp(-since / 520) : 0;
     this.pointer[0] += (this.pointerTarget[0] - this.pointer[0]) * 0.04;
     this.pointer[1] += (this.pointerTarget[1] - this.pointer[1]) * 0.04;
     // The nebula eases toward the station's colors over about two seconds, or changes at once when motion is off.
@@ -324,6 +342,8 @@ export class Sky {
     gl.uniform1f(u.uTransit, motion ? s.transit : 0);
     gl.uniform1f(u.uIgnite, this.ignite);
     gl.uniform1f(u.uSweep, this.sweep);
+    gl.uniform1f(u.uPulse, this.pulseLevel);
+    gl.uniform3f(u.uPulseColor, ...this.pulseColor);
     gl.uniform1f(u.uWarp, motion ? Math.min(1, this.warp) : 0);
     gl.uniform1f(u.uDim, s.dim);
     gl.uniform2f(u.uPointer, motion ? this.pointer[0] : 0, motion ? this.pointer[1] : 0);

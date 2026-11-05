@@ -241,22 +241,19 @@
                   </button>
                 </div>
                 <figcaption class="screen-caption">
-                  <span
-                    ><span class="label">On screen</span>&nbsp;
-                    <span data-screen-title>House Cashio: The Trailer</span></span
-                  >
+                  <span class="sr">On screen: <span data-screen-title>House Cashio: The Trailer</span></span>
                   <span class="screen-status" role="status" data-screen-status></span>
                 </figcaption>
               </figure>
+              <p class="fine film-note" data-film-words="trailer">
+                The trailer was made for an October release; its figures describe the lab when it was filmed. The dated
+                record is at the Evidence station.
+              </p>
               <details class="transcript" data-transcript data-film-words="trailer">
                 <summary>Read the trailer’s words</summary>
                 <ol class="transcript-lines">
                   {{film.trailerWords}}
                 </ol>
-                <p class="fine">
-                  The figures in the trailer describe the lab when it was filmed. The dated record lives at the Evidence
-                  station.
-                </p>
               </details>
               <details class="transcript" data-film-words="shorts" hidden>
                 <summary>Read what happens in the shorts</summary>
@@ -390,7 +387,9 @@
                 <p>Trace twelve requests, cut the cloud link and see which work stays aboard.</p>
                 <p class="world-links">
                   <a href="/rooms/starship/interactive/">Board the starship&nbsp;↗</a>
-                  <a class="quiet" href="/rooms/starship/">Read the text version</a>
+                  <a class="quiet" href="/rooms/starship/"
+                    >Read the text version<span class="sr"> of the starship lab</span></a
+                  >
                 </p>
               </div>
             </li>
@@ -411,7 +410,9 @@
                 <p>Turn an instrument and follow a principle into the decision it changes.</p>
                 <p class="world-links">
                   <a href="/rooms/principles/interactive/">Turn the instrument&nbsp;↗</a>
-                  <a class="quiet" href="/rooms/principles/">Read the text version</a>
+                  <a class="quiet" href="/rooms/principles/"
+                    >Read the text version<span class="sr"> of the principles engine</span></a
+                  >
                 </p>
               </div>
             </li>
@@ -435,7 +436,9 @@
                 <p>Light, signatures and short films. A ship, a workshop, a distant world.</p>
                 <p class="world-links">
                   <a href="/rooms/studios/interactive/">Follow the light&nbsp;↗</a>
-                  <a class="quiet" href="/rooms/studios/">Read the text version</a>
+                  <a class="quiet" href="/rooms/studios/"
+                    >Read the text version<span class="sr"> of the Studios</span></a
+                  >
                 </p>
               </div>
             </li>
@@ -456,7 +459,9 @@
                 <p>Four aviation pioneers and what a test pilot would check before trusting anything.</p>
                 <p class="world-links">
                   <a href="/rooms/heritage/interactive/">Meet the pioneers&nbsp;↗</a>
-                  <a class="quiet" href="/rooms/heritage/">Read the text version</a>
+                  <a class="quiet" href="/rooms/heritage/"
+                    >Read the text version<span class="sr"> of flight heritage</span></a
+                  >
                 </p>
               </div>
             </li>
@@ -620,8 +625,8 @@
               <p class="kicker">Your turn</p>
               <h2 id="helm-title">Take the helm.</h2>
               <p class="sub">
-                Change an input and watch the route change. An illustration of my routing rules, running entirely in
-                your browser. No request is sent.
+                Change an input and watch the route change. Each lane is a kind of model for a kind of work. This
+                illustration of my routing rules runs entirely in your browser, and no request is sent.
               </p>
             </div>
           </header>
@@ -658,7 +663,8 @@
                 >
               </fieldset>
             </form>
-            <div class="helm-result" aria-live="polite" data-helm-result>
+            <div class="helm-result" data-helm-result>
+              <p class="sr" aria-live="polite" data-helm-say></p>
               <p class="helm-example" data-helm-example>Example task: a first draft of a project update.</p>
               <p class="kicker">Illustrative route</p>
               <p class="lane" data-helm-lane>Workhorse</p>
@@ -955,8 +961,8 @@
       </p>
       <div class="bit-actions">
         <button type="button" class="chip" data-bit-joke>Tell me a joke</button>
-        <button type="button" class="chip" data-bit-go="helm">Take me to the helm</button>
-        <button type="button" class="chip" data-bit-go="eve">Open E.V.E.</button>
+        <button type="button" class="chip" data-bit-go="helm" data-bit-station="helm">Take me to the helm</button>
+        <button type="button" class="chip" data-bit-go="eve" data-bit-station="evidence">Open E.V.E.</button>
       </div>
     </dialog>
     <noscript

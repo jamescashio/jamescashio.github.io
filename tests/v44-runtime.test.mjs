@@ -535,3 +535,40 @@ test("the transit line still reaches its end after the page changes height", asy
   await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
   await expect.poll(progress).toBeGreaterThan(0.995);
 });
+
+test("printing gives the words and the record on paper, with no sky and no plate left faded", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  await page.emulateMedia({ media: "print" });
+  const m = await page.evaluate(() => ({
+    sky: getComputedStyle(document.querySelector(".sky")).display,
+    hud: getComputedStyle(document.querySelector(".hud")).display,
+    faded: [...document.querySelectorAll("[data-reveal]")].filter((el) => getComputedStyle(el).opacity !== "1").length,
+    ink: getComputedStyle(document.querySelector("#evidence-title")).color,
+  }));
+  assert.deepEqual(m, { sky: "none", hud: "none", faded: 0, ink: "rgb(17, 17, 17)" });
+});
+
+test("Bit offers only places the visitor is not already at, and every destination exists", async (t) => {
+  const page = await visit(t);
+  const targets = await page.evaluate(() =>
+    [...document.querySelectorAll("[data-bit-go]")].map((b) => ({
+      go: Boolean(document.getElementById(b.dataset.bitGo)),
+      station: Boolean(document.querySelector(`[data-station="${b.dataset.bitStation}"]`)),
+    })),
+  );
+  assert.ok(
+    targets.every((x) => x.go && x.station),
+    "each Bit button names a real place and its station",
+  );
+  await page.evaluate(() => document.getElementById("evidence").scrollIntoView());
+  await page.locator("[data-bit-open]").click();
+  await expect(page.locator('[data-bit-go="eve"]')).toBeHidden();
+  await expect(page.locator('[data-bit-go="helm"]')).toBeVisible();
+});
+
+test("the helm says its decision in one line to screen readers", async (t) => {
+  const page = await visit(t);
+  await page.locator('input[name="privateData"]').check({ force: true });
+  await expect(page.locator("[data-helm-say]")).toHaveText("Human review. Held for a person.");
+  assert.equal(await page.locator("[data-helm-result]").getAttribute("aria-live"), null);
+});

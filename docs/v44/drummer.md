@@ -21,7 +21,7 @@ Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
 - The preserved V43 edition loads no code from another page's entry; shared modules have their own chunks.
 - No hyphens or em or en dashes in visible copy, except handles such as @james-cashio and aircraft designations.
 
-- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement; on phones the helm result and the chosen film land on screen; the scope film keeps its frame; header chips keep one line; on page ids stay on the page; E.V.E. opens without speaking for the visitor; each station lights the sky; Pause stops the live gate's frame loop in a WebGL browser; Bit's card closes from the keyboard; the transit line reaches its end after the page changes height.
+- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement; on phones the helm result and the chosen film land on screen; the scope film keeps its frame; header chips keep one line; on page ids stay on the page; E.V.E. opens without speaking for the visitor; each station lights the sky; Pause stops the live gate's frame loop in a WebGL browser; Bit's card closes from the keyboard; the transit line reaches its end after the page changes height; print shows every plate and no sky; Bit never offers the place the visitor is at; the helm announces its decision in one line.
 
 ## Known limits
 

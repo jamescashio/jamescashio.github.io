@@ -37,10 +37,15 @@ export function withheldList(status) {
 
 /** The trailer's spoken words, read from its caption file so the transcript and the captions cannot drift. */
 export function transcript(vtt) {
+  // A cue is the text after its timing line; identifiers, NOTE, STYLE and REGION blocks and the header are not words.
   const lines = String(vtt)
     .replace(/\r/g, "")
     .split(/\n\n+/)
-    .map((block) => block.split("\n").filter((line) => line && !/^WEBVTT/.test(line) && !/-->/.test(line)))
+    .map((block) => block.split("\n"))
+    .map((rows) => {
+      const timing = rows.findIndex((row) => row.includes("-->"));
+      return timing < 0 ? [] : rows.slice(timing + 1).filter(Boolean);
+    })
     .filter((cue) => cue.length)
     .map((cue) => cue.join(" "));
   if (!lines.length) throw new Error("the trailer captions have no lines");
@@ -69,6 +74,13 @@ export function checkStatus(status) {
   atMost("backup.latestVerified", "backup.latestChecked");
   atMost("backup.latestChecked", "backup.snapshotsListed");
   longDate(status.verified);
+  // Every withheld field carries its reason, so the page never prints a limit without saying why.
+  const reasons = status.withheldReasons;
+  if (!reasons || typeof reasons !== "object" || Array.isArray(reasons) || !Object.keys(reasons).length)
+    throw new Error("status.json withheldReasons must list each withheld field with its reason");
+  for (const [key, reason] of Object.entries(reasons))
+    if (typeof reason !== "string" || !reason.trim())
+      throw new Error(`status.json withheldReasons.${key} has no reason`);
   return status;
 }
 

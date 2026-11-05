@@ -102,6 +102,10 @@
   font-size: 15.5px;
   color: var(--muted);
 }
+/* The bar under the screen appears only to say something, such as a film that did not load. */
+.screen-caption:has(.screen-status:empty) {
+  padding: 0;
+}
 .screen-caption a {
   min-height: 24px;
 }

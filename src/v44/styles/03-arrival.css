@@ -214,6 +214,10 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   }
 }
 @media (orientation: landscape) and (max-height: 620px) {
+  /* Short landscape screens keep the words to the left of the ring. */
+  .arrival-copy {
+    max-width: min(860px, 54vw);
+  }
   .station.arrival {
     padding-top: calc(var(--hud-h) + 12px);
     padding-bottom: 20px;

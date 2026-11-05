@@ -2,7 +2,7 @@
 
 **Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for Camina Drummer of _The Expanse_, who keeps a cool head when it counts. It is a preview until Doug approves publication.
 
-One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: hull segments ignite once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
+One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: the gate arrives lit and a light front races around it once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
 The previous front door is preserved unchanged as [V43 Centauri at /v43/](https://cashio.us/v43/), with its receipt at `public/v43/site-release.json`. Its rollback commit is `e75c774b285c1cca75c1e878c758af0a94731579`. The current receipt is `public/v40/site-release.json`; the `v40` path is a compatibility path, not the version label. See [the Drummer release contract](docs/v44/drummer.md).
 
@@ -10,7 +10,7 @@ The previous front door is preserved unchanged as [V43 Centauri at /v43/](https:
 
 | Station     | What a visitor does                                                                         |
 | ----------- | ------------------------------------------------------------------------------------------- |
-| 01 Arrival  | Watches the gate ignite, then begins the transit                                            |
+| 01 Arrival  | Watches the gate open, then begins the transit                                              |
 | 02 Cinema   | Plays House Cashio: The Trailer or the studio shorts; The Sovereign links to YouTube        |
 | 03 Worlds   | Enters the starship lab, principles engine, Studios, flight heritage or the Roadster hangar |
 | 04 Workshop | Reads the system map of the design and an example decision brief                            |
@@ -53,7 +53,7 @@ The V44 page prints these figures at build time from `public/status.json`, the e
 
 ## Performance and motion
 
-Each station lends the deep sky its own light: amber for the screening room, green for the worlds, steel for the workshop, violet at the helm, a cold archive light for the evidence and the house red for Doug. The live gate eases its nebula between them in the shader; the painted poster carries the same colors in a light layer. The posters are painted from the shader itself by `scripts/render-gate-posters.mjs`, one per composition: landscape, ultrawide, portrait and short phones. The live gate does not keep a layout of its own: it projects the layout of the poster on screen, placed as the stylesheet places it, so the live scene fades in exactly over its painting. It arrives lit, as the poster shows it; once per visit a light front races around the ring, and the poster answers with a flare of its own. The gate runs on a real GPU. Software rasterizers get the painted poster of the same scene, because a full screen shader on a CPU costs more than it gives. The canvas backing store is capped near 2.1 million pixels, steps down at once after a slow frame, renders the sky behind content at half rate, rests on a still frame when nobody scrolls, points or types, and stops when the tab is hidden, motion is paused, a film plays or the context is lost. Pause and the reduced motion preference leave a complete still page. Nothing makes sound.
+Each station lends the deep sky its own light: amber for the screening room, green for the worlds, steel for the workshop, violet at the helm, a cold archive light for the evidence and the house red for Doug. The live gate eases its nebula between them in the shader; the painted poster carries the same colors in a light layer. The posters are painted from the shader itself by `scripts/render-gate-posters.mjs`, one per composition: landscape, ultrawide, portrait and short phones. The live gate does not keep a layout of its own: it projects the layout of the poster on screen, placed as the stylesheet places it, so the live scene fades in exactly over its painting. It arrives lit, as the poster shows it; once per visit a light front races around the ring, and the poster answers with a flare of its own. The gate runs on a real GPU. Software rasterizers get the painted poster of the same scene, because a full screen shader on a CPU costs more than it gives. The canvas backing store is capped near 2.1 million pixels, steps down at once after a slow frame, renders the sky behind content at half rate, rests on a still frame when nobody scrolls, points or types, and stops when the tab is hidden, motion is paused, a film plays or the context is lost. Pause and the reduced motion preference leave a complete still page. There is no ambient audio; films start muted, and a visitor can unmute them from the player's own controls.
 
 ## Verification
 

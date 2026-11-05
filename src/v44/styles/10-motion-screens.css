@@ -1,8 +1,9 @@
 /* Reveal and toast, then the rules for phones, touch, ultrawide, Pause and the arrival effects. */
 /* Reveal and toast */
 /* Reveals move with the translate property, so they compose with a card's own tilt transform. */
+/* Plates start half lit, never invisible, so reading never waits on a frame; they brighten and settle as they arrive. */
 html.js[data-motion="on"] [data-reveal] {
-  opacity: 0;
+  opacity: 0.5;
   translate: 0 26px;
   transition:
     opacity 800ms ease,
@@ -185,10 +186,13 @@ html.js[data-motion="on"] .station-head.in h2::after {
     display: block;
   }
   .station {
-    padding: 44px 0;
+    padding: 32px 0;
   }
   .station-head {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
+  }
+  .next-station {
+    margin-top: 18px;
   }
   .footer-links {
     grid-template-columns: 1fr 1fr;
@@ -217,6 +221,9 @@ html.js[data-motion="on"] .station-head.in h2::after {
 }
 
 /* Transcript of the trailer, read from its captions at build time. */
+.film-note {
+  margin-top: 12px;
+}
 .transcript {
   margin-top: 12px;
   padding: 4px 18px 14px;
@@ -416,5 +423,58 @@ html.js[data-motion="on"] .station-head.in .station-num {
   }
   to {
     transform: none;
+  }
+}
+
+/* Print: the words and the dated record on paper, without the sky, the header, Bit or the controls that need a screen. */
+@media print {
+  .sky,
+  .hud,
+  .bit,
+  .bit-dialog,
+  .skip,
+  .play,
+  .screen-video,
+  .eve-input,
+  .eve-quick,
+  .next-station,
+  .swipe-hint,
+  .helm-hint,
+  .noscript {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  *,
+  *::before,
+  *::after {
+    color: #111 !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  [data-reveal] {
+    opacity: 1 !important;
+    translate: none !important;
+  }
+  .station.arrival {
+    min-height: 0;
+    padding: 0 0 24px;
+  }
+  .station {
+    padding: 24px 0;
+    break-inside: avoid-page;
+  }
+  .hull {
+    border: 1px solid #999 !important;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
   }
 }

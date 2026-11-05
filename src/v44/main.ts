@@ -111,6 +111,7 @@ const onScroll = () => {
 
 /* The live gate needs a real GPU. Software renderers keep the painted poster. */
 let skyEngine: Sky | null = null;
+let flareOff = 0;
 let filmPlaying = false;
 const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (el.textContent = text));
 const startSky = () => {
@@ -135,7 +136,7 @@ const startSky = () => {
   if (!engine.live) {
     if (entrance) {
       sky.setAttribute("data-flare", "");
-      setTimeout(() => sky.removeAttribute("data-flare"), 2400);
+      flareOff = window.setTimeout(() => sky.removeAttribute("data-flare"), 2400);
     }
     root.dataset.gate = "open";
     return;
@@ -180,6 +181,19 @@ const stations = mountStations({
 mountPlates();
 mountEggs(surge);
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
+// A decision at the helm reaches the sky: the far gate flares on the live scene, the painted gate on the poster.
+document.addEventListener("v44:route", (e) => {
+  const held = (e as CustomEvent<{ id: string }>).detail.id === "hold";
+  if (skyEngine) skyEngine.pulse(held);
+  else if (motionEnabled()) {
+    sky.toggleAttribute("data-held", held);
+    sky.removeAttribute("data-flare");
+    void sky.offsetWidth;
+    sky.setAttribute("data-flare", "");
+    clearTimeout(flareOff);
+    flareOff = window.setTimeout(() => sky.removeAttribute("data-flare"), 2400);
+  }
+});
 const eve = mountEve($("[data-eve]")!, { warp: () => surge(1600), go: stations.go, typing: motionEnabled });
 // E.V.E. reads the record once, the first time the evidence station arrives, as her own line.
 const eveWatch = new IntersectionObserver(

@@ -21,6 +21,8 @@ uniform float uTime;
 uniform float uTransit;
 uniform float uIgnite;
 uniform float uSweep;
+uniform float uPulse;
+uniform vec3 uPulseColor;
 uniform float uWarp;
 uniform float uDim;
 uniform vec2 uPointer;
@@ -259,6 +261,8 @@ void main() {
     float glow2 = exp(-abs(d2) / (R2 * 0.05)) * 0.55 + exp(-abs(d2) / (R2 * 0.35)) * 0.12;
     float blink = step(0.985, fract(th2 / TAU * 22.0 + 0.5)) * (0.6 + 0.4 * sin(uTime * 2.0 + th2 * 3.0));
     col += vec3(0.35, 0.58, 1.0) * (glow2 + blink * exp(-abs(d2) / (R2 * 0.08)) * 0.6) * ahead * uIgnite;
+    // A decision at the helm reaches the sky: the far gate flares in the lane's color and washes the field around it.
+    col += uPulseColor * uPulse * ahead * (glow2 * 3.0 + exp(-length(q) / (R2 * 2.4)) * 0.55 + exp(-length(q) / (R2 * 9.0)) * 0.12);
   }
   col += vec3(0.25, 0.45, 1.0) * smoothstep(0.55, 0.85, transit) * fall(1.0, 0.86, transit) * 0.22;
 

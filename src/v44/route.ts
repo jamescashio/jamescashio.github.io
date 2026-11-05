@@ -81,6 +81,8 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   const code = result.querySelector<HTMLElement>("[data-helm-code]")!;
   const detail = result.querySelector<HTMLElement>("[data-helm-detail]")!;
   const steps = result.querySelector<HTMLOListElement>("[data-helm-steps]")!;
+  // Screen readers hear the decision in one line; the steps and detail are there to read, not to be recited.
+  const say = result.querySelector<HTMLElement>("[data-helm-say]");
   // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
   const map = (form.closest(".helm-grid") || result).querySelector<SVGSVGElement>("[data-route-map]");
   const example = result.querySelector<HTMLElement>("[data-helm-example]");
@@ -116,6 +118,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
       }),
     );
     if (!animate) return;
+    if (say) say.textContent = `${r.lane}. ${CODE_LABEL[r.code]}.`;
     steps.classList.remove("run");
     requestAnimationFrame(() => steps.classList.add("run"));
     document.dispatchEvent(new CustomEvent("v44:route", { detail: r }));
