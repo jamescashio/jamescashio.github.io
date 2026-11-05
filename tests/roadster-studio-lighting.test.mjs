@@ -19,12 +19,25 @@ async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFram
   t.after(() => context.close());
   await context.addInitScript((inspectFrames) => {
     window.roadsterDraws = 0;
+    window.roadsterTrace = [];
+    const record = (event, detail = {}) => {
+      window.roadsterTrace.push({
+        event,
+        time: Math.round(performance.now()),
+        draws: window.roadsterDraws,
+        sweeping: document.querySelector(".roadster-lighting")?.dataset.sweeping,
+        angle: document.querySelector(".roadster-inspection canvas")?.dataset.lightAngle,
+        ...detail,
+      });
+      if (window.roadsterTrace.length > 80) window.roadsterTrace.shift();
+    };
     let activeFrame;
     const roadsterCallbacks = new Set();
+    const request = window.requestAnimationFrame.bind(window);
+    const cancel = window.cancelAnimationFrame.bind(window);
+    const scheduled = new Map();
+    const held = new Map();
     if (inspectFrames) {
-      const request = window.requestAnimationFrame.bind(window);
-      const cancel = window.cancelAnimationFrame.bind(window);
-      const held = new Map();
       window.holdRoadsterFrames = false;
       window.roadsterKnownCallbacks = () => roadsterCallbacks.size;
       window.roadsterHeldFrames = () => held.size;
@@ -34,26 +47,33 @@ async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFram
         held.clear();
         for (const callback of callbacks) callback(performance.now());
       };
-      window.requestAnimationFrame = (callback) => {
-        const id = request((now) => {
-          if (window.holdRoadsterFrames && roadsterCallbacks.has(callback)) {
-            held.set(id, callback);
-            return;
-          }
-          activeFrame = callback;
-          try {
-            callback(now);
-          } finally {
-            activeFrame = undefined;
-          }
-        });
-        return id;
-      };
-      window.cancelAnimationFrame = (id) => {
-        held.delete(id);
-        cancel(id);
-      };
     }
+    window.requestAnimationFrame = (callback) => {
+      const id = request((now) => {
+        scheduled.delete(id);
+        if (inspectFrames && window.holdRoadsterFrames && roadsterCallbacks.has(callback)) {
+          held.set(id, callback);
+          return;
+        }
+        activeFrame = callback;
+        const before = window.roadsterDraws;
+        try {
+          callback(now);
+        } finally {
+          activeFrame = undefined;
+          if (roadsterCallbacks.has(callback)) record("frame", { id, before });
+        }
+      });
+      scheduled.set(id, callback);
+      if (roadsterCallbacks.has(callback)) record("request-frame", { id, stack: new Error().stack });
+      return id;
+    };
+    window.cancelAnimationFrame = (id) => {
+      if (roadsterCallbacks.has(scheduled.get(id) || held.get(id))) record("cancel-frame", { id });
+      scheduled.delete(id);
+      held.delete(id);
+      cancel(id);
+    };
     for (const Context of [WebGLRenderingContext, WebGL2RenderingContext]) {
       for (const method of ["drawElements", "drawArrays"]) {
         const original = Context.prototype[method];
@@ -66,6 +86,46 @@ async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFram
         };
       }
     }
+    for (const name of ["IntersectionObserver", "ResizeObserver"]) {
+      const NativeObserver = window[name];
+      window[name] = class extends NativeObserver {
+        constructor(callback, options) {
+          super((entries, observer) => {
+            const relevant = entries.filter((entry) => entry.target.matches(".roadster-inspection canvas"));
+            if (relevant.length)
+              record(name, {
+                entries: relevant.map((entry) => {
+                  return {
+                    intersecting: entry.isIntersecting,
+                    ratio: entry.intersectionRatio,
+                    observed: (entry.boundingClientRect || entry.contentRect).toJSON(),
+                  };
+                }),
+              });
+            callback(entries, observer);
+          }, options);
+        }
+      };
+    }
+    for (const name of ["pointerdown", "pointerup", "click", "focusin", "focusout"])
+      document.addEventListener(
+        name,
+        (event) => {
+          if (event.target.closest?.(".roadster-showcase"))
+            record(name, {
+              target: event.target.id || event.target.textContent?.trim().slice(0, 60) || event.target.tagName,
+            });
+        },
+        true,
+      );
+    document.addEventListener(
+      "scroll",
+      () => {
+        if (document.querySelector(".roadster-inspection")) record("scroll", { y: scrollY });
+      },
+      { passive: true },
+    );
+    document.addEventListener("visibilitychange", () => record("visibility", { hidden: document.hidden }));
   }, inspectFrames);
   const page = await context.newPage();
   const errors = [];
@@ -81,7 +141,18 @@ async function still(page) {
   await page.waitForTimeout(120);
   const draws = await page.evaluate(() => window.roadsterDraws);
   await page.waitForTimeout(250);
-  assert.equal(await page.evaluate(() => window.roadsterDraws), draws, "the Roadster does no idle drawing");
+  const after = await page.evaluate(() => window.roadsterDraws);
+  const diagnostic =
+    after === draws
+      ? ""
+      : await page.evaluate(() =>
+          JSON.stringify({
+            browser: navigator.userAgent,
+            viewport: [innerWidth, innerHeight],
+            trace: window.roadsterTrace.slice(-30),
+          }),
+        );
+  assert.equal(after, draws, `the Roadster does no idle drawing${diagnostic ? `\n${diagnostic}` : ""}`);
 }
 
 test("the studio light is visible, keyboard adjustable, and quiet with reduced motion", async (t) => {
