@@ -161,7 +161,7 @@ test("current brand assets decode at their advertised sizes while the archived e
   }
 
   const archived = await readFile(new URL("../v39/index.html", import.meta.url), "utf8");
-  assert.match(archived, /rel="icon" href="\/cashio\/icon-gold-archive\.svg"/);
+  assert.match(archived, /rel="icon" href="\/cashio\/icon\.svg"/);
   const archivedIcon = await readFile(new URL("../public/cashio/icon-gold-archive.svg", import.meta.url));
   assert.equal(
     createHash("sha256").update(archivedIcon).digest("hex"),
@@ -171,9 +171,16 @@ test("current brand assets decode at their advertised sizes while the archived e
   const servedArchivedIcon = await context.request.get(new URL("/cashio/icon-gold-archive.svg", url).href);
   assert.equal(servedArchivedIcon.status(), 200);
   assert.deepEqual(await servedArchivedIcon.body(), archivedIcon, "the archive serves the preserved original icon");
-  assert.match(archived, /src="\/brand\/celestial-1680\.webp"/);
+  assert.match(archived, /src="\/brand\/platinum\/signature-1680\.webp"/);
   assert.match(archived, /https:\/\/cashio\.us\/assets\/workshop\/share-card-v394\.jpg/);
-  assert.doesNotMatch(archived, /\/brand\/platinum\//, "the historical edition does not inherit current brand assets");
+  const originalArtwork = await readFile(new URL("../public/brand/celestial-1680.webp", import.meta.url));
+  const servedOriginalArtwork = await context.request.get(new URL("/brand/celestial-1680.webp", url).href);
+  assert.equal(servedOriginalArtwork.status(), 200);
+  assert.deepEqual(
+    await servedOriginalArtwork.body(),
+    originalArtwork,
+    "the original signature artwork remains available",
+  );
 });
 
 for (const path of ["/", "/cashio.html"]) {

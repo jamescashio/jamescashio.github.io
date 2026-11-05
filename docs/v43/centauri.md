@@ -5,6 +5,7 @@ Prepared 11-04-2026. Branding corrected 11-05-2026. Doug approved the reviewed p
 ## Scope
 
 - Preserve the original planetary artwork, typefaces, cut corners, all media and established destinations. Apply the approved platinum identity to the current experience, with electric blue and restrained laser red.
+- Carry the approved palette through older personal-site themes and current logo placements. Preserve historical content, evidence dates, films and the original Celestial artwork registered to its circuit animation.
 - Give the optional tour a clear promise and route expectation. Keep manual boarding and experiments accessible without an interstitial or new delay.
 - Inspect the original Roadster geometry with controlled reflections, a movable light, optional finite sweep and model detail callouts. Preserve request-only loading, Studio and Blueprint, camera controls and recovery states.
 - Expand the actual mission card for inspection, with fit and detail modes and two compositions. Keep the inspected, saved and shared image consistent. Callsigns remain local and excluded from scenario URLs.

@@ -2,9 +2,9 @@
 
 ## V43.0.0 · Centauri · 11-05-2026
 
-Prepared 11-04-2026 and corrected for the pending 11-05-2026 release. The publication date records this revision; the observation and historical release dates remain unchanged.
+Prepared 11-04-2026. Branding corrected 11-05-2026. The publication date records this revision; the observation and historical release dates remain unchanged.
 
-The approved platinum cAshIo identity uses sculpted lettering, electric blue and a restrained laser-red counterpoint. The original planetary artwork, typefaces, cut corners, content, media, bookmarks and historical editions remain. The full signature sits within an instrument plaque; compact wordmarks, icons, focus indicators and buttons share the same identity. The narrow phone header preserves readable controls without hiding them under the scrollbar.
+The approved platinum cAshIo identity uses sculpted lettering, electric blue and a restrained laser-red counterpoint. The original planetary artwork, typefaces, cut corners, content, media, bookmarks and historical editions remain. The full signature sits within an instrument plaque; compact wordmarks, icons, focus indicators and buttons share the same identity. The narrow phone header preserves readable controls without hiding them under the scrollbar. The capital A is red and the barred capital I is blue. The coordinated personal-site update extends platinum themes and current marks to older editions and reading rooms; historical content, films and the original interactive Celestial artwork remain intact.
 
 The entrance gives the optional tour a clear promise and route expectation, with manual boarding and experiments available alongside it. Roadster inspection adds controlled reflections, a movable light, an optional finite light sweep and three model detail callouts. Its original geometry, Studio and Blueprint modes, camera controls and request-only loading remain. The expandable mission card shows the actual scene, decision and locally applied callsign, with fit and detail views and two compositions. Preview, save and share use the same current image; scenario links do not include names.
 

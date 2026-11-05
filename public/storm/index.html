@@ -2,7 +2,7 @@
 <div id="pgbar" aria-hidden="true"></div>
 <title>Pensacola Storm Watch · Recovery · Cashio.AI</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#08111e">
+<meta name="theme-color" content="#111217">
 <meta name="description" content="Isaias has passed. Recovery resources, live NWS alerts, radar and current conditions for the Pensacola area and ZIP 32504. A Cashio.AI public page.">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Cashio.AI">
 <meta property="og:title" content="Pensacola Storm Watch · Isaias recovery">
@@ -359,12 +359,16 @@ html.paused *,html.paused *::before,html.paused *::after{animation-play-state:pa
 .tide span{color:var(--muted);font-size:.82rem}
 .tide.key{border-color:var(--surge);background:linear-gradient(180deg,rgba(196,108,255,.16),var(--panel2))}
 @media (max-width:520px){.tides{grid-template-columns:1fr}}
+
+/* Personal-brand chrome only; weather, map and recovery encodings stay authored. */
+:root{--bg:#0d1017;--panel:#111217;--panel2:#111217;--line:#313849;--fg:#f5f5f7;--muted:#aab2c3}
+.brandrow .wm,.brandfoot .wm{color:#e2e6ee}.wm .g{color:#ff8a9d;text-shadow:0 0 10px #ff3d5573}.wm .c,.wm small{color:#9abeff;text-shadow:0 0 10px #3578ff73}.brandrow .mk{filter:drop-shadow(0 0 6px #3578ff59)}.brandrow .mk rect{fill:#111217}.brandrow .mk polyline{stroke:#e2e6ee}.brandrow .mk polygon{fill:#3578ff}.wmwrap .o1{stroke:#3578ff}.wmwrap .o2{stroke:#ff3d55}
 </style>
 
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="brandrow"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="mk" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#08111e"/><polyline points="15,5 6,16 15,27" fill="none" stroke="#ff9500" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><polygon points="20,12 28,16 20,20" fill="#00f9ff"/></svg><span class="wmwrap"><svg class="orbit" viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden="true"><ellipse class="o1" cx="60" cy="24" rx="58" ry="20"/><ellipse class="o2" cx="60" cy="24" rx="54" ry="22" transform="rotate(-8 60 24)"/></svg><span class="wm" role="img" aria-label="Cashio.AI">c<span class="g">A</span>sh<span class="c">I</span>o<small>.AI</small></span></span><span class="lbl">Storm Watch · Pensacola, Florida 32504</span></div>
+      <div class="brandrow"><img class="mk" src="/favicon.svg" width="28" height="28" alt=""><span class="wmwrap"><svg class="orbit" viewBox="0 0 120 48" preserveAspectRatio="none" aria-hidden="true"><ellipse class="o1" cx="60" cy="24" rx="58" ry="20"/><ellipse class="o2" cx="60" cy="24" rx="54" ry="22" transform="rotate(-8 60 24)"/></svg><span class="wm" role="img" aria-label="Cashio.AI">c<span class="g">A</span>sh<span class="c">I</span>o<small>.AI</small></span></span><span class="lbl">Storm Watch · Pensacola, Florida 32504</span></div>
       <h1>Storm Watch <span>Isaias</span></h1>
       <p id="greet">A Cashio.AI public page for the Pensacola area and ZIP 32504. Isaias has passed; this page now carries recovery resources, with NWS alerts, radar and current conditions still refreshing live in your browser.</p>
     </div>

@@ -46,6 +46,11 @@
   ],
   "files": [
     {
+      "name": "BRAND_GUIDE.md",
+      "bytes": 4067,
+      "sha256": "c6a4b3a46c118373528ab80c969c0769ad48d6178914d91766c988ae73d098f3"
+    },
+    {
       "name": "apple-touch-icon.png",
       "bytes": 6186,
       "sha256": "fe218911e6c1b4053a6a84b78bef978a794d0d8c84f03efbab3aa7d4f4190d90"

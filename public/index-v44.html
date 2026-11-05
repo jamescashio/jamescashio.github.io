@@ -54,8 +54,8 @@
         --cyan: #00f9ff;
         --amber: #ffcc00;
         --on-accent: #140800;
-        --line: rgba(0, 249, 255, 0.18);
-        --line-warm: rgba(255, 149, 0, 0.34);
+        --line: rgba(53, 120, 255, 0.18);
+        --line-warm: rgba(53, 120, 255, 0.34);
         --font-display: "Orbitron", ui-sans-serif, system-ui, sans-serif;
         --font-sans: "Exo 2", ui-sans-serif, system-ui, sans-serif;
         --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -92,8 +92,8 @@
       }
       .bg-grid {
         background-image:
-          linear-gradient(rgba(0, 249, 255, 0.055) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 249, 255, 0.055) 1px, transparent 1px);
+          linear-gradient(rgba(53, 120, 255, 0.055) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(53, 120, 255, 0.055) 1px, transparent 1px);
         background-size: 64px 64px;
         -webkit-mask-image: radial-gradient(ellipse at 50% 38%, #000 8%, transparent 70%);
         mask-image: radial-gradient(ellipse at 50% 38%, #000 8%, transparent 70%);
@@ -118,7 +118,7 @@
         background: rgba(12, 16, 24, 0.88);
         box-shadow:
           0 18px 60px rgba(0, 0, 0, 0.45),
-          0 0 40px rgba(0, 249, 255, 0.06);
+          0 0 40px rgba(53, 120, 255, 0.06);
         animation: rise 480ms var(--ease) both;
       }
       @keyframes rise {
@@ -152,7 +152,7 @@
       }
       .rail .c {
         flex: 1 1 auto;
-        background: rgba(255, 149, 0, 0.22);
+        background: rgba(53, 120, 255, 0.22);
         border-radius: 8px 0 0 8px;
       }
       .body {
@@ -176,7 +176,7 @@
         flex: 0 0 auto;
         border-radius: 50%;
         background: var(--accent);
-        box-shadow: 0 0 12px rgba(255, 149, 0, 0.8);
+        box-shadow: 0 0 12px rgba(53, 120, 255, 0.8);
         animation: blink 1.9s steps(1, end) infinite;
       }
       @keyframes blink {
@@ -205,7 +205,7 @@
         border: 1px solid var(--line-warm);
         border-left: 4px solid var(--accent);
         border-radius: 10px;
-        background: rgba(255, 149, 0, 0.07);
+        background: rgba(53, 120, 255, 0.07);
       }
       .signal {
         display: flex;
@@ -256,7 +256,7 @@
         text-align: center;
         background: linear-gradient(135deg, var(--accent), var(--accent-2));
         color: var(--on-accent);
-        box-shadow: 0 0 28px rgba(255, 149, 0, 0.35);
+        box-shadow: 0 0 28px rgba(53, 120, 255, 0.35);
         transition:
           transform 150ms var(--ease),
           filter 150ms var(--ease),
@@ -277,7 +277,7 @@
       }
       a.ghost:hover {
         filter: none;
-        background: rgba(0, 249, 255, 0.08);
+        background: rgba(53, 120, 255, 0.08);
         border-color: var(--cyan);
       }
       .foot {
@@ -312,7 +312,7 @@
         outline-offset: 3px;
       }
       ::selection {
-        background: rgba(255, 149, 0, 0.35);
+        background: rgba(53, 120, 255, 0.35);
         color: var(--ink);
       }
       @media (prefers-reduced-motion: reduce) {
@@ -323,8 +323,12 @@
           transition: none !important;
         }
       }
-    </style>
-  </head>
+    /* Current personal-brand palette; archive dates and content stay preserved. */
+:root{--void:#0d1017;--surface:#111217;--ink:#f5f5f7;--muted:#e2e6ee;--dim:#aab2c3;--accent:#e2e6ee;--accent-2:#f5f5f7;--cyan:#9abeff;--on-accent:#111217;--line:#313849;--line-warm:#e2e6ee57}
+</style>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#111217" />
+</head>
   <body>
     <div class="bg bg-grid" aria-hidden="true"></div>
     <div class="bg bg-vignette" aria-hidden="true"></div>
