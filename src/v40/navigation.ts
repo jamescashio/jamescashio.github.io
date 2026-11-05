@@ -117,6 +117,17 @@ export function setupV40Navigation() {
       return;
     }
     if (hash === activeHash) return;
+    // A keyboard visitor can follow the reading edition's link before this
+    // deferred router installs its click listener. Retain that exact focused
+    // trigger before the scene takes focus, rather than returning to the section.
+    if (!opener && document.activeElement instanceof HTMLAnchorElement) {
+      const focused = document.activeElement;
+      const target = new URL(focused.href, location.href);
+      if (target.origin === location.origin && target.pathname === location.pathname && target.hash === hash) {
+        opener = focused;
+        returnHash = "#" + (focused.closest("section[id]")?.id || "top");
+      }
+    }
     const title = originalTitle ?? document.title;
     dispose();
     originalTitle = title;

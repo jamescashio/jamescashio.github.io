@@ -13,6 +13,43 @@ before(async () => {
 });
 after(async () => browser?.close());
 
+test("boarding before deferred startup returns keyboard focus to the exact reading-edition link", async (t) => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 844 }, reducedMotion: "reduce" });
+  const page = await context.newPage();
+  let releaseStartup;
+  const startup = new Promise((resolve) => {
+    releaseStartup = resolve;
+  });
+  t.after(async () => {
+    releaseStartup();
+    await context.close();
+  });
+  await page.route("**/assets/page-client-*.js", async (route) => {
+    await startup;
+    await route.continue();
+  });
+  await page.goto(url, { waitUntil: "domcontentloaded" });
+  const alternatives = page.getByRole("navigation", { name: "Other ways to begin" });
+  const board = alternatives.getByRole("link", { name: /Board the starship/ });
+  await page.locator("#top .tour-launch").focus();
+  await page.keyboard.press("Tab");
+  await expect(board).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#flight=board$/);
+  assert.equal(await page.evaluate(() => !!window.cashioV40), false, "the original click precedes client startup");
+  await expect(page.locator("#helios-flight")).toHaveCount(0);
+
+  releaseStartup();
+  const flight = page.locator("#helios-flight dialog");
+  await expect(flight).toHaveAttribute("open", "");
+  await expect(flight).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#helios-flight")).toHaveCount(0);
+  await expect(board).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(alternatives.getByRole("link", { name: /Try an experiment/ })).toBeFocused();
+});
+
 test("the first invitation explains the journey and leaves manual routes readable and keyboard accessible", async (t) => {
   for (const [width, height] of [
     [1440, 844],

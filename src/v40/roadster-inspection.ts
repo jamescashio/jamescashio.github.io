@@ -163,7 +163,8 @@ export async function createRoadsterInspection(
   let disposed = false,
     visible = true,
     frame = 0,
-    previous = 0;
+    previous = 0,
+    needsRender = false;
   let selected: RoadsterView = "body";
   let transition: {
     from: THREE.Spherical;
@@ -192,8 +193,12 @@ export async function createRoadsterInspection(
   let blueprint: THREE.Group | undefined;
   let blueprintSurface: THREE.MeshBasicMaterial | undefined;
 
-  function request() {
+  function schedule() {
     if (!disposed && !frame && visible && !document.hidden) frame = requestAnimationFrame(draw);
+  }
+  function request() {
+    needsRender = true;
+    schedule();
   }
   function draw(now: number) {
     frame = 0;
@@ -201,6 +206,7 @@ export async function createRoadsterInspection(
       previous = 0;
       return;
     }
+    if (!needsRender && !transition && !lightSweep) return;
     const delta = previous ? now - previous : 0;
     if (transition) {
       if (!allowsMotion()) transition = null;
@@ -234,7 +240,8 @@ export async function createRoadsterInspection(
     previous = now;
     projectHotspot();
     renderer.render(scene, camera);
-    if (transition || lightSweep) request();
+    needsRender = false;
+    if (transition || lightSweep) schedule();
   }
   function move(position: THREE.Vector3, target: THREE.Vector3, instant = false) {
     const from = new THREE.Spherical().setFromVector3(camera.position.clone().sub(controls.target));
@@ -318,6 +325,13 @@ export async function createRoadsterInspection(
   }
   function stopSweep() {
     lightSweep = null;
+    // The current angle is already painted. Keep a pending scene/camera change,
+    // but cancel a sweep-only continuation even if a slow GPU has delayed it.
+    if (!transition && !needsRender) {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      previous = 0;
+    }
     events.lighting?.(lightAngle, false);
   }
   function light(angle: number) {
@@ -337,7 +351,7 @@ export async function createRoadsterInspection(
       lightSweep = { from: lightAngle, to: lightAngle <= 0 ? 80 : -80, elapsed: 0 };
       previous = 0;
       events.lighting?.(lightAngle, true);
-      request();
+      schedule();
     }
   }
   function detail(active: boolean) {
@@ -392,7 +406,6 @@ export async function createRoadsterInspection(
       cancelMove();
       stopSweep();
     }
-    request();
   }
   function visibility() {
     previous = 0;

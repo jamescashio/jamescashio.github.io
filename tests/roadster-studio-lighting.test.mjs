@@ -13,22 +13,59 @@ before(async () => {
 });
 after(async () => browser?.close());
 
-async function openStudio(t, width = 1440, reducedMotion = "reduce") {
+async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFrames = false) {
   const height = width === 320 ? 568 : width === 390 ? 844 : 1000;
   const context = await browser.newContext({ viewport: { width, height }, reducedMotion });
   t.after(() => context.close());
-  await context.addInitScript(() => {
+  await context.addInitScript((inspectFrames) => {
     window.roadsterDraws = 0;
+    let activeFrame;
+    const roadsterCallbacks = new Set();
+    if (inspectFrames) {
+      const request = window.requestAnimationFrame.bind(window);
+      const cancel = window.cancelAnimationFrame.bind(window);
+      const held = new Map();
+      window.holdRoadsterFrames = false;
+      window.roadsterHeldFrames = () => held.size;
+      window.releaseRoadsterFrames = () => {
+        window.holdRoadsterFrames = false;
+        const callbacks = [...held.values()];
+        held.clear();
+        for (const callback of callbacks) callback(performance.now());
+      };
+      window.requestAnimationFrame = (callback) => {
+        const id = request((now) => {
+          if (window.holdRoadsterFrames && roadsterCallbacks.has(callback)) {
+            held.set(id, callback);
+            return;
+          }
+          activeFrame = callback;
+          try {
+            callback(now);
+          } finally {
+            activeFrame = undefined;
+          }
+        });
+        return id;
+      };
+      window.cancelAnimationFrame = (id) => {
+        held.delete(id);
+        cancel(id);
+      };
+    }
     for (const Context of [WebGLRenderingContext, WebGL2RenderingContext]) {
       for (const method of ["drawElements", "drawArrays"]) {
         const original = Context.prototype[method];
         Context.prototype[method] = function (...args) {
-          if (this.canvas.closest?.(".roadster-inspection")) window.roadsterDraws++;
+          if (this.canvas.closest?.(".roadster-inspection")) {
+            window.roadsterDraws++;
+            if (activeFrame) roadsterCallbacks.add(activeFrame);
+          }
           return original.apply(this, args);
         };
       }
     }
-  });
+  }, inspectFrames);
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -269,4 +306,54 @@ test("one sweep click reframes an offscreen Roadster and starts the light immedi
   await expect.poll(() => canvas.getAttribute("data-light-angle")).not.toBe("0");
   await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
   await still(page);
+});
+
+test("Stop and reduced motion cancel delayed sweep frames while preserving a pending camera move", async (t) => {
+  const page = await openStudio(t, 1440, "no-preference", true);
+  const canvas = page.locator(".roadster-inspection canvas");
+  // Learn the viewer's callback from an actual first paint before holding it.
+  await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(0);
+  await still(page);
+  for (const action of ["stop", "camera", "reduced-motion"]) {
+    const cameraMove = action === "camera";
+    await page.evaluate(() => {
+      window.holdRoadsterFrames = true;
+    });
+    await page.getByRole("button", { name: "Sweep light", exact: true }).click();
+    await expect.poll(() => page.evaluate(() => window.roadsterHeldFrames())).toBe(1);
+    if (cameraMove) await canvas.press("ArrowRight");
+    const stopped = await canvas.getAttribute("data-light-angle");
+    const draws = await page.evaluate(() => window.roadsterDraws);
+    if (action === "reduced-motion") await page.emulateMedia({ reducedMotion: "reduce" });
+    else await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
+    await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "false");
+    assert.equal(
+      await page.evaluate(() => window.roadsterHeldFrames()),
+      cameraMove ? 1 : 0,
+      cameraMove ? "the requested camera move keeps its pending frame" : "the redundant sweep frame is canceled",
+    );
+    await page.evaluate(() => window.releaseRoadsterFrames());
+    if (cameraMove) {
+      await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(draws);
+      // Wait for the requested 1.1-second camera move, then retain the strict idle check.
+      await page.evaluate(
+        () =>
+          new Promise((resolve) => {
+            const start = performance.now();
+            function tick(now) {
+              if (now - start >= 1300) resolve();
+              else requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+          }),
+      );
+    } else
+      assert.equal(await page.evaluate(() => window.roadsterDraws), draws, `${action} does not repaint the same angle`);
+    await still(page);
+    assert.equal(
+      await canvas.getAttribute("data-light-angle"),
+      stopped,
+      `${action} preserves the displayed light angle`,
+    );
+  }
 });
