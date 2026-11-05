@@ -1,5 +1,7 @@
 # cAshIo V42 · Omnius, Overruled
 
+Current personal identity: the [platinum cAshIo brand kit](https://cashio.us/brand/platinum/) with preserved inlaid detail, electric blue and laser red. See [brand guidance](docs/brand/PLATINUM.md) for everyday marks, icons and accessible color usage.
+
 **Omnius, Overruled · Imagination, with intention** is the V42 interface prepared on 11-02-2026. The director’s cut adds illustrated build stories, responsive dimensional diagrams and a curated first visit. The original moving planetary hero, gold and cyan identity, four worlds, seven experiments and complete film collection remain. House Cashio is the opening feature. The name nods to the machine overmind in the Butlerian Jihad prequels; the fictional hearing and Bit’s humor keep the human in charge.
 
 The current receipt is `public/v40/site-release.json`. Local review mode displays an unpublished ribbon and sends noindex headers; the ordinary production build is indexable. Publication follows the completed quality review and required repository checks. The prior production and rollback commit is `650f395adc36ae762acd99e43c0a4655d653ed1f`. See [the director’s cut](docs/v42/directors-cut.md).

@@ -1,4 +1,5 @@
 @import "./tokens.css";
+@import "../platinum-brand.css";
 @import "../fonts.css";
 /* Shared LCARS primitives. Section classes can override their defaults. */
 .za-btn {
@@ -28,14 +29,14 @@
   border: none;
   box-shadow: 0 0 24px var(--accent-glow);
 }
-/* ZEUSAPOLLO — Color system
+/* ZEUSAPOLLO â€” Color system
    LCARS-inspired neon palette on a near-black "void". */
 
-/* ZEUSAPOLLO — Typography scale */
+/* ZEUSAPOLLO â€” Typography scale */
 
-/* ZEUSAPOLLO — Spacing, radii, layout */
+/* ZEUSAPOLLO â€” Spacing, radii, layout */
 
-/* ZEUSAPOLLO — Effects: shadows, glows, motion, borders */
+/* ZEUSAPOLLO â€” Effects: shadows, glows, motion, borders */
 
 /* Reusable keyframes shipped with the system */
 @keyframes za-blink {
@@ -70,12 +71,12 @@
   }
 }
 
-/* ZEUSAPOLLO — Base element defaults.
+/* ZEUSAPOLLO â€” Base element defaults.
    Applies the void background, neon wash, scanline overlay and base type. */
 
-/* Optional CRT scanline overlay — add class `za-scanlines` to <body> */
+/* Optional CRT scanline overlay â€” add class `za-scanlines` to <body> */
 
-/* ZEUSAPOLLO — Component interaction states.
+/* ZEUSAPOLLO â€” Component interaction states.
    Components paint their base look with inline styles; these classes add
    hover / active / focus states that inline styles can't express. */
 
@@ -93,16 +94,16 @@
 
 /* ---- Nav link ---- */
 
-/* ZEUSAPOLLO Design System — global entry point.
+/* ZEUSAPOLLO Design System â€” global entry point.
    Consumers link this one file. Import order matters: tokens before base. */
-/* ZEUSAPOLLO — Color system
+/* ZEUSAPOLLO â€” Color system
    LCARS-inspired neon palette on a near-black "void". */
 
-/* ZEUSAPOLLO — Typography scale */
+/* ZEUSAPOLLO â€” Typography scale */
 
-/* ZEUSAPOLLO — Spacing, radii, layout */
+/* ZEUSAPOLLO â€” Spacing, radii, layout */
 
-/* ZEUSAPOLLO — Effects: shadows, glows, motion, borders */
+/* ZEUSAPOLLO â€” Effects: shadows, glows, motion, borders */
 
 /* Reusable keyframes shipped with the system */
 @keyframes za-blink {
@@ -137,7 +138,7 @@
   }
 }
 
-/* ZEUSAPOLLO — Base element defaults.
+/* ZEUSAPOLLO â€” Base element defaults.
    Applies the void background, neon wash, scanline overlay and base type. */
 * {
   box-sizing: border-box;
@@ -157,7 +158,7 @@ body {
   position: relative;
 }
 
-/* Optional CRT scanline overlay — add class `za-scanlines` to <body> */
+/* Optional CRT scanline overlay â€” add class `za-scanlines` to <body> */
 body.za-scanlines::after {
   content: "";
   position: fixed;
@@ -202,7 +203,7 @@ body.za-scanlines::after {
   }
 }
 
-/* ZEUSAPOLLO — Component interaction states.
+/* ZEUSAPOLLO â€” Component interaction states.
    Components paint their base look with inline styles; these classes add
    hover / active / focus states that inline styles can't express. */
 
@@ -2636,3 +2637,4 @@ html[data-motion="off"] .hero-flight-camera {
     line-height: 1.3;
   }
 }
+

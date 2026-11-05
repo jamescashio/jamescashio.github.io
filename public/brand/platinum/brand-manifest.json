@@ -1,0 +1,115 @@
+{
+  "brand": "cAshIo AI",
+  "edition": "Platinum",
+  "approved": "2026-11-04",
+  "palette": {
+    "platinum": "#E2E6EE",
+    "pearl": "#F5F5F7",
+    "graphite": "#111217",
+    "deep": "#0D1017",
+    "blue": "#3578FF",
+    "blueText": "#9ABEFF",
+    "red": "#FF3D55",
+    "redText": "#FF8A9D",
+    "muted": "#AAB2C3",
+    "line": "#313849"
+  },
+  "signature": "signature-1680.webp",
+  "everydayDark": "everyday-dark.svg",
+  "everydayLight": "everyday-light.svg",
+  "favicon": "favicon.svg",
+  "principles": [
+    "Preserve detailed inlays and miniature A/I worlds",
+    "Platinum dominant, electric blue primary light, red counterpoint",
+    "Subtly patriotic palette; preserve existing content and separate project identities",
+    "No jade, emerald, mint or teal branding; preserve semantic status colors",
+    "Simplify only for small-size legibility"
+  ],
+  "files": [
+    {
+      "name": "everyday-dark.svg",
+      "bytes": 3853,
+      "sha256": "751fc0f32ab490e44a10d40cb5edf06804f5f6503f28bb54f722693ff92f0dee"
+    },
+    {
+      "name": "everyday-light.svg",
+      "bytes": 3853,
+      "sha256": "cc0336baa1401337a439b121062167e39b2c7d93fa8498c61aec8a019a769380"
+    },
+    {
+      "name": "favicon.svg",
+      "bytes": 601,
+      "sha256": "8c7adc708bd8216cbcf2de45dd14036f4c88b04489d68c2b88d2451e773c1358"
+    },
+    {
+      "name": "icon-16.png",
+      "bytes": 453,
+      "sha256": "bd9b93a3b6274c85801095de50b8226e4b7cf6474f8463689b6e5ff3806619f3"
+    },
+    {
+      "name": "icon-180.png",
+      "bytes": 5838,
+      "sha256": "c94067c9667982b4a6705106e6a7aa3f2fc3d9b499f8e390e0ff57034739d206"
+    },
+    {
+      "name": "icon-192.png",
+      "bytes": 6597,
+      "sha256": "2356b1c229552b4ba2941810254faeb9fc1e0ed59f166981c67fa5f606a4abb5"
+    },
+    {
+      "name": "icon-32.png",
+      "bytes": 732,
+      "sha256": "f909356fc1d382e143c9dff1735f16aeff20d511cef9999ec779319087e9c510"
+    },
+    {
+      "name": "icon-48.png",
+      "bytes": 1122,
+      "sha256": "e77d5799eab34596d9b463ef084c3828653d4b497bddd3c3805656766a3f2c93"
+    },
+    {
+      "name": "icon-512.png",
+      "bytes": 30942,
+      "sha256": "a64e182a990041119c0c1012378a6de038fa41cbbf6827ea41e61e93b22a32e8"
+    },
+    {
+      "name": "icon-64.png",
+      "bytes": 1377,
+      "sha256": "7a59c7749985627f623f8595f5375946f87b009bf6a83f334ae0b562697e7179"
+    },
+    {
+      "name": "icon.svg",
+      "bytes": 608,
+      "sha256": "42f89f6ccbd6904bb142c2df94e77a205d41be7426a38ffb891f67e7c53401d1"
+    },
+    {
+      "name": "signature-1680.webp",
+      "bytes": 157006,
+      "sha256": "ac3450ba69a8f22f93b140c9cd263246cd15b3e56e7bd9ee6415c7a764d228ee"
+    },
+    {
+      "name": "signature-420.webp",
+      "bytes": 18738,
+      "sha256": "ebaaeeeaa4dee731445b1d6ca881669cc951ae0212bce0a724b28d348daf630b"
+    },
+    {
+      "name": "signature-840.webp",
+      "bytes": 55554,
+      "sha256": "e5fffa2a550f7c1fb55b37cddcf3e469067e44fb94a0a4635a6a9cfe28e7c32c"
+    },
+    {
+      "name": "signature.png",
+      "bytes": 1932330,
+      "sha256": "826f61d3bc6492005833c1e87953df29eac5773c6a04f9ea99aa3b0b52a16271"
+    },
+    {
+      "name": "social-preview.jpg",
+      "bytes": 121217,
+      "sha256": "8c485d42d3b06cb350fecff0e306a74fef2c3b6176a8eb0c8c25142ea877b9cb"
+    },
+    {
+      "name": "tokens.css",
+      "bytes": 713,
+      "sha256": "4e11b1e9b55a2b8a6c318c8c0212fe88990226b2c783030afe04cb8a64032043"
+    }
+  ]
+}
