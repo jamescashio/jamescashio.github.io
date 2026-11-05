@@ -47,9 +47,34 @@ export function transcript(vtt) {
   return lines;
 }
 
+/**
+ * Every figure the page or E.V.E. prints must be a whole, non negative count that agrees with the
+ * figures around it. A malformed export stops the build instead of reaching a visitor.
+ */
+export function checkStatus(status) {
+  const at = (key) => key.split(".").reduce((value, part) => value?.[part], status);
+  const count = (key) => {
+    const value = at(key);
+    if (value === null || value === undefined) throw new Error(`status.json has no value for ${key}`);
+    if (!Number.isSafeInteger(value) || value < 0)
+      throw new Error(`status.json ${key} must be a whole count, not ${value}`);
+    return value;
+  };
+  const atMost = (small, large) => {
+    if (count(small) > count(large)) throw new Error(`status.json ${small} cannot exceed ${large}`);
+  };
+  for (const key of ["cluster.hostsOnline", "backup.snapshotsListed"]) count(key);
+  atMost("containers.running", "containers.documented");
+  atMost("virtualMachines.running", "virtualMachines.documented");
+  atMost("backup.latestVerified", "backup.latestChecked");
+  atMost("backup.latestChecked", "backup.snapshotsListed");
+  longDate(status.verified);
+  return status;
+}
+
 export function statusTokens(root) {
   // The published export itself, so the page and /status.json are built from one file.
-  const status = JSON.parse(readFileSync(path.join(root, "public/status.json"), "utf8"));
+  const status = checkStatus(JSON.parse(readFileSync(path.join(root, "public/status.json"), "utf8")));
   const tokens = new Map();
   const put = (key, value) => {
     if (value === null || value === undefined) throw new Error(`status.json has no value for ${key}`);

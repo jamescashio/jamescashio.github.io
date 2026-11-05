@@ -7,6 +7,8 @@ import { gzipSync } from "node:zlib";
 const root = path.resolve(process.argv[2] || "dist");
 const port = Number(process.argv[3] || 4388);
 const review = process.argv.includes("--review");
+// Audits that score search readiness serve the build as production does, without the preview's noindex header.
+const indexable = process.argv.includes("--indexable");
 const reviewStyle =
   '.review-status,dialog[open]::after{position:fixed;bottom:12px;left:auto;right:12px;transform:none;z-index:1000;max-width:95vw;padding:6px 12px;border:1px solid #e9b65c66;border-radius:20px;background:#080b0ef2;color:#ffe0a5;font:11px/1.4 system-ui;white-space:nowrap;pointer-events:none}dialog[open]::after{content:"PREVIEW · UNPUBLISHED"}@media(max-width:700px){.review-status,dialog[open]::after{left:auto;right:2px;bottom:12px;transform:none;writing-mode:vertical-rl;font-size:9px;padding:4px 2px;border-radius:5px;max-width:18px}}';
 const mime = {
@@ -71,7 +73,7 @@ http
       const headers = {
         "Content-Type": type,
         "Content-Length": data.length,
-        "X-Robots-Tag": "noindex, nofollow, noarchive",
+        ...(indexable ? {} : { "X-Robots-Tag": "noindex, nofollow, noarchive" }),
         "Cache-Control": "no-cache",
         Vary: "Accept-Encoding",
         ...(compressed ? { "Content-Encoding": "gzip" } : {}),

@@ -4,6 +4,7 @@ import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { chromium, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { transcript } from "../scripts/v44-status.mjs";
 
 const url = process.env.V44_URL;
@@ -221,8 +222,8 @@ test("Bit stays out of the arrival on phones and answers for what the visitor di
   await bit.click();
   await expect(page.locator("[data-bit-line]")).toContainText("held it for a person");
   await expect(page.locator('[data-bit-go="helm"]')).toBeHidden();
-  await page.locator('[data-bit-go="evidence"]').click();
-  await expect(page.locator("#evidence-title")).toBeFocused();
+  await page.locator('[data-bit-go="eve"]').click();
+  await expect(page.locator("#eve-cmd")).toBeFocused();
 });
 
 test("V43 deep links open the preserved edition and V44 stations stay home", async (t) => {
@@ -288,8 +289,10 @@ test("on phones Bit steps aside while reading down, returns, and its card closes
   await page.evaluate(() => scrollTo(0, document.querySelector("#worlds").offsetTop));
   await expect(bit).toBeVisible();
   await page.evaluate(() => scrollBy(0, 400));
-  await expect(bit).toBeHidden();
-  await expect(bit).toBeVisible({ timeout: 4000 });
+  // It fades and lets taps through, but stays in the page so a keyboard can still reach it.
+  await expect(bit).toHaveCSS("opacity", "0");
+  await expect(bit).toHaveCSS("pointer-events", "none");
+  await expect(bit).toHaveCSS("opacity", "1", { timeout: 4000 });
   await bit.click();
   const card = page.locator("[data-bit-dialog]");
   await expect(card).toBeVisible();
@@ -424,7 +427,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   const page = await visit(t);
   const log = page.locator("[data-eve-log]");
   await page.locator("[data-eve]").scrollIntoViewIfNeeded();
-  await expect(log).toContainText("containers running");
+  await expect(log).toContainText("loaded");
   await expect(log.locator(".you")).toHaveCount(0);
   await expect(log).toHaveAttribute("aria-live", "off");
   await page.locator("#eve-cmd").fill("version");
@@ -441,8 +444,13 @@ test("each station lights the sky in its own color", async (t) => {
     await page.evaluate((s) => document.getElementById(s).scrollIntoView(), id);
     await expect(sky).toHaveAttribute("data-at", id);
   }
-  const tint = await sky.evaluate((el) => getComputedStyle(el).getPropertyValue("--tint"));
-  assert.notEqual(tint.trim(), "rgba(53, 120, 255, 0)", "the station light is not the arrival's");
+  // On the painted poster only the current station's light is lit, and the change is a crossfade of opacity.
+  const lit = await page.evaluate(() =>
+    [...document.querySelectorAll("[data-tint]")]
+      .filter((el) => getComputedStyle(el).opacity === "1")
+      .map((el) => el.dataset.tint),
+  );
+  assert.deepEqual(lit, ["doug"]);
 });
 
 test("keyboard focus finishes a fade that scrolling had already started", async (t) => {
@@ -453,4 +461,77 @@ test("keyboard focus finishes a fade that scrolling had already started", async 
   await card.locator("a").first().focus();
   await expect(card).toHaveAttribute("data-reveal", "now");
   assert.equal(await card.evaluate((node) => getComputedStyle(node).opacity), "1");
+});
+
+const CHROME = process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" };
+
+test("axe finds no WCAG 2.2 AA or best practice violations at the contract widths, disclosures open", async (t) => {
+  for (const [width, height, mobile] of [
+    [320, 568, true],
+    [390, 844, true],
+    [834, 1194, true],
+    [1440, 900, false],
+    [3822, 1600, false],
+  ]) {
+    const page = await visit(t, { width, height, mobile });
+    await page.evaluate(() => document.querySelectorAll("details:not([hidden])").forEach((d) => (d.open = true)));
+    const result = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"])
+      .analyze();
+    const found = result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
+    assert.deepEqual(found, [], `${width}x${height}`);
+  }
+});
+
+test("Pause stops the live gate's frame loop, not only the page's animations", async (t) => {
+  const gl = await chromium.launch({
+    ...CHROME,
+    headless: true,
+    args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"],
+  });
+  t.after(() => gl.close());
+  const context = await gl.newContext({ viewport: { width: 1280, height: 720 }, reducedMotion: "no-preference" });
+  const page = await context.newPage();
+  await page.goto(new URL("/?gl=force", url).href, { waitUntil: "networkidle" });
+  const canvas = page.locator(".sky-canvas");
+  await expect(canvas).toHaveAttribute("data-running", "", { timeout: 10000 });
+  await page.locator("[data-motion-toggle]").click();
+  await expect(canvas).not.toHaveAttribute("data-running");
+  // Still paused a moment later: nothing wakes the loop behind the visitor's back.
+  await page.mouse.move(400, 300);
+  await page.waitForTimeout(400);
+  await expect(canvas).not.toHaveAttribute("data-running");
+});
+
+test("Bit's card closes from the keyboard: Escape from anywhere, or focus leaving the card", async (t) => {
+  const page = await visit(t);
+  const bit = page.locator("[data-bit-open]");
+  const card = page.locator("[data-bit-dialog]");
+  await page.evaluate(() => document.getElementById("worlds").scrollIntoView());
+  await bit.click();
+  await expect(card).toBeVisible();
+  await page.locator("#eve-cmd").focus();
+  await expect(card).toBeHidden();
+  await bit.click();
+  await expect(card).toBeVisible();
+  await page.locator("#eve-cmd").focus();
+  await bit.click();
+  await expect(card).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(card).toBeHidden();
+  await expect(bit).toBeFocused();
+});
+
+test("the transit line still reaches its end after the page changes height", async (t) => {
+  const page = await visit(t);
+  const progress = () =>
+    page.evaluate(() =>
+      Number(getComputedStyle(document.querySelector("[data-transit-fill]")).getPropertyValue("--progress")),
+    );
+  // Measure with every disclosure open, then close them again: the page is shorter than it was measured.
+  await page.evaluate(() => document.querySelectorAll("details:not([hidden])").forEach((d) => (d.open = true)));
+  await page.setViewportSize({ width: 1440, height: 901 });
+  await page.evaluate(() => document.querySelectorAll("details").forEach((d) => (d.open = false)));
+  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(progress).toBeGreaterThan(0.995);
 });

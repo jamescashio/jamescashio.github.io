@@ -194,19 +194,18 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   }
 }
 /*
- * The painted gate is taller than these screens are wide. Tablets in portrait lower the ring toward the
- * copy so no empty band opens between them; short phones lift it clear of the headline.
+ * The portrait poster is taller than tablets are wide: they show it from higher up, so the ring
+ * comes down toward the copy and no empty band opens between them. The live gate follows.
  */
 @media (orientation: portrait) and (min-width: 700px) {
   .sky-poster {
     object-position: 50% 30%;
-    transform-origin: 54% 32%;
   }
 }
-@media (orientation: portrait) and (max-height: 700px) {
+/* Landscape screens narrower than the poster show more of its left side, so the ring stays whole beside the words. */
+@media (orientation: landscape) and (max-aspect-ratio: 8/5) {
   .sky-poster {
-    object-position: 50% 75%;
-    transform-origin: 54% 16%;
+    object-position: 72% 50%;
   }
 }
 @media (orientation: portrait) and (max-height: 600px) {

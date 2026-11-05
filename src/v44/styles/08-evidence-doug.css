@@ -213,10 +213,14 @@ kbd {
   display: grid;
   gap: 16px;
 }
+/* The signature is painted on near black; lighten keeps whichever is brighter, so the card shows through and no box edge appears. */
 .signature {
   width: min(100%, 420px);
   height: auto;
-  filter: drop-shadow(0 8px 30px rgba(53, 120, 255, 0.35));
+  mix-blend-mode: lighten;
+  /* Its painted glow fades out before the image's edge, so no rectangle reads against the card. */
+  -webkit-mask-image: radial-gradient(ellipse 54% 60% at 50% 50%, #000 66%, transparent 100%);
+  mask-image: radial-gradient(ellipse 54% 60% at 50% 50%, #000 66%, transparent 100%);
 }
 .contact-title {
   font-size: clamp(32px, 4vw, 52px);

@@ -30,7 +30,7 @@ const EGGS = new Map<string, string>(
       "Kelly Johnson ran the Skunk Works with a small team and short reports. I am trying to learn the second part.",
     tron: "I am on the users’ side. It is in my job description, under other duties as assigned.",
     sudo: "Nice try. The human is in command, and that human is not the terminal.",
-    admiral: "Welcome back, Admiral. The fleet is where you left it.",
+    admiral: "Welcome back, Admiral. The record is where you left it.",
     hotsauce: "Spicy. Carry on.",
     hello: "Hello. Don’t panic.",
     bit: "Bit is in the corner, rehearsing jokes about triangles.",
@@ -113,8 +113,8 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       return;
     }
     if (cmd === "helm") {
-      hooks.go("helm");
       say("Helm is yours. Try the private toggle.");
+      hooks.go("helm");
       return;
     }
     if (cmd === "whoami") return say("A visitor with the helm. I keep the receipts.");
@@ -124,7 +124,9 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       );
     const egg = EGGS.get(cmd);
     if (egg) return say(egg);
-    if (!["status", "backups", "limits", "law", "withheld", "version"].includes(cmd)) {
+    // "opening" is E.V.E.'s own first line; a visitor typing it gets the unknown command line.
+    const ownLine = cmd === "opening" && !byVisitor;
+    if (!ownLine && !["status", "backups", "limits", "law", "withheld", "version"].includes(cmd)) {
       say("Unknown command. Type help. I will not judge, and if I do, I will publish the date.");
       return;
     }
@@ -135,7 +137,11 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       say("The printed record is missing from this page. The raw export lives at /status.json.");
       return;
     }
-    if (cmd === "version") {
+    if (cmd === "opening") {
+      say(
+        `Record of ${s.verifiedDay} loaded, with ${(s.withheld || []).length} items withheld and why. Ask me for status, backups or limits.`,
+      );
+    } else if (cmd === "version") {
       const r = s.release;
       say(
         r

@@ -5,11 +5,20 @@
  */
 export type Intent = "draft" | "research" | "analyze";
 export type RouteInput = { intent: Intent; privateData: boolean; sources: boolean };
-export type Route = { lane: string; code: "HOLD" | "EVIDENCE" | "QUALIFIED"; detail: string; steps: string[] };
+/** `id` names the lane for code (the route map, Bit's lines); `lane` is the words a visitor reads. */
+export type LaneId = "hold" | "research" | "workhorse" | "synthesis";
+export type Route = {
+  id: LaneId;
+  lane: string;
+  code: "HOLD" | "EVIDENCE" | "QUALIFIED";
+  detail: string;
+  steps: string[];
+};
 
 export function route(input: RouteInput): Route {
   if (input.privateData)
     return {
+      id: "hold",
       lane: "Human review",
       code: "HOLD",
       detail: "The privacy boundary comes first. Confirm an authorized processing route before any external execution.",
@@ -23,6 +32,7 @@ export function route(input: RouteInput): Route {
     };
   if (input.intent === "research" || input.sources)
     return {
+      id: "research",
       lane: "Research",
       code: "EVIDENCE",
       detail:
@@ -37,6 +47,7 @@ export function route(input: RouteInput): Route {
     };
   const analyze = input.intent === "analyze";
   return {
+    id: analyze ? "synthesis" : "workhorse",
     lane: analyze ? "Synthesis" : "Workhorse",
     code: "QUALIFIED",
     detail: analyze
@@ -89,7 +100,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     result.dataset.code = r.code;
     if (example) example.textContent = `Example task: ${EXAMPLES[read().intent]}`;
     if (map) {
-      map.dataset.route = r.code === "HOLD" ? "hold" : r.code === "EVIDENCE" ? "research" : r.lane.toLowerCase();
+      map.dataset.route = r.id;
       if (animate) {
         // A fresh packet starts its ride from the beginning; the old one would keep its finished state.
         map.classList.add("ride");

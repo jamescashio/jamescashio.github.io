@@ -24,5 +24,5 @@ ${exampleBrief.unknown}
 WHO DECIDES
 ${exampleBrief.owner}
 
-Make your own in the previous edition: https://cashio.us/v43/#experiment=briefing
+Make your own in the lab archive: https://cashio.us/v43/#experiment=briefing
 `;

@@ -13,17 +13,17 @@ Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
 ## Acceptance
 
 - Every one of the nine scorecard categories at 9.0 or above, measured, before Doug is asked to approve.
-- Lighthouse mobile performance at 90 or above on three consecutive runs; accessibility, best practices and SEO at 100 on the production host.
-- axe: zero violations at 390, 834, 1440 and 3822 pixel widths, and nothing serious or critical at 320.
+- Lighthouse mobile performance at 90 or above on three consecutive runs; accessibility, best practices and SEO at 100 on the production host. `npm run audit:v44` measures this on the build, served compressed and without the preview's noindex header, and keeps its reports under `artifacts/v44/<commit>/`. It is a release step rather than a CI gate, because shared CI machines vary too much in timing for a performance floor.
+- axe: zero WCAG 2.2 AA or best practice violations at 320, 390, 834, 1440 and 3822 pixel widths with every disclosure open, checked inside `npm run test:v44`.
 - No horizontal overflow at 320 pixels or wider; no visible text under 12 pixels; 44 pixel touch targets on coarse pointers.
 - Pause and reduced motion leave a complete still page with no running animation. Pause is one setting across the front door, the rooms and the preserved edition.
 - Evidence on the page equals `status.json`; the page makes no network request of its own. Dates read like Wed Nov 4, 2026.
 - The preserved V43 edition loads no code from another page's entry; shared modules have their own chunks.
 - No hyphens or em or en dashes in visible copy, except handles such as @james-cashio and aircraft designations.
 
-- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement; on phones the helm result and the chosen film land on screen; the scope film keeps its frame; header chips keep one line; on page ids stay on the page; E.V.E. opens without speaking for the visitor; each station lights the sky.
+- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement; on phones the helm result and the chosen film land on screen; the scope film keeps its frame; header chips keep one line; on page ids stay on the page; E.V.E. opens without speaking for the visitor; each station lights the sky; Pause stops the live gate's frame loop in a WebGL browser; Bit's card closes from the keyboard; the transit line reaches its end after the page changes height.
 
 ## Known limits
 
 - The sandbox renders WebGL in software, so the live gate's frame cost must be confirmed on a real GPU before publication.
-- The gate posters are rendered from the same shader; on a software renderer the page shows the poster instead of the live scene.
+- The gate posters are painted from the same shader (`node --import tsx scripts/render-gate-posters.mjs`), and the live gate projects the poster's layout, so a change to the shader or a composition means painting the posters again. The live frame and its poster differ only in fine shading where a poster is shown larger than its own size (tablets in portrait), never in where the gate sits.

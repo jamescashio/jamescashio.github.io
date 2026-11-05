@@ -18,14 +18,9 @@
 .sky-poster {
   transition: filter 900ms ease;
   /* Scroll flies the painted gate toward its ring, so software and low power visitors get the approach too. */
-  transform-origin: 77% 48%;
+  transform-origin: var(--ring-x, 72%) var(--ring-y, 48%);
   transform: scale(calc(1 + var(--transit, 0) * 0.85));
   will-change: transform;
-}
-@media (orientation: portrait) {
-  .sky-poster {
-    transform-origin: 54% 27%;
-  }
 }
 .sky-canvas {
   opacity: 0;
@@ -39,43 +34,69 @@
 }
 /*
  * Station light for the painted poster: each station washes the deep sky in its own color, so the
- * journey reads as travel. The live gate does the same inside its shader, so this layer steps aside there.
+ * journey reads as travel. Each light is a still layer that only crossfades, which the compositor does
+ * without repainting. The live gate colors its nebula in the shader, so this layer steps aside there.
  */
-@property --tint {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: rgba(53, 120, 255, 0);
+/* The painted gate's own entrance: once per visit its ring flares as the gate opens, an opacity change only. */
+.sky-flare {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(
+    calc(var(--ring-r, 300px) * 1.55) calc(var(--ring-r, 300px) * 1.05) at var(--ring-x, 72%) var(--ring-y, 48%),
+    rgba(140, 185, 255, 0.4),
+    rgba(53, 120, 255, 0.12) 55%,
+    rgba(5, 7, 12, 0) 75%
+  );
 }
-.sky {
-  --tint: rgba(53, 120, 255, 0);
-  transition: --tint 1600ms ease;
+html[data-motion="on"] .sky[data-flare]:not([data-live]) .sky-flare {
+  animation: gate-flare 2200ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-.sky[data-at="cinema"] {
-  --tint: rgba(255, 160, 70, 0.2);
-}
-.sky[data-at="worlds"] {
-  --tint: rgba(60, 220, 170, 0.16);
-}
-.sky[data-at="workshop"] {
-  --tint: rgba(110, 160, 255, 0.17);
-}
-.sky[data-at="helm"] {
-  --tint: rgba(150, 90, 255, 0.21);
-}
-.sky[data-at="evidence"] {
-  --tint: rgba(170, 215, 255, 0.14);
-}
-.sky[data-at="doug"] {
-  --tint: rgba(255, 70, 90, 0.18);
+@keyframes gate-flare {
+  25% {
+    opacity: 1;
+  }
 }
 .sky-tint {
   position: absolute;
   inset: 0;
-  background: radial-gradient(85% 65% at 68% 42%, var(--tint), rgba(5, 7, 12, 0) 78%);
   transition: opacity 900ms ease;
 }
 .sky[data-live] .sky-tint {
   opacity: 0;
+}
+.sky-tint span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1600ms ease;
+  background: radial-gradient(85% 65% at 68% 42%, var(--tint), rgba(5, 7, 12, 0) 78%);
+}
+[data-tint="cinema"] {
+  --tint: rgba(255, 160, 70, 0.2);
+}
+[data-tint="worlds"] {
+  --tint: rgba(60, 220, 170, 0.16);
+}
+[data-tint="workshop"] {
+  --tint: rgba(110, 160, 255, 0.17);
+}
+[data-tint="helm"] {
+  --tint: rgba(150, 90, 255, 0.21);
+}
+[data-tint="evidence"] {
+  --tint: rgba(170, 215, 255, 0.14);
+}
+[data-tint="doug"] {
+  --tint: rgba(255, 70, 90, 0.18);
+}
+.sky[data-at="cinema"] [data-tint="cinema"],
+.sky[data-at="worlds"] [data-tint="worlds"],
+.sky[data-at="workshop"] [data-tint="workshop"],
+.sky[data-at="helm"] [data-tint="helm"],
+.sky[data-at="evidence"] [data-tint="evidence"],
+.sky[data-at="doug"] [data-tint="doug"] {
+  opacity: 1;
 }
 .sky-scrim {
   position: absolute;

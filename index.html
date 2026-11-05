@@ -37,9 +37,24 @@
     <link
       rel="preload"
       as="image"
-      href="/v44/gate-1600.webp"
+      href="/v44/gate-short-720.webp"
+      media="(orientation: portrait) and (max-height: 600px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/v44/gate-portrait-720.webp"
       imagesrcset="/v44/gate-portrait-720.webp 720w, /v44/gate-portrait-1080.webp 1080w"
-      media="(orientation: portrait)"
+      media="(orientation: portrait) and (min-height: 601px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/v44/gate-wide-1600.webp"
+      imagesrcset="/v44/gate-wide-1600.webp 1600w, /v44/gate-wide-2400.webp 2400w"
+      media="(orientation: landscape) and (min-aspect-ratio: 2/1)"
       fetchpriority="high"
     />
     <link
@@ -47,7 +62,7 @@
       as="image"
       href="/v44/gate-1600.webp"
       imagesrcset="/v44/gate-960.webp 960w, /v44/gate-1600.webp 1600w, /v44/gate-2400.webp 2400w"
-      media="(orientation: landscape)"
+      media="(orientation: landscape) and (max-aspect-ratio: 1999/1000)"
       fetchpriority="high"
     />
     <title>Doug Cashio · cAshIo · V44 Drummer</title>
@@ -59,8 +74,18 @@
     <div class="sky" data-stage="gate" aria-hidden="true">
       <picture>
         <source
+          media="(orientation: portrait) and (max-height: 600px)"
+          srcset="/v44/gate-short-720.webp 720w"
+          sizes="100vw"
+        />
+        <source
           media="(orientation: portrait)"
           srcset="/v44/gate-portrait-720.webp 720w, /v44/gate-portrait-1080.webp 1080w"
+          sizes="100vw"
+        />
+        <source
+          media="(min-aspect-ratio: 2/1)"
+          srcset="/v44/gate-wide-1600.webp 1600w, /v44/gate-wide-2400.webp 2400w"
           sizes="100vw"
         />
         <img
@@ -76,7 +101,11 @@
         />
       </picture>
       <canvas class="sky-canvas"></canvas>
-      <div class="sky-tint"></div>
+      <div class="sky-flare"></div>
+      <div class="sky-tint">
+        <span data-tint="cinema"></span><span data-tint="worlds"></span><span data-tint="workshop"></span
+        ><span data-tint="helm"></span><span data-tint="evidence"></span><span data-tint="doug"></span>
+      </div>
       <div class="sky-scrim"></div>
     </div>
 
@@ -339,9 +368,7 @@
             <div>
               <p class="kicker">Four worlds and a hangar</p>
               <h2 id="worlds-title">Pick a world. Stay a while.</h2>
-              <p class="sub">
-                Four original worlds, each with its own kind of curiosity, and a roadster waiting in the hangar.
-              </p>
+              <p class="sub">Each one runs in your browser, and each has a text version for quiet reading.</p>
             </div>
           </header>
           <p class="swipe-hint" aria-hidden="true">Swipe for all four worlds&nbsp;→</p>
@@ -475,7 +502,9 @@
           </header>
           <div class="workshop-grid">
             <figure class="system-map hull" aria-labelledby="map-title" aria-describedby="map-desc">
-              <p class="sr" id="map-title">How a request is meant to move through the lab</p>
+              <figcaption class="world-tag map-tag" id="map-title">
+                The design: how a request is meant to move
+              </figcaption>
               <p class="sr" id="map-desc">
                 The design: a person sends intent to Hermes, the scheduler. Hermes places the work on Zeus or Apollo,
                 and the result returns to the person for review.
@@ -550,8 +579,8 @@
               <p class="world-tag">An example brief</p>
               <h3>A brief worth keeping.</h3>
               <p>
-                Every question I take on ends as a one page brief: what was seen, where it came from, what is unknown
-                and who decides.
+                I use a one page brief to keep four things apart: what was observed, where it came from, what is still
+                unknown and who decides.
               </p>
               <dl class="brief-preview">
                 <div>
@@ -749,7 +778,7 @@
                 </ul>
               </details>
             </div>
-            <div class="eve hull" data-eve data-record="{{status.record}}">
+            <div class="eve hull" id="eve" data-arrive-focus="#eve-cmd" data-eve data-record="{{status.record}}">
               <div class="eve-top">
                 <p><strong>E.V.E.</strong> <span>Evaluation Verification Engine</span></p>
                 <span class="eve-led" aria-hidden="true"></span>
@@ -927,7 +956,7 @@
       <div class="bit-actions">
         <button type="button" class="chip" data-bit-joke>Tell me a joke</button>
         <button type="button" class="chip" data-bit-go="helm">Take me to the helm</button>
-        <button type="button" class="chip" data-bit-go="evidence">Open E.V.E.</button>
+        <button type="button" class="chip" data-bit-go="eve">Open E.V.E.</button>
       </div>
     </dialog>
     <noscript

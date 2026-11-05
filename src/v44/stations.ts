@@ -10,8 +10,6 @@ type Hooks = { surge: (ms: number) => void; onStation: (id: string) => void };
 
 const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);
 const $$ = <T extends Element = HTMLElement>(sel: string) => [...document.querySelectorAll<T>(sel)];
-/** The width where the inline header list replaces the sheet; it matches the stylesheet. */
-const DESKTOP_NAV = "(min-width: 1240px)";
 
 export function mountStations({ surge, onStation }: Hooks): Stations {
   /* The sheet for narrow screens is built from the one station list in the header. */
@@ -57,16 +55,21 @@ export function mountStations({ surge, onStation }: Hooks): Stations {
     const next = e.relatedTarget as Node | null;
     if (next && !sheet.contains(next) && !menu.contains(next)) closeSheet();
   });
-  matchMedia(DESKTOP_NAV).addEventListener("change", (e) => {
-    if (!e.matches || !sheetOpen()) return;
+  // The stylesheet alone decides when the inline list replaces the sheet; once it shows, an open sheet closes.
+  const inlineList = $(".stations")!;
+  new ResizeObserver(() => {
+    if (!sheetOpen() || getComputedStyle(inlineList).display === "none") return;
     const inside = sheet.contains(document.activeElement);
     closeSheet();
     if (inside) document.querySelector<HTMLElement>('.stations a[aria-current="true"]')?.focus();
-  });
+  }).observe(document.documentElement);
 
   /* Travel, with a warp surge through the gate. */
+  // Focus lands on the control a place names for arrivals (E.V.E. names her input), else on its heading.
   const headingOf = (target: HTMLElement) =>
-    (target.matches("h1, h2, h3") ? target : target.querySelector<HTMLElement>("h1, h2")) || target;
+    (target.dataset.arriveFocus && target.querySelector<HTMLElement>(target.dataset.arriveFocus)) ||
+    (target.matches("h1, h2, h3") ? target : target.querySelector<HTMLElement>("h1, h2")) ||
+    target;
   const go = (id: string, animate = true) => {
     const target = document.getElementById(id);
     if (!target) return;

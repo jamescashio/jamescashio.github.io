@@ -25,7 +25,8 @@
     "test:helios": "node scripts/check-helios-runtime.mjs",
     "preview:helios": "node scripts/serve-helios-preview.mjs",
     "test:v40": "node scripts/check-v40-runtime.mjs",
-    "test:v44": "node scripts/check-v44-runtime.mjs"
+    "test:v44": "node scripts/check-v44-runtime.mjs",
+    "audit:v44": "node scripts/audit-v44.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

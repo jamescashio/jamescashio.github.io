@@ -1,5 +1,6 @@
 import { bitJokes } from "../shared/ship-humor.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
+import type { LaneId, Route } from "./route.ts";
 
 /** Bit, the copilot: an icosahedron in platinum with a blue core, a line for every station, and a memory for what you just did. */
 const LINES: Record<string, string> = {
@@ -99,11 +100,11 @@ function drawFace(ctx: CanvasRenderingContext2D, size: number, t: number, glow: 
   }
 }
 
-const ROUTE_LINES: Record<string, string> = {
-  HOLD: "You held it for a person. Correct. I would have done the same and then taken the credit.",
-  EVIDENCE: "Research lane. Sources first, opinions second. E.V.E. approves.",
-  Workhorse: "Workhorse lane. Unglamorous, reliable, my favorite kind of hero.",
-  Synthesis: "Synthesis lane. Connected reasoning, with the assumptions kept for your review.",
+const ROUTE_LINES: Record<LaneId, string> = {
+  hold: "You held it for a person. Correct. I would have done the same and then taken the credit.",
+  research: "Research lane. Sources first, opinions second. E.V.E. approves.",
+  workhorse: "Workhorse lane. Unglamorous, reliable, my favorite kind of hero.",
+  synthesis: "Synthesis lane. Connected reasoning, with the assumptions kept for your review.",
 };
 
 export function mountBit(
@@ -153,8 +154,7 @@ export function mountBit(
   button.addEventListener("blur", () => (hovered = false));
 
   document.addEventListener("v44:route", (e) => {
-    const r = (e as CustomEvent<{ code: string; lane: string }>).detail;
-    remark = ROUTE_LINES[r.code === "QUALIFIED" ? r.lane : r.code] || remark;
+    remark = ROUTE_LINES[(e as CustomEvent<Route>).detail.id] || remark;
     wake(900);
   });
   document.addEventListener("v44:film", (e) => {
@@ -187,13 +187,18 @@ export function mountBit(
     dialog.querySelector<HTMLButtonElement>("[data-bit-close]")?.focus();
   });
   dialog.querySelector("[data-bit-close]")?.addEventListener("click", close);
-  dialog.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
+  // The card is not modal, so it closes the way the station sheet does: Escape from anywhere returns
+  // to Bit, and a tap or a Tab that leaves the card and its button simply closes it.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && dialog.open) close();
   });
-  // A tap outside Bit's card closes it, as the station sheet does.
   document.addEventListener("pointerdown", (e) => {
     const t = e.target as Node;
     if (dialog.open && !dialog.contains(t) && !button.contains(t)) dialog.close();
+  });
+  dialog.addEventListener("focusout", (e) => {
+    const next = e.relatedTarget as Node | null;
+    if (dialog.open && next && !dialog.contains(next) && !button.contains(next)) dialog.close();
   });
   dialog.querySelector("[data-bit-joke]")?.addEventListener("click", () => {
     line.textContent = bitJokes[joke++ % bitJokes.length];

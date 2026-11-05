@@ -6,8 +6,8 @@ import path from "node:path";
 import test from "node:test";
 import { routeExample } from "../src/odyssey/data.ts";
 import { route } from "../src/v44/route.ts";
-import { layoutFor } from "../src/v44/layout.ts";
-import { fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
+import { POSTERS, columnFor, posterFor, projectPoster } from "../src/v44/layout.ts";
+import { checkStatus, fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (p) => readFile(path.join(root, p), "utf8");
@@ -24,28 +24,46 @@ test("the helm keeps the Odyssey routing rule for every input", () => {
   assert.equal(route({ intent: "research", privateData: true, sources: true }).code, "HOLD", "privacy wins");
 });
 
-test("the gate stays on screen and clear of the headline at every size", () => {
-  const column = (w) => {
-    const gutter = Math.min(56, Math.max(18, w * 0.04));
-    const span = Math.min(w - 2 * gutter, 1320);
-    return { left: (w - span) / 2, right: (w + span) / 2 };
-  };
-  for (const [w, h] of [
-    [390, 844],
-    [834, 1194],
-    [1440, 900],
-    [1920, 1080],
-    [3822, 1600],
+test("the gate stays on screen and clear of the headline at every size, where the poster puts it", async () => {
+  const html = await read("index.html");
+  // The poster each screen gets, in the order the <picture> offers them.
+  const posterAt = (w, h) => (w <= h ? (h <= 600 ? "gate-short" : "gate-portrait") : w / h >= 2 ? "gate-wide" : "gate");
+  for (const poster of POSTERS) {
+    for (const [w] of poster.sizes) assert.match(html, new RegExp(`/v44/${poster.id}-${w}\\.webp`), poster.id);
+    // On its own shape a poster projects onto itself: the live gate and the painting are one scene.
+    const self = projectPoster(poster, 1000 * poster.aspect, 1000);
+    for (const [a, b] of [
+      [self.ring, poster.layout.ring],
+      [self.sun, poster.layout.sun],
+      [self.planet, poster.layout.planet],
+    ])
+      a.forEach((v, i) => assert.ok(Math.abs(v - b[i]) < 1e-9, `${poster.id} projects onto itself`));
+  }
+  assert.equal(posterFor("/v44/gate-wide-2400.webp").id, "gate-wide");
+  assert.equal(posterFor("/v44/gate-portrait-720.webp").id, "gate-portrait");
+  assert.equal(posterFor("/v44/gate-1600.webp").id, "gate");
+  for (const [w, h, position] of [
+    [320, 568, [0.5, 0.5]],
+    [375, 667, [0.5, 0.5]],
+    [390, 844, [0.5, 0.5]],
+    [834, 1194, [0.5, 0.3]],
+    [1024, 768, [0.72, 0.5]],
+    [1180, 820, [0.72, 0.5]],
+    [1440, 900, [0.72, 0.5]],
+    [1366, 768, [0.5, 0.5]],
+    [1920, 1080, [0.5, 0.5]],
+    [3822, 1600, [0.5, 0.5]],
   ]) {
-    const L = layoutFor(w, h, column(w));
+    const poster = POSTERS.find((p) => p.id === posterAt(w, h));
+    const L = projectPoster(poster, w, h, position);
     const aspect = w / h;
     const [cx, cy, R, tilt] = L.ring;
-    assert.ok(R > 0.15 && R <= 0.36, `${w}x${h} radius ${R}`);
+    assert.ok(R > 0.08 && R <= 0.38, `${w}x${h} radius ${R}`);
     assert.ok(tilt > 0.3 && tilt < 0.7);
-    assert.ok(Math.abs(cy) < 0.3, `${w}x${h} vertical centre`);
+    assert.ok(Math.abs(cy) < 0.36, `${w}x${h} vertical centre ${cy}`);
     assert.ok(cx - R > -aspect / 2 - 0.05 && cx + R < aspect / 2 + 0.05, `${w}x${h} ring leaves the screen`);
     if (aspect >= 0.9) {
-      const { left, right } = column(w);
+      const { left, right } = columnFor(w);
       const ringLeftPx = (cx - R) * h + w / 2;
       assert.ok(ringLeftPx > left + (right - left) * 0.42, `${w}x${h} ring crowds the headline`);
     } else {
@@ -94,6 +112,21 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
     JSON.stringify({ ...status, containers: { ...status.containers, running: null } }),
   );
   assert.throws(() => statusTokens(fake), /containers\.running/);
+
+  // Malformed figures stop the build: missing, negative, fractional, text, or more than the inventory allows.
+  const broken = [
+    { backup: { ...status.backup, snapshotsListed: undefined } },
+    { containers: { ...status.containers, running: -1 } },
+    { containers: { ...status.containers, running: status.containers.documented + 1 } },
+    { virtualMachines: { ...status.virtualMachines, running: 1.5 } },
+    { backup: { ...status.backup, latestVerified: "banana" } },
+    { backup: { ...status.backup, latestVerified: status.backup.latestChecked + 1 } },
+    { backup: { ...status.backup, latestChecked: status.backup.snapshotsListed + 1 } },
+    { cluster: { ...status.cluster, hostsOnline: null } },
+    { verified: "2026-02-30" },
+  ];
+  for (const change of broken) assert.throws(() => checkStatus({ ...status, ...change }), JSON.stringify(change));
+  assert.equal(checkStatus(status), status);
 });
 
 test("the front door source keeps a strict policy and makes no network calls of its own", async () => {

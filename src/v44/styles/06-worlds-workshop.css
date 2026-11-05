@@ -144,9 +144,9 @@
     stroke: rgba(255, 138, 157, 0.55);
   }
 }
-.system-map figcaption {
-  font-size: 14px;
-  color: var(--muted);
+/* The map's label says what it is, a drawing of the design, in the same voice as the cards' tags. */
+.system-map .map-tag {
+  margin: 2px 4px 0;
 }
 .wire {
   fill: none;
@@ -263,12 +263,4 @@ html[data-motion="on"] .system-map.in[data-visible] .packet-d {
 .receipt h3 {
   font-size: 25px;
   font-weight: 650;
-}
-.receipt-figure {
-  font-size: 17px;
-}
-.receipt-figure strong {
-  font: 700 30px/1 var(--display);
-  color: var(--pearl);
-  margin-right: 6px;
 }

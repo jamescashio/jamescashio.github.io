@@ -1,9 +1,9 @@
 import { FRAGMENT_SHADER, VERTEX_SHADER } from "./shader.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
-import { layoutFor } from "./layout.ts";
+import type { SkyLayout } from "./layout.ts";
+import { NEBULA, type Rgb } from "./nebula.ts";
 
 type Uniforms = Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>;
-type Rgb = [number, number, number];
 
 const SOFTWARE = /swiftshader|llvmpipe|softpipe|software|basic render|microsoft basic/i;
 const UNIFORMS = [
@@ -11,6 +11,7 @@ const UNIFORMS = [
   "uTime",
   "uTransit",
   "uIgnite",
+  "uSweep",
   "uWarp",
   "uDim",
   "uPointer",
@@ -21,41 +22,6 @@ const UNIFORMS = [
   "uNebA",
   "uNebB",
 ] as const;
-/**
- * The nebula's two colors at each station, so travel reads as travel: the gate's blue, the
- * screening room's amber, green for the worlds, steel for the workshop, violet at the helm,
- * a cold archive light for the evidence and the house red for the human in command.
- */
-const NEBULA: Record<string, [Rgb, Rgb]> = {
-  arrival: [
-    [0.03, 0.07, 0.2],
-    [0.16, 0.05, 0.12],
-  ],
-  cinema: [
-    [0.13, 0.07, 0.04],
-    [0.2, 0.06, 0.08],
-  ],
-  worlds: [
-    [0.02, 0.11, 0.12],
-    [0.05, 0.15, 0.09],
-  ],
-  workshop: [
-    [0.03, 0.07, 0.17],
-    [0.06, 0.1, 0.2],
-  ],
-  helm: [
-    [0.07, 0.04, 0.2],
-    [0.17, 0.05, 0.19],
-  ],
-  evidence: [
-    [0.04, 0.09, 0.15],
-    [0.1, 0.12, 0.17],
-  ],
-  doug: [
-    [0.14, 0.04, 0.06],
-    [0.19, 0.09, 0.05],
-  ],
-};
 /** Without scroll, pointer or keys, the sky settles into a still frame: soon behind the reading, later at the gate. */
 const IDLE_DEEP_MS = 2500;
 const IDLE_GATE_MS = 30000;
@@ -64,7 +30,8 @@ export type SkyState = {
   transit: number;
   dim: number;
   warpBoost: number;
-  column?: { left: number; right: number };
+  /** Where the gate, sun and planet sit: the painted poster's layout as it lands on this screen. */
+  layout: SkyLayout;
   /** The station on screen, which picks the nebula's colors. */
   station?: string;
 };
@@ -76,14 +43,18 @@ export class Sky {
   private program: WebGLProgram | null = null;
   private u: Uniforms | null = null;
   private raf = 0;
-  private clock = 4;
+  // The posters are painted at this moment of the drift, so the first live frame matches them.
+  private clock = 12.4;
   private last = 0;
   private lastInput = performance.now();
   private scale = 0.7;
   private maxScale = 1;
   private samples: number[] = [];
-  private ignite = 0;
-  private igniteStart = -1;
+  /** The gate's power: lit from the first frame, as the painted poster shows it. */
+  private readonly ignite = 1;
+  /** The ignition front's place around the ring, 0 when no front is running. */
+  private sweep = 0;
+  private sweepStart = -1;
   private warp = 0;
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
@@ -130,6 +101,7 @@ export class Sky {
     this.canvas.addEventListener("webglcontextlost", (e) => {
       e.preventDefault();
       this.hold("lost", true);
+      this.finishEntrance();
       this.onLive(false);
     });
     this.canvas.addEventListener("webglcontextrestored", () => {
@@ -201,14 +173,24 @@ export class Sky {
     }
   }
 
-  /** Light the gate. Animated once per session; instantly lit when motion is off or it already ran. */
+  /**
+   * Open the gate. The live scene fades in over the poster already lit, so the two never disagree;
+   * once per session, with motion on, a light front then races around the ring before it reads Open.
+   */
   light(animate: boolean) {
     if (!animate) {
-      this.ignite = 1;
       this.onIgnited();
       return;
     }
-    this.igniteStart = performance.now() + 450;
+    this.sweepStart = performance.now() + 1100;
+  }
+
+  /** When the live scene steps aside for the poster mid entrance, the gate still opens. */
+  private finishEntrance() {
+    if (this.sweepStart < 0) return;
+    this.sweepStart = -1;
+    this.sweep = 0;
+    this.onIgnited();
   }
 
   /** First frame, then motion if nothing holds the sky. */
@@ -256,7 +238,7 @@ export class Sky {
     if (!this.running) return;
     const s = this.state();
     const deep = s.transit >= 1;
-    const settled = this.warp < 0.02 && this.igniteStart < 0 && this.nebulaShift < 0.002;
+    const settled = this.warp < 0.02 && this.sweepStart < 0 && this.nebulaShift < 0.002;
     if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && settled) {
       this.hold("idle", true);
       return;
@@ -287,6 +269,7 @@ export class Sky {
     // Still too slow at the smallest backing store: the painted poster serves this device better.
     if (this.scale <= 0.33 && avg > 70) {
       this.hold("slow", true);
+      this.finishEntrance();
       this.onLive(false);
       return;
     }
@@ -310,16 +293,16 @@ export class Sky {
       this.canvas.height = h;
       gl.viewport(0, 0, w, h);
     }
-    if (this.igniteStart > 0 && motion) {
-      const k = Math.min(1, Math.max(0, (now - this.igniteStart) / 2600));
-      this.ignite = 1 - Math.pow(1 - k, 2.2);
+    if (this.sweepStart > 0 && motion) {
+      const k = Math.min(1, Math.max(0, (now - this.sweepStart) / 2600));
+      this.sweep = k > 0 && k < 1 ? 1 - Math.pow(1 - k, 2.2) : 0;
       if (k >= 1) {
-        this.igniteStart = -1;
+        this.sweepStart = -1;
         this.onIgnited();
       }
-    } else if (this.igniteStart > 0) {
-      this.ignite = 1;
-      this.igniteStart = -1;
+    } else if (this.sweepStart > 0) {
+      this.sweep = 0;
+      this.sweepStart = -1;
       this.onIgnited();
     }
     this.warp = Math.max(s.warpBoost, this.warp * 0.94);
@@ -335,11 +318,12 @@ export class Sky {
         this.nebula[k][c] += d * ease;
         this.nebulaShift = Math.max(this.nebulaShift, Math.abs(d));
       }
-    const L = layoutFor(innerWidth, innerHeight, s.column);
+    const L = s.layout;
     gl.uniform2f(u.uRes, w, h);
     gl.uniform1f(u.uTime, motion ? this.clock : 12.4);
     gl.uniform1f(u.uTransit, motion ? s.transit : 0);
     gl.uniform1f(u.uIgnite, this.ignite);
+    gl.uniform1f(u.uSweep, this.sweep);
     gl.uniform1f(u.uWarp, motion ? Math.min(1, this.warp) : 0);
     gl.uniform1f(u.uDim, s.dim);
     gl.uniform2f(u.uPointer, motion ? this.pointer[0] : 0, motion ? this.pointer[1] : 0);

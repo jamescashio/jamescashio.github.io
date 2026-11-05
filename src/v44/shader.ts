@@ -20,6 +20,7 @@ uniform vec2 uRes;
 uniform float uTime;
 uniform float uTransit;
 uniform float uIgnite;
+uniform float uSweep;
 uniform float uWarp;
 uniform float uDim;
 uniform vec2 uPointer;
@@ -237,8 +238,8 @@ void main() {
   col += beaconTint * beacon * fadeGate * 0.9;
   col += vec3(0.25, 0.45, 1.0) * exp(-abs(d) / (w * 3.2)) * 0.08 * uIgnite * fadeGate * mix(0.4, 1.0, nearSide);
 
-  // Ignition front: a bright band racing along both arcs while the gate wakes.
-  float front = exp(-pow((orderE - uIgnite) * 40.0, 2.0)) * step(uIgnite, 0.999) * step(0.001, uIgnite);
+  // Ignition front: on a first visit a bright band races once along both arcs of the lit gate.
+  float front = exp(-pow((orderE - uSweep) * 40.0, 2.0)) * step(uSweep, 0.999) * step(0.001, uSweep);
   col += vec3(0.6, 0.8, 1.0) * front * (exp(-abs(d) / (w * 0.45)) * 1.6 + exp(-abs(d) / (w * 1.6)) * 0.25) * fadeGate;
 
   // Warp streaks and shooting stars.

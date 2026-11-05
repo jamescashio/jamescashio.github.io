@@ -17,12 +17,13 @@ html.js[data-motion="on"] [data-reveal].in {
 html.js[data-motion="on"] [data-reveal="now"] {
   transition: none;
 }
+/*
+ * The arrival's words and its call to action slide into place but are never transparent: they read
+ * from the first paint, and early keyboard focus always lands on something visible.
+ */
 html.js[data-motion="on"] .arrival .line,
 html.js[data-motion="on"] .arrival .lede,
-html.js[data-motion="on"] .arrival .kicker {
-  animation: rise 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-}
-/* The call to action slides in but is never transparent, so early keyboard focus always lands on something visible. */
+html.js[data-motion="on"] .arrival .kicker,
 html.js[data-motion="on"] .arrival .arrival-actions {
   animation: rise-move 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
@@ -40,12 +41,6 @@ html.js[data-motion="on"] .arrival .arrival-actions {
 }
 @keyframes rise-move {
   from {
-    transform: translateY(24px);
-  }
-}
-@keyframes rise {
-  from {
-    opacity: 0;
     transform: translateY(24px);
   }
 }
@@ -332,18 +327,19 @@ html[data-motion="off"] *::after {
   }
 }
 
-/* Touch screens read labels at 14 px or more; very wide screens scale them with the body text. */
-@media (pointer: coarse) {
-  .kicker,
-  .label,
-  .world-tag,
-  .num,
-  legend,
-  .brief-preview dt,
-  .swipe-hint,
-  .next-station a {
-    font-size: 14px;
-  }
+/* Labels read at 14 px or more on every screen; very wide screens scale them with the body text. */
+.kicker,
+.label,
+.world-tag,
+.num,
+legend,
+.brief-preview dt,
+.swipe-hint,
+.next-station a,
+.code span,
+.steps li::before,
+.gate-readout {
+  font-size: 14px;
 }
 @media (min-width: 2400px) {
   .kicker,
@@ -367,10 +363,16 @@ html[data-motion="off"] *::after {
     width: 38px;
     height: 38px;
   }
-  html.js[data-scrolling="down"] .bit {
+  /* It fades rather than leaving the page, so a keyboard still reaches it, and it shows the moment it has focus. */
+  html.js[data-scrolling="down"] .bit:not(:focus-visible) {
     opacity: 0;
-    visibility: hidden;
+    pointer-events: none;
     transform: translateY(16px);
+  }
+  /* The last line of each station keeps Bit's corner free. */
+  .next-station,
+  .after-note {
+    padding-right: calc(var(--bit-w, 58px) + 12px);
   }
 }
 

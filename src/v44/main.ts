@@ -2,6 +2,7 @@ import "./v44.css";
 import { applyLegacyRoute } from "./legacy.ts";
 import { motionEnabled, onMotionChange, setMotion } from "./motion.ts";
 import { Sky, type SkyState } from "./sky.ts";
+import { POSTERS, posterFor, projectPoster } from "./layout.ts";
 import { mountStations } from "./stations.ts";
 import { mountPlates } from "./plates.ts";
 import { mountEggs } from "./eggs.ts";
@@ -23,15 +24,22 @@ const params = new URLSearchParams(location.search);
 const sky = $(".sky")!;
 const hud = $("[data-hud]")!;
 const arrival = $("#arrival")!;
-const frame = $(".frame")!;
+const posterImage = $<HTMLImageElement>(".sky-poster")!;
 let heroSpan = innerHeight;
 let docSpan = 1;
-let column = { left: 0, right: innerWidth };
+let layout = projectPoster(POSTERS[0], innerWidth, innerHeight);
 const measure = () => {
   heroSpan = Math.max(1, arrival.offsetHeight * 0.85);
   docSpan = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-  const r = frame.getBoundingClientRect();
-  column = { left: r.left, right: r.right };
+  // The live gate takes the layout of the poster on screen, placed as the stylesheet places it, so the two always agree.
+  const position = getComputedStyle(posterImage)
+    .objectPosition.split(" ")
+    .map((v) => (v.endsWith("%") ? parseFloat(v) / 100 : 0.5)) as [number, number];
+  layout = projectPoster(posterFor(posterImage.currentSrc || posterImage.src), innerWidth, innerHeight, position);
+  // The poster zooms toward its own ring as the camera flies through.
+  sky.style.setProperty("--ring-x", `${(innerWidth / 2 + layout.ring[0] * innerHeight).toFixed(1)}px`);
+  sky.style.setProperty("--ring-y", `${(innerHeight / 2 - layout.ring[1] * innerHeight).toFixed(1)}px`);
+  sky.style.setProperty("--ring-r", `${(layout.ring[2] * innerHeight).toFixed(1)}px`);
 };
 
 let transit = 0;
@@ -47,7 +55,7 @@ const state = (): SkyState => {
     transit,
     dim: Math.min(1, transit) * 0.42,
     warpBoost: now < surgeUntil ? 1 : now - lastT < 160 ? warpBoost : 0,
-    column,
+    layout,
     station,
   };
 };
@@ -108,6 +116,15 @@ const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (e
 const startSky = () => {
   const canvas = $<HTMLCanvasElement>(".sky-canvas")!;
   const force = params.get("gl") === "force";
+  let seen = false;
+  try {
+    seen = sessionStorage.getItem("cashio-v44-gate") === "1";
+    sessionStorage.setItem("cashio-v44-gate", "1");
+  } catch {
+    /* storage can be unavailable; the gate simply opens again */
+  }
+  // Once per visit, with motion on, the gate makes its entrance: a light front on the live gate, a flare on the poster.
+  const entrance = motionEnabled() && !seen;
   const engine = new Sky(
     canvas,
     state,
@@ -116,21 +133,17 @@ const startSky = () => {
     force,
   );
   if (!engine.live) {
+    if (entrance) {
+      sky.setAttribute("data-flare", "");
+      setTimeout(() => sky.removeAttribute("data-flare"), 2400);
+    }
     root.dataset.gate = "open";
     return;
   }
   skyEngine = engine;
-  let seen = false;
-  try {
-    seen = sessionStorage.getItem("cashio-v44-gate") === "1";
-    sessionStorage.setItem("cashio-v44-gate", "1");
-  } catch {
-    /* storage can be unavailable; the gate simply ignites again */
-  }
-  // The readout says Open by default, which is true of the poster; only a live ignition reads Aligning first.
-  const ignite = motionEnabled() && !seen;
-  if (ignite) gateStatus("Aligning");
-  engine.light(ignite);
+  // The readout says Open by default, which is true of the poster; only the live entrance reads Aligning first.
+  if (entrance) gateStatus("Aligning");
+  engine.light(entrance);
   engine.hold("film", filmPlaying);
   engine.begin();
   requestAnimationFrame(() => sky.setAttribute("data-live", ""));
@@ -173,7 +186,7 @@ const eveWatch = new IntersectionObserver(
   (entries) => {
     if (!entries.some((e) => e.isIntersecting)) return;
     eveWatch.disconnect();
-    void eve.run("status", false);
+    void eve.run("opening", false);
   },
   { threshold: 0.5 },
 );
@@ -191,10 +204,19 @@ mountCinema($("[data-screen]")!, (playing) => {
 // Only if the address still names that station; a newer hash wins.
 if (arrivedAlias) requestAnimationFrame(() => location.hash === `#${arrivedAlias}` && stations.go(arrivedAlias, false));
 
-addEventListener("resize", () => {
-  measure();
-  onScroll();
-});
+// The page grows when a transcript or a record list opens and when fonts arrive, not only on resize.
+let measuring = 0;
+const remeasure = () => {
+  cancelAnimationFrame(measuring);
+  measuring = requestAnimationFrame(() => {
+    measure();
+    onScroll();
+  });
+};
+addEventListener("resize", remeasure);
+// A rotation or resize can swap the poster file for another composition; the gate follows once it loads.
+posterImage.addEventListener("load", remeasure);
+new ResizeObserver(remeasure).observe($("main")!);
 addEventListener("scroll", onScroll, { passive: true });
 requestAnimationFrame(() => {
   measure();
