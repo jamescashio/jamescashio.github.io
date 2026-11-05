@@ -7,6 +7,7 @@ import AxeBuilder from "@axe-core/playwright";
 
 const url = process.env.V40_URL;
 const brand = "/brand/platinum/";
+const iconVersion = "?v=c-red-top-20261105";
 let browser;
 before(async () => {
   assert.ok(url, "Set V40_URL to the built platinum preview.");
@@ -57,10 +58,19 @@ async function visit(t, path, width, height) {
 }
 
 async function assertMetadata(page) {
-  await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute("href", `${brand}favicon.svg`);
-  await expect(page.locator('link[rel="icon"][sizes="32x32"]')).toHaveAttribute("href", `${brand}favicon-32.png`);
-  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", `${brand}apple-touch-icon.png`);
-  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", `${brand}site.webmanifest`);
+  await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute(
+    "href",
+    `${brand}favicon.svg${iconVersion}`,
+  );
+  await expect(page.locator('link[rel="icon"][sizes="32x32"]')).toHaveAttribute(
+    "href",
+    `${brand}favicon-32.png${iconVersion}`,
+  );
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+    "href",
+    `${brand}apple-touch-icon.png${iconVersion}`,
+  );
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", `${brand}site.webmanifest${iconVersion}`);
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", /#0d1017/i);
 }
 
@@ -84,7 +94,16 @@ test("current brand assets decode at their advertised sizes while the archived e
   await assertMetadata(page);
   const kit = await context.request.get(new URL(`${brand}brand-manifest.json`, url).href);
   assert.equal(kit.status(), 200);
-  assert.deepEqual((await kit.json()).logoAccentOrder, { A: "red", I: "blue" });
+  const inventory = await kit.json();
+  assert.deepEqual(inventory.logoAccentOrder, { A: "red", I: "blue" });
+  assert.deepEqual(inventory.faviconAccentOrder, { top: "#FF3D55", bottom: "#3578FF" });
+  for (const file of ["favicon.svg", "icon.svg"]) {
+    const vector = await context.request.get(new URL(`${brand}${file}${iconVersion}`, url).href);
+    assert.equal(vector.status(), 200);
+    const source = await vector.text();
+    assert.match(source, /d="M41 11H54L47 22H34Z" fill="#FF3D55"/);
+    assert.match(source, /d="M34 42H47L54 53H41Z" fill="#3578FF"/);
+  }
   const provenance = await context.request.get(new URL(`${brand}provenance.json`, url).href);
   assert.equal(provenance.status(), 200);
   assert.equal(
@@ -118,19 +137,23 @@ test("current brand assets decode at their advertised sizes while the archived e
       ),
     );
   }
-  const response = await context.request.get(new URL(`${brand}site.webmanifest`, url).href);
+  const response = await context.request.get(new URL(`${brand}site.webmanifest${iconVersion}`, url).href);
   assert.equal(response.status(), 200);
   const manifest = await response.json();
+  assert.ok(
+    manifest.icons.every(({ src }) => src.endsWith(iconVersion)),
+    "phone icons use the corrected cache version",
+  );
   assert.equal(manifest.start_url, "/");
   assert.equal(manifest.short_name, "cAshIo");
   assert.equal(manifest.theme_color.toLowerCase(), "#0d1017");
   assert.deepEqual(manifest.icons.map(({ sizes }) => sizes).sort(), ["192x192", "512x512"]);
   const assets = [
     { path: `${brand}wordmark.svg`, width: 348, height: 80 },
-    { path: `${brand}icon.svg`, width: 64, height: 64 },
-    { path: `${brand}favicon.svg`, width: 64, height: 64 },
-    { path: `${brand}favicon-32.png`, width: 32, height: 32 },
-    { path: `${brand}apple-touch-icon.png`, width: 180, height: 180 },
+    { path: `${brand}icon.svg${iconVersion}`, width: 64, height: 64 },
+    { path: `${brand}favicon.svg${iconVersion}`, width: 64, height: 64 },
+    { path: `${brand}favicon-32.png${iconVersion}`, width: 32, height: 32 },
+    { path: `${brand}apple-touch-icon.png${iconVersion}`, width: 180, height: 180 },
     ...manifest.icons.map(({ src, sizes }) => {
       const [width, height] = sizes.split("x").map(Number);
       return { path: src, width, height };
@@ -152,7 +175,7 @@ test("current brand assets decode at their advertised sizes while the archived e
   for (const [index, image] of decoded.entries()) {
     const expected = assets[index];
     assert.ok(image.width > 0 && image.height > 0, `${image.path} decodes`);
-    if (image.path.endsWith(".svg")) {
+    if (new URL(image.path, url).pathname.endsWith(".svg")) {
       // A viewBox-only SVG may use the browser's default intrinsic pixel dimensions.
       const vector = await context.request.get(new URL(image.path, url).href);
       assert.equal(vector.status(), 200);
@@ -161,7 +184,7 @@ test("current brand assets decode at their advertised sizes while the archived e
   }
 
   const archived = await readFile(new URL("../v39/index.html", import.meta.url), "utf8");
-  assert.match(archived, /rel="icon" href="\/cashio\/icon\.svg"/);
+  assert.match(archived, /rel="icon" href="\/cashio\/icon\.svg\?v=c-red-top-20261105"/);
   const archivedIcon = await readFile(new URL("../public/cashio/icon-gold-archive.svg", import.meta.url));
   assert.equal(
     createHash("sha256").update(archivedIcon).digest("hex"),
@@ -194,7 +217,9 @@ for (const path of ["/", "/cashio.html"]) {
       await assertMetadata(page);
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       for (const file of ["wordmark.svg", "icon.svg"]) {
-        const image = page.locator(`header img[src="${brand}${file}"]`).first();
+        const image = page
+          .locator(`header img[src="${brand}${file}${file === "icon.svg" ? iconVersion : ""}"]`)
+          .first();
         if (file === "icon.svg" && path === "/" && width === 320) await expect(image).toBeHidden();
         else await expect(image).toBeVisible();
         await expect.poll(() => image.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
