@@ -150,7 +150,7 @@ class V34ReleaseContractTests(unittest.TestCase):
         candidates = [
             {**snapshot, "lanes": {"public": 10, "privateCatalog": None}},
             {**snapshot, "lanes": {"public": 0, "privateCatalog": None}},
-            {**snapshot, "containers": {**snapshot["containers"], "running": 20}},
+            {**snapshot, "containers": {**snapshot["containers"], "running": snapshot["containers"]["running"] + 1}},
             {**snapshot, "virtualMachines": {"running": True, "documented": 1, "stopped": 0}},
             {**snapshot, "expires": "2026-10-07"},
             {**snapshot, "provenance": {**snapshot["provenance"], "observedAtUtc": "2026-09-08T00:00:00Z"}},

@@ -2,6 +2,8 @@
 
 ## V43.0.0 · Centauri · 11-05-2026
 
+Observation refresh · November 5, 2026: new read only checks report 20 running containers out of 21, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 181 snapshots and reported successful integrity verification for 23 of 23 latest reported guest snapshots. Preserve the November 4, 2026 observation unchanged and update the current record, evidence pointer, supporting documentation and displayed date. The homepage sitemap and current release update date already identify November 5, 2026. No application health, new backup creation, restore or offsite recovery result is claimed. The V43 presentation, release dates and historical records remain unchanged.
+
 C icon correction · 11-05-2026: the simplified platinum C now has a red upper terminal and blue lower terminal across browser favicons, headers and phone icons. Versioned icon and manifest URLs avoid stale browser caches; the root ICO fallback contains the same approved artwork. The wordmark remains red A and blue I. The signature, historical artwork, page content and interactive behavior are unchanged.
 
 Prepared 11-04-2026. Branding corrected 11-05-2026. The publication date records this revision; the observation and historical release dates remain unchanged.
