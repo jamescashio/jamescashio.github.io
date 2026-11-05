@@ -101,7 +101,7 @@ test("V40 ships its real reading edition under the strict production security po
   assert.equal(root.querySelectorAll('[role="tab"]').length, 7);
   assert.equal(
     document.querySelector('meta[property="og:image"]').content,
-    "https://cashio.us/v41/first-light-share-card.jpg",
+    "https://cashio.us/brand/platinum/social-preview.jpg",
   );
   assert.equal(document.querySelector('meta[property="og:image:width"]').content, "1200");
   assert.equal(document.querySelector('meta[property="og:image:height"]').content, "630");
