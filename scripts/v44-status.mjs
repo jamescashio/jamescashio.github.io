@@ -27,12 +27,34 @@ const escapeHtml = (value) =>
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-/** An ISO calendar date in the house style: "Wed Nov 4, 2026". */
+/** An ISO calendar date in the house style: "Wed Nov 4, 2026". Anything but a real YYYY-MM-DD date throws. */
 export function longDate(iso) {
-  const [y, m, d] = iso.split("-").map(Number);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
+  if (!match) throw new Error(`not an ISO calendar date: ${iso}`);
+  const [y, m, d] = match.slice(1).map(Number);
   const day = new Date(Date.UTC(y, m - 1, d));
-  if (Number.isNaN(day.getTime()) || day.getUTCDate() !== d) throw new Error(`not a calendar date: ${iso}`);
+  if (day.getUTCFullYear() !== y || day.getUTCMonth() !== m - 1 || day.getUTCDate() !== d)
+    throw new Error(`not a calendar date: ${iso}`);
   return `${DAYS[day.getUTCDay()]} ${MONTHS[m - 1]} ${d}, ${y}`;
+}
+
+/** The withheld items the page prints, in order, with their labels. E.V.E. counts this same list. */
+export function withheldList(status) {
+  return Object.entries(status.withheldReasons || {})
+    .filter(([key]) => LABELS[key] !== null)
+    .map(([key, reason]) => ({ label: LABELS[key] || key, reason }));
+}
+
+/** The trailer's spoken words, read from its caption file so the transcript and the captions cannot drift. */
+export function transcript(vtt) {
+  const lines = String(vtt)
+    .replace(/\r/g, "")
+    .split(/\n\n+/)
+    .map((block) => block.split("\n").filter((line) => line && !/^WEBVTT/.test(line) && !/-->/.test(line)))
+    .filter((cue) => cue.length)
+    .map((cue) => cue.join(" "));
+  if (!lines.length) throw new Error("the trailer captions have no lines");
+  return lines;
 }
 
 export function statusTokens(root) {
@@ -62,16 +84,14 @@ export function statusTokens(root) {
       latestChecked: status.backup.latestChecked,
       latestVerified: status.backup.latestVerified,
     },
-    withheldReasons: status.withheldReasons || {},
+    withheld: withheldList(status),
   };
   tokens.set("{{status.record}}", escapeHtml(JSON.stringify(record)));
-  const withheld = Object.entries(status.withheldReasons || {})
-    .filter(([key]) => LABELS[key] !== null)
-    .map(
-      ([key, reason]) =>
-        `                  <li><strong>${escapeHtml(LABELS[key] || key)}</strong> ${escapeHtml(reason)}</li>`,
-    );
+  const withheld = record.withheld.map(
+    ({ label, reason }) => `                  <li><strong>${escapeHtml(label)}</strong> ${escapeHtml(reason)}</li>`,
+  );
   tokens.set("{{status.withheld}}", withheld.join("\n"));
+  tokens.set("{{status.withheldCount}}", String(withheld.length));
   const records = readdirSync(path.join(root, "public/evidence"))
     .map((name) => name.match(/^status-(\d{4}-\d{2}-\d{2})\.json$/))
     .filter(Boolean)
@@ -80,13 +100,15 @@ export function statusTokens(root) {
     .reverse()
     .map((iso) => `                  <li><a href="/evidence/status-${iso}.json">${escapeHtml(longDate(iso))}</a></li>`);
   tokens.set("{{status.history}}", records.join("\n"));
+  const words = transcript(readFileSync(path.join(root, "public/assets/hero/cashio-trailer-text.vtt"), "utf8"));
+  tokens.set("{{film.trailerWords}}", words.map((line) => `                  <li>${escapeHtml(line)}</li>`).join("\n"));
   return tokens;
 }
 
 export function fillStatus(html, root) {
   let out = html;
   for (const [token, value] of statusTokens(root)) out = out.split(token).join(value);
-  const left = out.match(/\{\{status\.[^}]+\}\}/);
+  const left = out.match(/\{\{(?:status|film)\.[^}]+\}\}/);
   if (left) throw new Error(`Unfilled evidence placeholder ${left[0]}`);
   return out;
 }
@@ -97,7 +119,7 @@ export function v44Status(root) {
     transformIndexHtml: {
       order: "pre",
       handler(html, ctx) {
-        if (!html.includes("{{status.")) return html;
+        if (!html.includes("{{status.") && !html.includes("{{film.")) return html;
         if (ctx.filename && path.resolve(ctx.filename) !== path.join(root, "index.html")) return html;
         return fillStatus(html, root);
       },

@@ -1,7 +1,7 @@
 import { bitJokes } from "../v40/ship-humor.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
 
-/** Bit, the copilot: an icosahedron in platinum with a blue core, and a line for every station. */
+/** Bit, the copilot: an icosahedron in platinum with a blue core, a line for every station, and a memory for what you just did. */
 const LINES: Record<string, string> = {
   arrival: "Welcome aboard. The gate is open and the coffee is mostly harmless.",
   cinema: "The trailer runs sixty one seconds. The cat’s review is still pending.",
@@ -9,7 +9,7 @@ const LINES: Record<string, string> = {
   workshop: "Everything here can be taken apart. Please put it back the way you found it.",
   helm: "Flip the private toggle and watch me refuse to phone the cloud.",
   evidence: "Numbers come with dates. Dates come with limits. Limits come with me.",
-  doug: "He reads every message. Probably fewer than forty two a day.",
+  doug: "The address is real. So is the human behind it.",
 };
 
 const PHI = (1 + Math.sqrt(5)) / 2;
@@ -99,6 +99,13 @@ function drawFace(ctx: CanvasRenderingContext2D, size: number, t: number, glow: 
   }
 }
 
+const ROUTE_LINES: Record<string, string> = {
+  HOLD: "You held it for a person. Correct. I would have done the same and then taken the credit.",
+  EVIDENCE: "Research lane. Sources first, opinions second. E.V.E. approves.",
+  Workhorse: "Workhorse lane. Unglamorous, reliable, my favorite kind of hero.",
+  Synthesis: "Synthesis. Connected reasoning with the assumptions kept. Very grown up of you.",
+};
+
 export function mountBit(
   button: HTMLButtonElement,
   dialog: HTMLDialogElement,
@@ -108,44 +115,83 @@ export function mountBit(
   const canvas = button.querySelector("canvas")!;
   const ctx = canvas.getContext("2d");
   const line = dialog.querySelector<HTMLElement>("[data-bit-line]")!;
+  const goButtons = [...dialog.querySelectorAll<HTMLButtonElement>("[data-bit-go]")];
   let joke = 0;
   let raf = 0;
   let glow = 0;
+  let spinUntil = 0;
+  let hovered = false;
+  // The last thing the visitor did, said once the next time Bit is opened.
+  let remark = "";
+
+  // Bit turns while someone is looking at it: hover, focus, an open dialog, or a short spin on arrival.
+  const active = () => motionEnabled() && !document.hidden && (hovered || dialog.open || performance.now() < spinUntil);
   const loop = (now: number) => {
     if (!ctx) return;
     glow *= 0.96;
     drawFace(ctx, canvas.width, now / 1000, glow);
-    if (motionEnabled() && !document.hidden) raf = requestAnimationFrame(loop);
+    raf = active() ? requestAnimationFrame(loop) : 0;
   };
-  const start = () => {
-    cancelAnimationFrame(raf);
-    if (motionEnabled()) raf = requestAnimationFrame(loop);
-    else if (ctx) drawFace(ctx, canvas.width, 1.2, 0);
+  const wake = (ms = 0) => {
+    spinUntil = Math.max(spinUntil, performance.now() + ms);
+    if (!raf && active()) raf = requestAnimationFrame(loop);
   };
-  start();
-  onMotionChange(start);
-  document.addEventListener("visibilitychange", start);
-  button.addEventListener("click", () => {
-    line.textContent = LINES[current()] || LINES.arrival;
-    glow = 1;
-    dialog.show();
-    dialog.querySelector<HTMLButtonElement>("[data-bit-close]")?.focus();
+  if (ctx) drawFace(ctx, canvas.width, 1.2, 0);
+  // The arrival spin waits until the page has loaded, so it never competes with the first paint.
+  const intro = () => setTimeout(() => wake(2400), 600);
+  if (document.readyState === "complete") intro();
+  else addEventListener("load", intro, { once: true });
+  onMotionChange(() => wake());
+  document.addEventListener("visibilitychange", () => wake());
+  button.addEventListener("pointerenter", () => ((hovered = true), wake()));
+  button.addEventListener("pointerleave", () => (hovered = false));
+  button.addEventListener("focus", () => ((hovered = true), wake()));
+  button.addEventListener("blur", () => (hovered = false));
+
+  document.addEventListener("v44:route", (e) => {
+    const r = (e as CustomEvent<{ code: string; lane: string }>).detail;
+    remark = ROUTE_LINES[r.code === "QUALIFIED" ? r.lane : r.code] || remark;
+    wake(900);
   });
-  dialog.querySelector("[data-bit-close]")?.addEventListener("click", () => {
+  document.addEventListener("v44:film", (e) => {
+    const f = (e as CustomEvent<{ id: string; title: string }>).detail;
+    remark =
+      f.id === "trailer"
+        ? "You watched the trailer. The cat has notes. The cat always has notes."
+        : `${f.title}. Five quiet seconds, beautifully lit. I counted.`;
+    wake(900);
+  });
+  document.addEventListener("v44:eve", (e) => {
+    const { cmd } = (e as CustomEvent<{ cmd: string }>).detail;
+    if (cmd === "clear") return;
+    remark = `You asked E.V.E. about ${cmd}. She keeps the receipts. I keep the jokes.`;
+    wake(900);
+  });
+
+  const close = () => {
     dialog.close();
     button.focus();
+  };
+  button.addEventListener("click", () => {
+    line.textContent = remark || LINES[current()] || LINES.arrival;
+    remark = "";
+    // Offer only the stations the visitor is not already at.
+    goButtons.forEach((b) => (b.hidden = b.dataset.bitGo === current()));
+    glow = 1;
+    dialog.show();
+    wake();
+    dialog.querySelector<HTMLButtonElement>("[data-bit-close]")?.focus();
   });
+  dialog.querySelector("[data-bit-close]")?.addEventListener("click", close);
   dialog.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      dialog.close();
-      button.focus();
-    }
+    if (e.key === "Escape") close();
   });
   dialog.querySelector("[data-bit-joke]")?.addEventListener("click", () => {
     line.textContent = bitJokes[joke++ % bitJokes.length];
     glow = 1;
+    wake(600);
   });
-  dialog.querySelectorAll<HTMLButtonElement>("[data-bit-go]").forEach((b) =>
+  goButtons.forEach((b) =>
     b.addEventListener("click", () => {
       dialog.close();
       go(b.dataset.bitGo || "arrival");

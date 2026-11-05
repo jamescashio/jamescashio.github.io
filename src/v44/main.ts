@@ -18,6 +18,7 @@ const params = new URLSearchParams(location.search);
 
 /* Layout values are read once per resize, never inside a frame. */
 const sky = $(".sky")!;
+const hud = $("[data-hud]")!;
 const arrival = $("#arrival")!;
 const frame = $(".frame")!;
 let heroSpan = innerHeight;
@@ -35,14 +36,28 @@ let lastY = scrollY;
 let lastT = performance.now();
 let warpBoost = 0;
 let surgeUntil = 0;
-const state = (): SkyState => ({
-  transit,
-  dim: Math.min(1, transit) * 0.42,
-  warpBoost: performance.now() < surgeUntil ? 1 : warpBoost,
-  column,
-});
+// Scroll speed feeds the warp only while the visitor is scrolling; it fades once the page stops.
+const state = (): SkyState => {
+  const now = performance.now();
+  return {
+    transit,
+    dim: Math.min(1, transit) * 0.42,
+    warpBoost: now < surgeUntil ? 1 : now - lastT < 160 ? warpBoost : 0,
+    column,
+  };
+};
+const surge = (ms: number) => {
+  if (!motionEnabled()) return;
+  surgeUntil = performance.now() + ms;
+  skyEngine?.wake();
+};
 
-/* Stations: one owner for the current station, the nav and the transit line. */
+/* The station sheet for narrow screens is built from the one station list in the header. */
+const menu = $<HTMLButtonElement>("[data-menu-toggle]")!;
+const sheet = $("#station-sheet")!;
+sheet.replaceChildren($(".stations ol")!.cloneNode(true));
+
+/* Stations: one owner for the current station, the nav, the sheet and the transit line. */
 const fill = $("[data-transit-fill]")!;
 const links = $$<HTMLAnchorElement>("[data-station-link]");
 let current = "arrival";
@@ -72,17 +87,30 @@ const onScroll = () => {
     warpBoost = Math.min(0.9, Math.max(0, (v - 2.2) / 5));
     transit = Math.min(1, Math.max(0, y / heroSpan));
     fill.style.setProperty("--progress", String(Math.min(1, y / docSpan)));
-    sky.dataset.stage = transit >= 1 ? "deep" : "gate";
+    // The painted poster flies toward the ring too, so every visitor gets the approach.
+    sky.style.setProperty("--transit", motionEnabled() ? transit.toFixed(3) : "0");
+    const stage = transit >= 1 ? "deep" : "gate";
+    sky.dataset.stage = stage;
+    root.dataset.stage = stage;
+    hud.toggleAttribute("data-scrolled", y > 8);
+    skyEngine?.wake();
     skyEngine?.redraw();
   });
 };
 
 /* The live gate needs a real GPU. Software renderers keep the painted poster. */
 let skyEngine: Sky | null = null;
+let filmPlaying = false;
 const startSky = () => {
   const canvas = $<HTMLCanvasElement>(".sky-canvas")!;
   const force = params.get("gl") === "force";
-  const engine = new Sky(canvas, state, () => (root.dataset.gate = "open"), force);
+  const engine = new Sky(
+    canvas,
+    state,
+    () => (root.dataset.gate = "open"),
+    (live) => sky.toggleAttribute("data-live", live),
+    force,
+  );
   if (!engine.live) {
     root.dataset.gate = "open";
     gateStatus("Open");
@@ -97,8 +125,8 @@ const startSky = () => {
     /* storage can be unavailable; the gate simply ignites again */
   }
   engine.light(motionEnabled() && !seen);
-  engine.redraw();
-  engine.start();
+  engine.hold("film", filmPlaying);
+  engine.begin();
   requestAnimationFrame(() => sky.setAttribute("data-live", ""));
 };
 const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (el.textContent = text));
@@ -148,45 +176,57 @@ if (matchMedia("(pointer: fine)").matches) {
   );
 }
 
-/* Motion control. */
+/* Motion control. The button names the action it will take. */
 const motionButton = $<HTMLButtonElement>("[data-motion-toggle]")!;
 const syncMotion = () => {
   const on = motionEnabled();
   motionButton.setAttribute("aria-label", on ? "Pause motion" : "Resume motion");
   motionButton.querySelector("[data-motion-long]")!.textContent = on ? "Pause motion" : "Resume motion";
   motionButton.querySelector("[data-motion-short]")!.textContent = on ? "Pause" : "Resume";
-  motionButton.setAttribute("aria-pressed", String(!on));
+  motionButton.toggleAttribute("data-paused", !on);
+  if (!on) sky.style.setProperty("--transit", "0");
+  else onScroll();
 };
 motionButton.addEventListener("click", () => setMotion(!motionEnabled()));
 onMotionChange(syncMotion);
 syncMotion();
 
-/* Station sheet for narrow screens. */
-const menu = $<HTMLButtonElement>("[data-menu-toggle]")!;
-const sheet = $("#station-sheet")!;
-const closeSheet = () => {
+const sheetOpen = () => !sheet.hidden;
+const closeSheet = (returnFocus = false) => {
   sheet.hidden = true;
   menu.setAttribute("aria-expanded", "false");
+  if (returnFocus) menu.focus();
 };
 menu.addEventListener("click", () => {
-  const open = sheet.hidden;
+  const open = !sheetOpen();
   sheet.hidden = !open;
   menu.setAttribute("aria-expanded", String(open));
-  if (open) sheet.querySelector("a")?.focus();
+  if (open)
+    (sheet.querySelector<HTMLElement>('a[aria-current="true"]') || sheet.querySelector<HTMLElement>("a"))?.focus();
 });
-sheet.addEventListener("click", (e) => (e.target as Element).closest("a") && closeSheet());
-document.addEventListener("keydown", (e) => e.key === "Escape" && !sheet.hidden && (closeSheet(), menu.focus()));
+document.addEventListener("keydown", (e) => e.key === "Escape" && sheetOpen() && closeSheet(true));
+document.addEventListener("pointerdown", (e) => {
+  const t = e.target as Node;
+  if (sheetOpen() && !sheet.contains(t) && !menu.contains(t)) closeSheet();
+});
 
-/* Navigation with a warp surge through the gate. */
+/* Navigation with a warp surge through the gate. Focus moves to the station's heading, and Back returns. */
+const headingOf = (target: HTMLElement) =>
+  (target.matches("h1, h2, h3") ? target : target.querySelector<HTMLElement>("h1, h2")) || target;
 const go = (id: string) => {
   const target = document.getElementById(id);
   if (!target) return;
-  if (motionEnabled()) surgeUntil = performance.now() + 1400;
+  closeSheet();
+  surge(1400);
   target.scrollIntoView({ behavior: motionEnabled() ? "smooth" : "auto" });
-  history.replaceState(null, "", `#${id}`);
+  const heading = headingOf(target);
+  if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+  heading.focus({ preventScroll: true });
+  if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
 };
-$$<HTMLAnchorElement>("[data-transit-go]").forEach((a) =>
+$$<HTMLAnchorElement>("[data-transit-go], [data-station-link], [data-station-next], .brand").forEach((a) =>
   a.addEventListener("click", (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
     e.preventDefault();
     go(a.hash.slice(1));
   }),
@@ -217,7 +257,7 @@ document.addEventListener("keydown", (e) => {
   if (t.closest("input, textarea, select, [contenteditable]") || e.key.length !== 1) return;
   typed = (typed + e.key.toLowerCase()).slice(-12);
   if (typed.endsWith("zoom")) {
-    if (motionEnabled()) surgeUntil = performance.now() + 1600;
+    surge(1600);
     toast("Engaging. Hold on to something that is not a houseplant.");
   } else if (typed.endsWith("drummer")) {
     toast("Captain on deck.");
@@ -225,23 +265,22 @@ document.addEventListener("keydown", (e) => {
 });
 
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
-const eve = mountEve($("[data-eve]")!, {
-  warp: () => motionEnabled() && (surgeUntil = performance.now() + 1600),
-  go,
-  typing: motionEnabled,
-});
+const eve = mountEve($("[data-eve]")!, { warp: () => surge(1600), go, typing: motionEnabled });
 // E.V.E. reads the record aloud, once, the first time the evidence station arrives.
 const eveWatch = new IntersectionObserver(
   (entries) => {
     if (!entries.some((e) => e.isIntersecting)) return;
     eveWatch.disconnect();
-    void eve.run("status");
+    void eve.run("status", false);
   },
   { threshold: 0.5 },
 );
 eveWatch.observe($("[data-eve]")!);
 mountBit($<HTMLButtonElement>("[data-bit-open]")!, $<HTMLDialogElement>("[data-bit-dialog]")!, go, () => current);
-mountCinema($("[data-screen]")!, (playing) => (playing ? skyEngine?.stop() : skyEngine?.start()));
+mountCinema($("[data-screen]")!, (playing) => {
+  filmPlaying = playing;
+  skyEngine?.hold("film", playing);
+});
 
 addEventListener("resize", () => {
   measure();

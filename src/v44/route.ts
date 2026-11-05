@@ -62,6 +62,8 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   const code = result.querySelector<HTMLElement>("[data-helm-code]")!;
   const detail = result.querySelector<HTMLElement>("[data-helm-detail]")!;
   const steps = result.querySelector<HTMLOListElement>("[data-helm-steps]")!;
+  // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
+  const map = result.querySelector<SVGSVGElement>("[data-route-map]");
   const read = (): RouteInput => {
     const data = new FormData(form);
     return {
@@ -76,6 +78,15 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     code.textContent = CODE_LABEL[r.code];
     detail.textContent = r.detail;
     result.dataset.code = r.code;
+    if (map) {
+      map.dataset.route = r.code === "HOLD" ? "hold" : r.code === "EVIDENCE" ? "research" : r.lane.toLowerCase();
+      if (animate) {
+        // A fresh packet starts its ride from the beginning; the old one would keep its finished state.
+        map.classList.add("ride");
+        const packet = map.querySelector(".route-packet");
+        packet?.replaceWith(packet.cloneNode(true));
+      }
+    }
     steps.replaceChildren(
       ...r.steps.map((s) => {
         const li = document.createElement("li");

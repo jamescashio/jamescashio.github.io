@@ -301,7 +301,12 @@ async function run() {
       const waitFor = async (expression, description, timeout = 15_000) => {
         const end = Date.now() + timeout;
         while (Date.now() < end) {
-          if (await (typeof expression === "function" ? expression() : evaluate(expression))) return;
+          try {
+            if (await (typeof expression === "function" ? expression() : evaluate(expression))) return;
+          } catch (error) {
+            // A redirect can replace the document mid evaluation; keep waiting for the next one.
+            if (!/navigated or closed|context|destroyed/i.test(String(error?.message))) throw error;
+          }
           await delay(80);
         }
         throw new Error(`timed out waiting for ${description}`);

@@ -199,8 +199,10 @@ test("V43 Centauri keeps its real reading edition at /v43/ under the strict prod
       await readFile(asset(`public/v40/assets/${file}`)),
       await readFile(asset(`dist/v40/assets/${file}`)),
     );
-  for (const workflow of ["pages.yml", "public-safety.yml"])
+  for (const workflow of ["pages.yml", "public-safety.yml"]) {
     assert.match(await read(`.github/workflows/${workflow}`), /npm run test:v40/);
+    assert.match(await read(`.github/workflows/${workflow}`), /npm run test:v44/);
+  }
   assert.match(await read(".github/workflows/public-safety.yml"), /steps\.v40_runtime\.outcome != 'success'/);
 });
 
@@ -355,6 +357,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     "node scripts/check_layout_runtime.mjs",
     "node scripts/check_v36_runtime.mjs",
     packageJson.scripts["test:v40"],
+    packageJson.scripts["test:v44"],
     packageJson.scripts["test:release"],
     "python scripts/public_repo_guard.py",
     "python scripts/check_release_consistency.py",

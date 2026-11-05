@@ -31,6 +31,10 @@ uniform vec3 uPlanet;
 const float TAU = 6.28318530718;
 const float SEGMENTS = 44.0;
 
+// GLSL ES 1.00 leaves smoothstep undefined when edge0 >= edge1, so falling edges are written as 1 - rising.
+float fall(float from, float to, float x) {
+  return 1.0 - smoothstep(to, from, x);
+}
 float hash21(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
@@ -65,8 +69,8 @@ vec3 stars(vec2 uv, float scale, float seed, float bright) {
   float d = length(f - o * 0.78);
   float b = pow(h, 14.0) * bright;
   float size = mix(0.018, 0.055, hash21(id + seed + 5.0));
-  float core = smoothstep(size, 0.0, d);
-  float halo = smoothstep(size * 4.0, 0.0, d) * 0.18;
+  float core = fall(size, 0.0, d);
+  float halo = fall(size * 4.0, 0.0, d) * 0.18;
   float twinkle = 0.72 + 0.28 * sin(uTime * (0.8 + h * 2.6) + h * 61.0);
   vec3 tint = mix(vec3(0.72, 0.82, 1.0), vec3(1.0, 0.9, 0.82), hash21(id + seed + 9.0));
   return tint * (core + halo) * b * twinkle;
@@ -79,8 +83,8 @@ vec3 warpField(vec2 p) {
   vec2 id = floor(q);
   vec2 f = fract(q);
   float h = hash21(id);
-  float lane = smoothstep(0.08, 0.0, abs(f.x - 0.5));
-  float len = smoothstep(0.0, 0.35, f.y) * smoothstep(1.0, 0.55, f.y);
+  float lane = fall(0.08, 0.0, abs(f.x - 0.5));
+  float len = smoothstep(0.0, 0.35, f.y) * fall(1.0, 0.55, f.y);
   return mix(vec3(0.62, 0.78, 1.0), vec3(1.0, 0.62, 0.7), step(0.97, h)) * lane * len * step(0.82, h) * smoothstep(0.05, 0.6, r);
 }
 
@@ -99,8 +103,8 @@ vec3 shootingStar(vec2 uv, float slot) {
   vec2 rel = uv - head;
   float along = dot(rel, -dir);
   float across = length(rel + dir * along);
-  float tail = smoothstep(0.22, 0.0, along) * step(0.0, along);
-  float line = smoothstep(0.0025, 0.0, across) * tail;
+  float tail = fall(0.22, 0.0, along) * step(0.0, along);
+  float line = fall(0.0025, 0.0, across) * tail;
   float fade = sin(t * 3.14159);
   return vec3(0.75, 0.86, 1.0) * line * fade * 1.4;
 }
@@ -131,7 +135,7 @@ void main() {
   float pr = uPlanet.z * (1.0 + transit * 0.35);
   vec2 pv = uv - pc;
   float pd = length(pv) - pr;
-  float planetMask = smoothstep(0.004, -0.004, pd);
+  float planetMask = fall(0.004, -0.004, pd);
   vec2 pn = pv / pr;
   vec2 toSunP = normalize(uSun - pc);
   float plit = clamp(dot(normalize(pn + 1e-4), toSunP) * 0.9 + 0.12, 0.0, 1.0);
@@ -164,7 +168,7 @@ void main() {
   float th = atan(e.y, e.x);
   float k = length(vec2(cos(th), tilt * sin(th)));
   float d = (r - R) * k;
-  float nearSide = smoothstep(0.25, -0.55, sin(th));
+  float nearSide = fall(0.25, -0.55, sin(th));
   float w = R * mix(0.04, 0.072, nearSide);
   float t = d / w;
   vec2 ringDir = normalize(uv - rc + 1e-4);
@@ -179,7 +183,7 @@ void main() {
   float lit = step(order, uIgnite * 1.02);
 
   // Interior field: almost clear, so the stars behind it stay visible; light gathers toward the rim.
-  float inside = smoothstep(0.0, -w * 1.2, d);
+  float inside = fall(0.0, -w * 1.2, d);
   float rr = r / R;
   float shimmer = inside > 0.0 ? fbm(e * 4.0 + vec2(uTime * 0.04, -uTime * 0.025)) : 0.0;
   float ripple = smoothstep(0.92, 1.0, 0.5 + 0.5 * sin(rr * 26.0 - uTime * 1.1)) * smoothstep(0.35, 0.95, rr);
@@ -191,27 +195,27 @@ void main() {
   float ew = w * 0.16;
   float energy = exp(-abs(er) / ew) * 0.9 + exp(-abs(er) / (ew * 7.0)) * 0.22;
   float orderE = abs(fract(th / TAU + 0.25) - 0.5) * 2.0;
-  float litE = smoothstep(uIgnite * 1.03, uIgnite * 1.03 - 0.04, orderE);
+  float litE = fall(uIgnite * 1.03, uIgnite * 1.03 - 0.04, orderE);
   col += vec3(0.32, 0.56, 1.0) * energy * litE * mix(0.5, 1.0, nearSide) * fadeGate * (0.9 + 0.1 * sin(uTime * 3.0 + th * 6.0));
 
   if (abs(t) < 1.0) {
     float n = sqrt(1.0 - t * t);
-    float groove = smoothstep(0.0, 0.03, segF) * smoothstep(1.0, 0.97, segF);
-    float rib = 1.0 - 0.5 * smoothstep(0.06, 0.0, abs(abs(t) - 0.5));
+    float groove = smoothstep(0.0, 0.03, segF) * fall(1.0, 0.97, segF);
+    float rib = 1.0 - 0.5 * fall(0.06, 0.0, abs(abs(t) - 0.5));
     float panel = 0.85 + 0.15 * hash21(vec2(segIndex, floor((t + 1.0) * 3.0)));
     vec3 normal3 = normalize(vec3(ringDir * t, n * 0.9));
     vec3 light3 = normalize(vec3(sunDir, 0.55));
     float diffuse = max(dot(normal3, light3), 0.0);
     vec3 hull = vec3(0.66, 0.7, 0.78) * (0.04 + 0.96 * pow(diffuse, 1.4)) * panel;
-    hull += vec3(0.18, 0.34, 0.9) * smoothstep(0.1, -0.9, t) * 0.32 * uIgnite;
+    hull += vec3(0.18, 0.34, 0.9) * fall(0.1, -0.9, t) * 0.32 * uIgnite;
     hull *= mix(0.25, 1.0, groove) * rib;
     float spec = pow(max(dot(reflect(-light3, normal3), vec3(0.0, 0.0, 1.0)), 0.0), 22.0) * 1.2;
-    float topLine = smoothstep(0.08, 0.0, abs(t + 0.35)) * pow(facing, 2.0) * 0.35;
+    float topLine = fall(0.08, 0.0, abs(t + 0.35)) * pow(facing, 2.0) * 0.35;
     float rim = pow(1.0 - n, 2.2) * 0.7;
     vec3 gateCol = hull + vec3(1.0, 0.95, 0.88) * (spec + topLine) + vec3(0.22, 0.45, 1.0) * rim * (0.3 + 0.7 * uIgnite);
-    float windows = step(0.86, hash21(vec2(segIndex, floor(segF * 9.0)))) * smoothstep(0.12, 0.0, abs(t - 0.35)) * step(0.15, segF) * step(segF, 0.85);
+    float windows = step(0.86, hash21(vec2(segIndex, floor(segF * 9.0)))) * fall(0.12, 0.0, abs(t - 0.35)) * step(0.15, segF) * step(segF, 0.85);
     gateCol += vec3(0.55, 0.75, 1.0) * windows * 0.8 * uIgnite;
-    float edge = smoothstep(1.0, 0.86, abs(t));
+    float edge = fall(1.0, 0.86, abs(t));
     float farDim = mix(0.5, 1.0, nearSide);
     col = mix(col, gateCol * farDim, edge * fadeGate);
   }
@@ -239,10 +243,10 @@ void main() {
   col += shootingStar(uv, 0.0) + shootingStar(uv, 1.0);
 
   // A whisper of light as the gate surface passes the camera.
-  col += vec3(0.25, 0.45, 1.0) * smoothstep(0.55, 0.85, transit) * smoothstep(1.0, 0.86, transit) * 0.22;
+  col += vec3(0.25, 0.45, 1.0) * smoothstep(0.55, 0.85, transit) * fall(1.0, 0.86, transit) * 0.22;
 
   col *= mix(1.0, 0.5, uDim);
-  float vig = smoothstep(1.25, 0.25, length(uv * vec2(0.9, 1.1)));
+  float vig = fall(1.25, 0.25, length(uv * vec2(0.9, 1.1)));
   col *= mix(0.55, 1.0, vig);
   col = 1.0 - exp(-col * 1.35);
   col = pow(col, vec3(0.92));

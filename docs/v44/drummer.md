@@ -1,6 +1,6 @@
 # V44 Drummer release contract
 
-Prepared 11-05-2026 as a preview. Not published until Doug approves it.
+Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
 
 ## Scope
 
@@ -18,6 +18,8 @@ Prepared 11-05-2026 as a preview. Not published until Doug approves it.
 - Evidence on the page equals `status.json`; the page makes no network request of its own. Dates read like Wed Nov 4, 2026.
 - The preserved V43 edition loads no code from another page's entry; shared modules have their own chunks.
 - No hyphens or em or en dashes in visible copy, except handles such as @james-cashio and aircraft designations.
+
+- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement.
 
 ## Known limits
 

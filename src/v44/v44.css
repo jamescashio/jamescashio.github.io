@@ -43,6 +43,8 @@
   --gutter: clamp(18px, 4vw, 56px);
   --cut: 16px;
   --hud-h: 68px;
+  --frame-max: 1320px;
+  --edge: var(--line);
   color-scheme: dark;
 }
 
@@ -52,6 +54,8 @@
 html {
   background: var(--bg);
   scroll-padding-top: calc(var(--hud-h) + 12px);
+  /* Bit floats at the bottom right; focused controls scroll clear of it. */
+  scroll-padding-bottom: 88px;
   -webkit-text-size-adjust: 100%;
 }
 html[data-motion="on"] {
@@ -88,6 +92,19 @@ a:hover {
 :focus-visible {
   outline: 2px solid var(--blue-text);
   outline-offset: 3px;
+}
+/* Cut corner shapes clip anything drawn outside them, so their focus ring is drawn just inside the edge. */
+.chip:focus-visible,
+.cta:focus-visible,
+.play:focus-visible,
+a.hull:focus-visible {
+  outline: 3px solid var(--blue-text);
+  outline-offset: -6px;
+}
+.cta:focus-visible,
+.chip-solid:focus-visible,
+.play:focus-visible {
+  outline-color: var(--blue);
 }
 h1,
 h2,
@@ -127,8 +144,19 @@ cite {
   transform: none;
 }
 
+/* A one pixel diagonal that strokes a cut corner the way the border strokes the straight edges.
+   Declared where it is used, so each shape's own --edge colors it. */
+.chip,
+.hull {
+  --corner: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.75px),
+    var(--edge) calc(50% - 0.75px) calc(50% + 0.75px),
+    transparent calc(50% + 0.75px)
+  );
+}
 .frame {
-  width: min(100% - 2 * var(--gutter), 1320px);
+  width: min(100% - 2 * var(--gutter), var(--frame-max));
   margin-inline: auto;
 }
 
@@ -149,9 +177,16 @@ cite {
   object-fit: cover;
 }
 .sky-poster {
-  transition:
-    filter 900ms ease,
-    transform 1200ms ease;
+  transition: filter 900ms ease;
+  /* Scroll flies the painted gate toward its ring, so software and low power visitors get the approach too. */
+  transform-origin: 77% 48%;
+  transform: scale(calc(1 + var(--transit, 0) * 0.85));
+  will-change: transform;
+}
+@media (orientation: portrait) {
+  .sky-poster {
+    transform-origin: 54% 27%;
+  }
 }
 .sky-canvas {
   opacity: 0;
@@ -162,7 +197,6 @@ cite {
 }
 .sky[data-stage="deep"]:not([data-live]) .sky-poster {
   filter: brightness(0.45) saturate(1.1);
-  transform: scale(1.12);
 }
 .sky-scrim {
   position: absolute;
@@ -188,6 +222,17 @@ main,
   inset: 0 0 auto;
   z-index: 20;
   background: linear-gradient(180deg, rgba(5, 7, 12, 0.92), rgba(5, 7, 12, 0.6) 70%, rgba(5, 7, 12, 0));
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+/* Once the page scrolls, the header becomes a solid instrument panel so text never runs behind it. */
+.hud[data-scrolled] {
+  background: rgba(5, 7, 12, 0.9);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom-color: var(--line);
 }
 .hud-bar {
   height: var(--hud-h);
@@ -252,8 +297,16 @@ main,
   justify-content: center;
   min-height: 40px;
   padding: 0 14px;
-  border: 1px solid var(--line-strong);
-  background: rgba(13, 16, 23, 0.72);
+  --edge: var(--line-strong);
+  border: 1px solid var(--edge);
+  background-color: rgba(13, 16, 23, 0.72);
+  background-image: var(--corner), var(--corner);
+  background-position:
+    top right,
+    bottom left;
+  background-size: 9px 9px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
   color: var(--platinum);
   font: 500 14.5px/1 var(--body);
   text-decoration: none;
@@ -265,22 +318,24 @@ main,
     color 200ms ease;
 }
 .chip:hover {
-  border-color: var(--blue-text);
+  --edge: var(--blue-text);
   color: var(--pearl);
-  background: rgba(53, 120, 255, 0.16);
+  background-color: rgba(53, 120, 255, 0.16);
 }
-.chip[aria-pressed="true"] {
-  border-color: var(--blue);
-  background: rgba(53, 120, 255, 0.22);
+.chip[aria-pressed="true"],
+.chip[data-paused] {
+  --edge: var(--blue);
+  background-color: rgba(53, 120, 255, 0.22);
 }
 .chip-solid {
-  background: var(--pearl);
+  --edge: var(--pearl);
+  background-color: var(--pearl);
   color: var(--deep);
-  border-color: var(--pearl);
   font-weight: 700;
 }
 .chip-solid:hover {
-  background: #fff;
+  --edge: #fff;
+  background-color: #fff;
   color: var(--deep);
 }
 .transit-line {
@@ -304,6 +359,13 @@ main,
   background: rgba(9, 11, 17, 0.97);
   border: 1px solid var(--line-strong);
   padding: 10px;
+  max-height: calc(100dvh - var(--hud-h) - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.station-sheet a[aria-current="true"] {
+  color: var(--pearl);
+  box-shadow: inset 3px 0 0 var(--blue);
 }
 .station-sheet ol {
   list-style: none;
@@ -376,8 +438,8 @@ main,
   font-weight: 700;
 }
 
-/* Arrival */
-.arrival {
+/* Arrival. Written as .station.arrival so the general station spacing below cannot override it. */
+.station.arrival {
   min-height: 100svh;
   display: flex;
   align-items: flex-end;
@@ -501,8 +563,57 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   .sky-scrim {
     background: linear-gradient(0deg, rgba(5, 7, 12, 0.94) 0%, rgba(5, 7, 12, 0.72) 34%, rgba(5, 7, 12, 0) 58%);
   }
-  .arrival {
-    padding-top: 52svh;
+  .station.arrival {
+    padding-top: 50svh;
+    padding-bottom: clamp(32px, 6vh, 80px);
+  }
+}
+/* Short screens keep the whole arrival, call to action included, inside the first view. */
+@media (orientation: portrait) and (max-height: 700px) {
+  .station.arrival {
+    padding-top: 34svh;
+    padding-bottom: 24px;
+  }
+  .sky-scrim {
+    background: linear-gradient(0deg, rgba(5, 7, 12, 0.95) 0%, rgba(5, 7, 12, 0.82) 52%, rgba(5, 7, 12, 0) 74%);
+  }
+  .headline {
+    margin-top: 14px;
+    font-size: clamp(34px, 10.5vw, 44px);
+  }
+  .lede {
+    margin-top: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .arrival-actions {
+    margin-top: 20px;
+  }
+}
+@media (orientation: portrait) and (max-height: 600px) {
+  .station.arrival {
+    padding-top: 26svh;
+  }
+}
+@media (orientation: landscape) and (max-height: 620px) {
+  .station.arrival {
+    padding-top: calc(var(--hud-h) + 12px);
+    padding-bottom: 20px;
+  }
+  .headline {
+    margin-top: 12px;
+    font-size: clamp(30px, 9.5vh, 60px);
+  }
+  .lede {
+    margin-top: 14px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  .arrival-actions {
+    margin-top: 18px;
+  }
+  .cta {
+    padding: 12px 18px 12px 20px;
   }
 }
 
@@ -533,8 +644,12 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
 
 .hull {
   position: relative;
-  background: linear-gradient(160deg, rgba(22, 26, 37, 0.9), rgba(9, 11, 17, 0.94));
-  border: 1px solid var(--line);
+  --hull-fill: linear-gradient(160deg, rgba(22, 26, 37, 0.9), rgba(9, 11, 17, 0.94));
+  background:
+    var(--corner) top right / var(--cut) var(--cut) no-repeat border-box,
+    var(--corner) bottom left / var(--cut) var(--cut) no-repeat border-box,
+    var(--hull-fill) border-box;
+  border: 1px solid var(--edge);
   clip-path: polygon(
     0 0,
     calc(100% - var(--cut)) 0,
@@ -561,18 +676,8 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
 .hull:hover::before {
   opacity: 1;
 }
-.hull::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: calc(var(--cut) * 1.42);
-  height: 1px;
-  background: var(--blue-text);
-  transform-origin: right top;
-  transform: translate(0, 0) rotate(45deg);
-  opacity: 0.7;
-  pointer-events: none;
+a.hull:hover {
+  --edge: rgba(154, 190, 255, 0.45);
 }
 .world-tag {
   font: 400 12.5px/1.3 var(--mono);
@@ -743,7 +848,10 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   color: var(--pearl);
 }
 .sovereign small {
+  display: block;
+  margin-top: 2px;
   font-size: 14px;
+  line-height: 1.45;
   color: var(--muted);
 }
 
@@ -775,10 +883,10 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
 }
 .world-copy {
   padding: 18px 20px 20px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   flex: 1;
-  align-content: start;
 }
 .world h3 {
   font-size: 23px;
@@ -788,10 +896,11 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   color: var(--platinum);
   font-size: 16.5px;
 }
+/* Links sit on the bottom edge of every card, one per line, so cards in a row line up. */
 .world-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
+  flex-direction: column;
+  align-items: flex-start;
   margin-top: auto;
   padding-top: 6px;
 }
@@ -815,33 +924,41 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   .workshop-grid {
     grid-template-columns: repeat(12, 1fr);
   }
-  .roadster {
+  .system-map {
     grid-column: span 7;
   }
-  .system-map {
+  .receipt {
     grid-column: span 5;
   }
-  .receipt {
-    grid-column: span 6;
-  }
 }
-.roadster {
+/* The hangar: one wide card under the four worlds. */
+.hangar {
+  margin-top: 20px;
   display: grid;
   text-decoration: none;
   color: var(--platinum);
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 300ms ease;
 }
-.roadster img {
+@media (min-width: 900px) {
+  .hangar {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+.hangar img {
   width: 100%;
   aspect-ratio: 16 / 9;
   object-fit: cover;
 }
-.roadster-copy {
+.hangar-copy {
   display: grid;
-  gap: 6px;
-  padding: 18px 22px 22px;
+  gap: 8px;
+  padding: 22px clamp(20px, 3vw, 40px) 24px;
+  max-width: 46ch;
 }
-.roadster-copy strong {
-  font: 650 28px/1.1 var(--display);
+.hangar-copy strong {
+  font: 650 clamp(26px, 3vw, 36px) / 1.1 var(--display);
   color: var(--pearl);
 }
 .system-map {
@@ -854,6 +971,26 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
 .system-map svg {
   width: 100%;
   height: auto;
+}
+/* Phones get the map drawn top to bottom, so its labels stay at reading size. */
+.map-tall {
+  display: none;
+  max-width: 360px;
+  margin-inline: auto;
+}
+@media (max-width: 560px) {
+  .map-wide {
+    display: none;
+  }
+  .map-tall {
+    display: block;
+  }
+  .map-tall .wire {
+    stroke: url(#wire-tall);
+  }
+  .map-tall .wire-back {
+    stroke: rgba(255, 138, 157, 0.55);
+  }
 }
 .system-map figcaption {
   font-size: 14px;
@@ -887,12 +1024,12 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   text-anchor: middle;
 }
 .node .node-sub {
-  font: 400 11px var(--mono);
+  font: 400 13px var(--mono);
   fill: var(--muted);
 }
 .map-note {
   fill: var(--muted);
-  font: 400 12px var(--mono);
+  font: 400 13px var(--mono);
   text-anchor: middle;
 }
 .packet {
@@ -907,10 +1044,17 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
 .packet-b {
   offset-path: path("M70 150 C150 150 160 150 230 150 L290 150 C350 150 360 220 420 220");
 }
+.packet-c {
+  offset-path: path("M150 68 L150 188 C150 230 75 230 75 265");
+}
+.packet-d {
+  offset-path: path("M150 68 L150 188 C150 230 225 230 225 265");
+}
 html[data-motion="on"] .system-map.in .packet {
   animation: packet 5.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
 }
-html[data-motion="on"] .system-map.in .packet-b {
+html[data-motion="on"] .system-map.in .packet-b,
+html[data-motion="on"] .system-map.in .packet-d {
   animation-delay: 2.6s;
 }
 @keyframes packet {
@@ -931,9 +1075,39 @@ html[data-motion="on"] .system-map.in .packet-b {
 }
 .receipt {
   padding: 24px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.receipt .text-link {
+  margin-top: auto;
+}
+/* A small paper copy of the brief: four labelled lines, printed from the dated record. */
+.brief-preview {
+  margin: 6px 0 4px;
+  padding: 14px 16px;
   display: grid;
   gap: 10px;
-  align-content: start;
+  background: rgba(226, 230, 238, 0.04);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  font-size: 16px;
+}
+.brief-preview div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+.brief-preview dt {
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+.brief-preview dd {
+  margin: 0;
+  color: var(--platinum);
 }
 .receipt h3 {
   font-size: 25px;
@@ -962,6 +1136,7 @@ html[data-motion="on"] .system-map.in .packet-b {
   padding: clamp(20px, 3vw, 36px);
   display: grid;
   gap: 22px;
+  align-content: start;
   border-bottom: 1px solid var(--line);
 }
 @media (min-width: 900px) {
@@ -1148,6 +1323,111 @@ html[data-motion="on"] .steps.run li {
     transform: translateX(-10px);
   }
 }
+/* The helm's route map: the chosen lane lights, a packet rides it, and a held request stops at the gate. */
+.route-map {
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  margin: 8px 0 4px;
+}
+.rm-wire {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+  transition: stroke 300ms ease;
+}
+.rm-in {
+  stroke: url(#lane-glow);
+}
+.rm-node circle,
+.rm-node rect {
+  fill: rgba(9, 11, 17, 0.96);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+  transition: stroke 300ms ease;
+}
+.rm-you circle {
+  stroke: var(--red-text);
+}
+.rm-hermes rect {
+  stroke: var(--blue);
+}
+.rm-node text {
+  fill: var(--muted);
+  font: 600 15px var(--display);
+  text-anchor: middle;
+  transition: fill 300ms ease;
+}
+.rm-you text,
+.rm-hermes text {
+  fill: var(--pearl);
+}
+.route-map[data-route="workhorse"] path.rm-workhorse,
+.route-map[data-route="synthesis"] path.rm-synthesis,
+.route-map[data-route="research"] path.rm-research {
+  stroke: url(#lane-glow);
+  stroke-width: 3;
+}
+.route-map[data-route="workhorse"] g.rm-workhorse rect,
+.route-map[data-route="synthesis"] g.rm-synthesis rect,
+.route-map[data-route="research"] g.rm-research rect {
+  stroke: var(--blue-text);
+}
+.route-map[data-route="workhorse"] g.rm-workhorse text,
+.route-map[data-route="synthesis"] g.rm-synthesis text,
+.route-map[data-route="research"] g.rm-research text {
+  fill: var(--pearl);
+}
+.rm-gate,
+.rm-held {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rm-gate {
+  fill: var(--red);
+  filter: drop-shadow(0 0 6px var(--red));
+}
+.rm-held {
+  fill: var(--red-text);
+  font: 400 13px var(--mono);
+  text-anchor: middle;
+}
+.route-map[data-route="hold"] .rm-gate,
+.route-map[data-route="hold"] .rm-held {
+  opacity: 1;
+}
+.route-map[data-route="hold"] .rm-lane {
+  opacity: 0.45;
+}
+.route-packet {
+  fill: var(--pearl);
+  filter: drop-shadow(0 0 6px var(--blue));
+  offset-rotate: 0deg;
+  offset-distance: 100%;
+  offset-path: path("M46 100 H148 C182 100 186 38 214 38");
+}
+.route-map[data-route="synthesis"] .route-packet {
+  offset-path: path("M46 100 H214");
+}
+.route-map[data-route="research"] .route-packet {
+  offset-path: path("M46 100 H148 C182 100 186 162 214 162");
+}
+.route-map[data-route="hold"] .route-packet {
+  offset-path: path("M46 100 H150");
+  fill: var(--red-text);
+  filter: drop-shadow(0 0 6px var(--red));
+}
+html[data-motion="on"] .route-map.ride .route-packet {
+  animation: ride 1300ms cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+@keyframes ride {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
 .after-note {
   margin-top: 18px;
   color: var(--muted);
@@ -1188,9 +1468,14 @@ html[data-motion="on"] .steps.run li {
   background: var(--line);
   border: 1px solid var(--line);
 }
+/* Labels on top, figures on one shared baseline at the bottom, however the labels wrap. */
 .figures div {
   background: rgba(9, 11, 17, 0.96);
   padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
 }
 .figures dt {
   font-size: 14.5px;
@@ -1245,7 +1530,7 @@ html[data-motion="on"] .steps.run li {
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   min-height: 460px;
-  background: linear-gradient(180deg, rgba(6, 9, 16, 0.97), rgba(9, 12, 21, 0.97));
+  --hull-fill: linear-gradient(180deg, rgba(6, 9, 16, 0.97), rgba(9, 12, 21, 0.97));
   font-family: var(--mono);
 }
 .eve-top {
@@ -1403,13 +1688,21 @@ kbd {
   gap: 12px;
   font-size: 16px;
 }
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px 28px;
+}
+.footer-nav .label {
+  display: block;
+  margin-bottom: 4px;
+}
 .footer-links {
   list-style: none;
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0 20px;
+  gap: 0;
 }
 .footer-links a {
   display: inline-flex;
@@ -1418,10 +1711,15 @@ kbd {
   font-size: 15.5px;
 }
 
-/* Bit */
+/* Bit. On wide screens Bit stands just outside the reading column; narrower, it keeps to the corner. */
 .bit {
+  --bit-w: 104px;
   position: fixed;
-  right: max(16px, env(safe-area-inset-right));
+  right: max(
+    12px,
+    env(safe-area-inset-right),
+    calc((100vw - min(100vw - 2 * var(--gutter), var(--frame-max))) / 2 - var(--bit-w) - 28px)
+  );
   bottom: max(16px, env(safe-area-inset-bottom));
   z-index: 30;
   display: inline-flex;
@@ -1441,6 +1739,29 @@ kbd {
 .bit:hover {
   border-color: var(--blue-text);
 }
+.bit {
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease,
+    visibility 300ms;
+}
+/* Phones keep the arrival clear for the call to action; Bit joins once the transit begins. */
+@media (max-width: 760px) {
+  html.js[data-stage="gate"] .bit {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+  }
+}
+@media (max-width: 1599px) {
+  .bit-name {
+    display: none;
+  }
+  .bit {
+    --bit-w: 58px;
+    padding: 6px;
+  }
+}
 .bit-face {
   width: 44px;
   height: 44px;
@@ -1449,6 +1770,8 @@ kbd {
   position: fixed;
   z-index: 35;
   right: max(16px, env(safe-area-inset-right));
+  max-height: calc(100dvh - 110px);
+  overflow-y: auto;
   bottom: 86px;
   left: auto;
   top: auto;
@@ -1585,10 +1908,21 @@ html.js[data-motion="on"] .arrival .kicker {
   .cta {
     width: 100%;
   }
+  /* The play bar moves under the poster, so the rating card stays readable. */
+  .screen-media {
+    aspect-ratio: auto;
+  }
+  .screen-poster,
+  .screen-video {
+    position: static;
+    aspect-ratio: 16 / 9;
+    height: auto;
+  }
   .play {
-    left: 10px;
-    bottom: 10px;
+    position: static;
+    width: 100%;
     padding: 8px 14px 8px 8px;
+    clip-path: none;
   }
   .play-icon {
     width: 38px;
@@ -1646,6 +1980,14 @@ html.js[data-motion="on"] .station-head.in h2::after {
   }
 }
 
+.swipe-hint {
+  display: none;
+  font: 400 13px/1.3 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: -8px 0 10px;
+}
 /* Phones: swipe through worlds and films instead of stacking them. */
 @media (max-width: 760px) {
   .world-grid,
@@ -1702,15 +2044,6 @@ html.js[data-motion="on"] .station-head.in h2::after {
     padding: 0 11px;
   }
 }
-.swipe-hint {
-  display: none;
-  font: 400 13px/1.3 var(--mono);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: -8px 0 10px;
-}
-
 @media (pointer: coarse) {
   .record-list a,
   .screen-caption a,
@@ -1719,4 +2052,91 @@ html.js[data-motion="on"] .station-head.in h2::after {
     align-items: center;
     min-height: 44px;
   }
+}
+
+/* Transcript of the trailer, read from its captions at build time. */
+.transcript {
+  margin-top: 12px;
+  padding: 4px 18px 14px;
+  border: 1px solid var(--line);
+  background: rgba(9, 11, 17, 0.88);
+}
+.transcript summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.transcript-lines {
+  margin: 4px 0 12px;
+  padding-left: 22px;
+  columns: 2 220px;
+  column-gap: 32px;
+  font-size: 16px;
+  color: var(--platinum);
+}
+.transcript-lines li {
+  break-inside: avoid;
+  margin-bottom: 4px;
+}
+
+/* Long headings and subtitles break without leaving a single word alone. */
+.sub,
+.station-head h2,
+.detail,
+.world p,
+.lede {
+  text-wrap: pretty;
+}
+
+/* Ultrawide screens widen the reading column and the type instead of leaving the sky empty. */
+@media (min-width: 2400px) {
+  :root {
+    --frame-max: 1680px;
+  }
+  body {
+    font-size: 20px;
+  }
+  .headline {
+    font-size: clamp(46px, 4.2vw, 140px);
+  }
+  .station-head h2 {
+    font-size: clamp(34px, 2.6vw, 84px);
+  }
+  .arrival-copy {
+    max-width: 1080px;
+  }
+}
+
+/* Pause and reduced motion leave a still page: every transition and animation lands on its final state at once. */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  transition: none !important;
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* A quiet way on at the end of each station. */
+.next-station {
+  margin-top: clamp(28px, 4vh, 44px);
+  display: flex;
+  justify-content: flex-end;
+}
+.next-station a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font: 400 13.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+}
+.next-station a:hover {
+  color: var(--pearl);
 }

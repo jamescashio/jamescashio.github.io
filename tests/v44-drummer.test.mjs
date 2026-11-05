@@ -6,7 +6,7 @@ import test from "node:test";
 import { routeExample } from "../src/odyssey/data.ts";
 import { route } from "../src/v44/route.ts";
 import { layoutFor } from "../src/v44/layout.ts";
-import { fillStatus, longDate, statusTokens } from "../scripts/v44-status.mjs";
+import { fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname);
 const read = (p) => readFile(path.join(root, p), "utf8");
@@ -60,6 +60,16 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
   assert.equal(longDate("2026-11-04"), "Wed Nov 4, 2026");
   assert.equal(longDate("2026-11-05"), "Thu Nov 5, 2026");
   assert.throws(() => longDate("2026-02-30"));
+  assert.throws(() => longDate("2026-13-04"));
+  assert.throws(() => longDate("2026-1-4"));
+  // The page and E.V.E. share one labelled withheld list, so their counts cannot disagree.
+  assert.equal(tokens.get("{{status.withheldCount}}"), String(withheldList(status).length));
+  assert.equal((tokens.get("{{status.withheld}}").match(/<li>/g) || []).length, withheldList(status).length);
+  assert.ok(withheldList(status).every(({ label, reason }) => label && reason));
+  assert.deepEqual(
+    transcript("WEBVTT\n\n00:00.000 --> 00:01.000\nIn a world...\n\n00:01.000 --> 00:02.000\nDon't panic."),
+    ["In a world...", "Don't panic."],
+  );
   const filled = fillStatus(await read("index.html"), root);
   assert.doesNotMatch(filled, /\{\{status\./);
   const record = JSON.parse(
@@ -71,6 +81,8 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
   );
   assert.equal(record.backup.latestChecked, status.backup.latestChecked);
   assert.equal(record.containers.documented, status.containers.documented);
+  assert.deepEqual(record.withheld, withheldList(status));
+  assert.doesNotMatch(filled, /\{\{film\./);
 
   const fake = await mkdtemp(path.join(tmpdir(), "v44-status-"));
   await mkdir(path.join(fake, "public/evidence"), { recursive: true });

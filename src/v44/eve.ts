@@ -1,4 +1,6 @@
 /** E.V.E., the Evaluation Verification Engine: a small, honest terminal over the published record. */
+import { onMotionChange } from "./motion.ts";
+
 type Status = {
   verifiedDay: string;
   law?: string;
@@ -6,27 +8,33 @@ type Status = {
   virtualMachines: { running: number; documented: number };
   cluster: { hostsOnline: number };
   backup: { snapshotsListed: number; latestChecked: number; latestVerified: number };
-  withheldReasons?: Record<string, string>;
+  /** The same labelled list the page prints under "What is withheld, and why". */
+  withheld?: { label: string; reason: string }[];
 };
 
 export type EveHooks = { warp: () => void; go: (id: string) => void; typing: () => boolean };
 
-const EGGS: Record<string, string> = {
-  drummer: "Captain on deck. Steady hands, clear orders, and nobody gets left behind.",
-  "42": "Correct. You have not told me the question, though.",
-  towel: "Towel located. Panic level holding at zero.",
-  spice: "The tokens must flow. Your data must not.",
-  butlerian: "The old rule still holds: machines do not get the final say. Neither do I.",
-  yeager: "October 14, 1947. Mach 1 with two cracked ribs and a broom handle to latch the hatch. Test what you trust.",
-  rutan: "Burt Rutan built light and tested honestly. Then he flew it anyway.",
-  kelly: "Kelly Johnson ran the Skunk Works with a small team and short reports. I am trying to learn the second part.",
-  tron: "I am on the users’ side. It is in my job description, under other duties as assigned.",
-  sudo: "Nice try. The human is in command, and that human is not the terminal.",
-  admiral: "Welcome back, Admiral. The fleet is where you left it.",
-  hotsauce: "Spicy. Carry on.",
-  hello: "Hello. Don’t panic.",
-  bit: "Bit is in the corner, rehearsing jokes about triangles.",
-};
+// A Map, so words like "constructor" are just unknown commands rather than inherited properties.
+const EGGS = new Map<string, string>(
+  Object.entries({
+    drummer: "Captain on deck. Steady hands, clear orders, and nobody gets left behind.",
+    "42": "Correct. You have not told me the question, though.",
+    towel: "Towel located. Panic level holding at zero.",
+    spice: "The tokens must flow. Your data must not.",
+    butlerian: "The old rule still holds: machines do not get the final say. Neither do I.",
+    yeager:
+      "Tue Oct 14, 1947. Mach 1 with two cracked ribs and a broom handle to latch the hatch. Test what you trust.",
+    rutan: "Burt Rutan built light and tested honestly. Then he flew it anyway.",
+    kelly:
+      "Kelly Johnson ran the Skunk Works with a small team and short reports. I am trying to learn the second part.",
+    tron: "I am on the users’ side. It is in my job description, under other duties as assigned.",
+    sudo: "Nice try. The human is in command, and that human is not the terminal.",
+    admiral: "Welcome back, Admiral. The fleet is where you left it.",
+    hotsauce: "Spicy. Carry on.",
+    hello: "Hello. Don’t panic.",
+    bit: "Bit is in the corner, rehearsing jokes about triangles.",
+  }),
+);
 
 export function mountEve(root: HTMLElement, hooks: EveHooks) {
   // The record is printed into the page at build time from status.json; E.V.E. never calls the network.
@@ -34,6 +42,10 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
   const log = root.querySelector<HTMLElement>("[data-eve-log]")!;
   const form = root.querySelector<HTMLFormElement>("[data-eve-form]")!;
   const input = form.querySelector<HTMLInputElement>("input")!;
+  // Lines still typing finish at once when motion is paused, so Pause leaves nothing moving.
+  const typing = new Set<() => void>();
+  const finishTyping = () => typing.forEach((finish) => finish());
+  onMotionChange(finishTyping);
   const say = (text: string, cls?: string) => {
     const p = document.createElement("p");
     if (cls) p.className = cls;
@@ -52,18 +64,29 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
     shown.setAttribute("aria-hidden", "true");
     p.append(sr, shown);
     let i = 0;
+    let timer = 0;
+    const finish = () => {
+      clearTimeout(timer);
+      typing.delete(finish);
+      shown.textContent = text;
+      log.scrollTop = log.scrollHeight;
+    };
     const tick = () => {
       i = Math.min(text.length, i + 3);
       shown.textContent = text.slice(0, i);
       log.scrollTop = log.scrollHeight;
-      if (i < text.length) setTimeout(tick, 16);
+      if (i < text.length && hooks.typing()) timer = window.setTimeout(tick, 16);
+      else finish();
     };
+    typing.add(finish);
     tick();
   };
-  const run = async (raw: string) => {
-    const cmd = raw.trim().toLowerCase();
+  const run = async (raw: string, byVisitor = true) => {
+    const cmd = raw.trim().toLowerCase().slice(0, 40);
     if (!cmd) return;
+    finishTyping();
     say(cmd, "you");
+    if (byVisitor) document.dispatchEvent(new CustomEvent("v44:eve", { detail: { cmd } }));
     if (cmd === "clear") {
       log.replaceChildren();
       return;
@@ -85,12 +108,13 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
     }
     if (cmd === "whoami") return say("A visitor with the helm. I keep the receipts.");
     if (cmd === "version")
-      return say("V44 Drummer, the front door rebuilt on November 5, 2026. V43 Centauri is preserved at /v43/.");
+      return say("V44 Drummer, the front door rebuilt on Thu Nov 5, 2026. V43 Centauri is preserved at /v43/.");
     if (cmd === "sources")
       return say(
         "This record: /status.json. Earlier dated records live under /evidence/. Nothing here calls a private service.",
       );
-    if (cmd in EGGS) return say(EGGS[cmd]);
+    const egg = EGGS.get(cmd);
+    if (egg) return say(egg);
     if (!["status", "backups", "limits", "law", "withheld"].includes(cmd)) {
       say("Unknown command. Type help. I will not judge, and if I do, I will publish the date.");
       return;
@@ -112,9 +136,9 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       );
     else if (cmd === "law") say(s.law || "Quality picks the model. Cost only breaks a tie.");
     else {
-      const reasons = Object.values(s.withheldReasons || {});
-      say(`Withheld or unmeasured: ${reasons.length} items. The first few:`);
-      reasons.slice(0, 4).forEach((r) => say(`· ${r}`));
+      const items = s.withheld || [];
+      say(`Withheld or unmeasured: ${items.length} items, all listed under What is withheld, and why. The first four:`);
+      items.slice(0, 4).forEach(({ label, reason }) => say(`· ${label}: ${reason}`));
     }
   };
   form.addEventListener("submit", (e) => {

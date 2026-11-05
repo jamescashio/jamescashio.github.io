@@ -8,7 +8,7 @@ export const exampleBrief = {
   owner: "The human operator. Verify the missing evidence before approving a change.",
 };
 
-export const exampleBriefText = `DECISION BRIEF / cAshIo V41
+export const exampleBriefText = `DECISION BRIEF / cAshIo
 Example from the published record. Not a new check or permission to act.
 
 WHAT WAS OBSERVED

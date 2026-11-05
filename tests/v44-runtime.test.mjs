@@ -1,0 +1,229 @@
+// The V44 front door in a real browser: the things lint, axe and Lighthouse cannot see.
+// Run with `npm run test:v44` after a build, or set V44_URL to a served build.
+import { test, before, after } from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { chromium, expect } from "@playwright/test";
+import { transcript } from "../scripts/v44-status.mjs";
+
+const url = process.env.V44_URL;
+let browser;
+before(async () => {
+  assert.ok(url, "Set V44_URL to the built front door.");
+  browser = await chromium.launch({
+    ...(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: "chrome" }),
+    headless: true,
+  });
+});
+after(async () => browser?.close());
+
+async function visit(t, { width = 1440, height = 900, mobile = false, motion = "reduce", hash = "" } = {}) {
+  const context = await browser.newContext({
+    viewport: { width, height },
+    isMobile: mobile,
+    hasTouch: mobile,
+    reducedMotion: motion,
+  });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  const errors = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => message.type() === "error" && errors.push(message.text()));
+  t.after(() => assert.deepEqual(errors, [], "the front door runs without errors"));
+  await page.goto(new URL(`/${hash}`, url).href, { waitUntil: "networkidle" });
+  return page;
+}
+
+const SIZES = [
+  [320, 568, true],
+  [375, 667, true],
+  [390, 844, true],
+  [844, 390, true],
+  [834, 1194, true],
+  [1024, 600, false],
+  [1366, 768, false],
+  [1440, 900, false],
+  [3822, 1600, false],
+];
+
+test("every arrival fits its first screen, clear of the header and of Bit, without sideways scroll", async (t) => {
+  for (const [width, height, mobile] of SIZES) {
+    const page = await visit(t, { width, height, mobile });
+    const m = await page.evaluate(() => {
+      const box = (s) => document.querySelector(s).getBoundingClientRect();
+      const bit = document.querySelector(".bit");
+      const b = bit.getBoundingClientRect();
+      const cta = box(".cta[data-transit-go]");
+      const shown = getComputedStyle(bit).visibility !== "hidden";
+      return {
+        kicker: box(".arrival .kicker").top,
+        header: box(".hud-bar").bottom,
+        cta: cta.bottom,
+        bitOnCta: shown && b.left < cta.right && cta.left < b.right && b.top < cta.bottom && cta.top < b.bottom,
+        wide: document.documentElement.scrollWidth > innerWidth,
+      };
+    });
+    const size = `${width}×${height}`;
+    assert.ok(m.kicker >= m.header + 8, `${size}: the kicker starts below the header`);
+    assert.ok(m.cta <= height, `${size}: the call to action is inside the first screen`);
+    assert.equal(m.bitOnCta, false, `${size}: Bit does not cover the call to action`);
+    assert.equal(m.wide, false, `${size}: no horizontal scroll`);
+  }
+});
+
+test("the header turns solid once the page scrolls, so text never runs behind it", async (t) => {
+  for (const [width, height, mobile] of [
+    [390, 844, true],
+    [1440, 900, false],
+  ]) {
+    const page = await visit(t, { width, height, mobile });
+    const hud = page.locator("[data-hud]");
+    await expect(hud).not.toHaveAttribute("data-scrolled", "");
+    await page.evaluate(() => scrollTo(0, document.querySelector("#workshop").offsetTop));
+    await expect(hud).toHaveAttribute("data-scrolled", "");
+    // The header fades to solid; wait for the fade, then read the alpha of its background color.
+    await expect
+      .poll(() =>
+        hud.evaluate((node) => Number(getComputedStyle(node).backgroundColor.match(/,\s*([\d.]+)\)$/)?.[1] ?? 1)),
+      )
+      .toBeGreaterThanOrEqual(0.85);
+  }
+});
+
+test("keyboard focus is visible on every cut corner control", async (t) => {
+  const page = await visit(t);
+  for (const selector of [
+    "[data-motion-toggle]",
+    ".chip-solid",
+    ".cta[data-transit-go]",
+    "[data-screen-play]",
+    "a.sovereign",
+    "a.hangar",
+    ".eve-quick .chip",
+    ".profile-links .chip",
+  ]) {
+    const control = page.locator(selector).first();
+    await control.scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.activeElement?.blur());
+    const before = await control.screenshot();
+    await page.keyboard.press("Shift+Tab");
+    await control.focus();
+    await expect(control).toBeFocused();
+    const ring = await control.evaluate((node) => {
+      const s = getComputedStyle(node);
+      return {
+        visible: node.matches(":focus-visible"),
+        width: parseFloat(s.outlineWidth),
+        offset: parseFloat(s.outlineOffset),
+      };
+    });
+    assert.ok(ring.visible && ring.width >= 2, `${selector} shows a focus ring`);
+    assert.ok(ring.offset < 0, `${selector} draws its ring inside the clipped shape`);
+    assert.notDeepEqual(await control.screenshot(), before, `${selector} looks different when focused`);
+  }
+});
+
+test("the station sheet marks the current station, moves focus to the chosen one and keeps Back", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, mobile: true });
+  const menu = page.locator("[data-menu-toggle]");
+  const sheet = page.locator("#station-sheet");
+  await expect(sheet.locator("a")).toHaveCount(7);
+  await menu.click();
+  await expect(sheet).toBeVisible();
+  await expect(sheet.locator('a[aria-current="true"]')).toHaveAttribute("href", "#arrival");
+  await sheet.locator('a[href="#helm"]').click();
+  await expect(sheet).toBeHidden();
+  await expect(page.locator("#helm-title")).toBeFocused();
+  assert.equal(new URL(page.url()).hash, "#helm");
+  await menu.click();
+  await page.mouse.click(20, 600);
+  await expect(sheet).toBeHidden();
+  await page.goBack();
+  await expect.poll(() => new URL(page.url()).hash).toBe("");
+});
+
+test("Pause stills the page: typing finishes and nothing keeps animating", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  await page.locator("#evidence").scrollIntoViewIfNeeded();
+  await page.locator("#eve-cmd").fill("backups");
+  await page.keyboard.press("Enter");
+  await page.locator("[data-motion-toggle]").click();
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "off");
+  await expect(page.locator("[data-motion-toggle]")).toHaveAccessibleName("Resume motion");
+  const line = page.locator("[data-eve-log] p").last();
+  assert.equal(
+    await line.locator('[aria-hidden="true"]').textContent(),
+    await line.locator(".sr").textContent(),
+    "the typed line is complete the moment motion pauses",
+  );
+  await page.waitForTimeout(200);
+  const running = await page.evaluate(
+    () =>
+      document
+        .getAnimations()
+        .filter((a) => a.playState === "running" && Number.isFinite(a.effect?.getTiming().iterations ?? 1) === false)
+        .length,
+  );
+  assert.equal(running, 0, "no endless animation runs while paused");
+});
+
+test("E.V.E. counts the same withheld list the page prints and ignores inherited words", async (t) => {
+  const page = await visit(t);
+  const printed = await page.locator("details.withheld").first().locator("li").count();
+  await page.locator("#eve-cmd").fill("limits");
+  await page.keyboard.press("Enter");
+  await expect(page.locator("[data-eve-log]")).toContainText(`Withheld or unmeasured: ${printed} items`);
+  await page.locator("#eve-cmd").fill("constructor");
+  await page.keyboard.press("Enter");
+  await expect(page.locator("[data-eve-log] p").last()).toContainText("Unknown command");
+  await expect(page.locator("#eve-cmd")).toHaveAccessibleName("E.V.E. command");
+});
+
+test("the helm map draws the route the rule chose", async (t) => {
+  const page = await visit(t);
+  const map = page.locator("[data-route-map]");
+  await expect(map).toHaveAttribute("data-route", "workhorse");
+  await page.locator('input[value="analyze"]').check({ force: true });
+  await expect(map).toHaveAttribute("data-route", "synthesis");
+  await page.locator('input[name="sources"]').check({ force: true });
+  await expect(map).toHaveAttribute("data-route", "research");
+  await page.locator('input[name="privateData"]').check({ force: true });
+  await expect(map).toHaveAttribute("data-route", "hold");
+  await expect(page.locator("[data-helm-lane]")).toHaveText("Human review");
+});
+
+test("the trailer's words come from its captions and step aside for the silent shorts", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, mobile: true });
+  const cues = transcript(
+    await readFile(new URL("../public/assets/hero/cashio-trailer-text.vtt", import.meta.url), "utf8"),
+  );
+  const words = page.locator("[data-transcript]");
+  await expect(words.locator("li")).toHaveCount(cues.length);
+  await page.locator('[data-film="portal"]').click();
+  await expect(words).toBeHidden();
+  await expect(page.locator("[data-screen-video]")).toHaveAttribute("aria-label", "Portal Arrival");
+  await page.locator('[data-film="trailer"]').click();
+  await expect(words).toBeVisible();
+});
+
+test("Bit stays out of the arrival on phones and answers for what the visitor did", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, mobile: true });
+  const bit = page.locator("[data-bit-open]");
+  await expect(bit).toBeHidden();
+  await page.locator("#helm").scrollIntoViewIfNeeded();
+  await page.locator('input[name="privateData"]').check({ force: true });
+  await expect(bit).toBeVisible();
+  await bit.click();
+  await expect(page.locator("[data-bit-line]")).toContainText("held it for a person");
+  await expect(page.locator('[data-bit-go="helm"]')).toBeHidden();
+  await page.locator('[data-bit-go="evidence"]').click();
+  await expect(page.locator("#evidence-title")).toBeFocused();
+});
+
+test("V43 deep links open the preserved edition and V44 stations stay home", async (t) => {
+  const page = await visit(t, { hash: "#studies" });
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/v43/");
+  await page.goto(new URL("/#rooms", url).href);
+  await expect.poll(() => new URL(page.url()).hash).toBe("#worlds");
+  assert.equal(new URL(page.url()).pathname, "/");
+});

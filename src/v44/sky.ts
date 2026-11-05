@@ -8,17 +8,35 @@ type Uniforms = Record<
 >;
 
 const SOFTWARE = /swiftshader|llvmpipe|softpipe|software|basic render|microsoft basic/i;
+const UNIFORMS = [
+  "uRes",
+  "uTime",
+  "uTransit",
+  "uIgnite",
+  "uWarp",
+  "uDim",
+  "uPointer",
+  "uRing",
+  "uRot",
+  "uSun",
+  "uPlanet",
+] as const;
+/** Without scroll, pointer or keys, the sky settles into a still frame: soon behind the reading, later at the gate. */
+const IDLE_DEEP_MS = 2500;
+const IDLE_GATE_MS = 30000;
 
 export type SkyState = { transit: number; dim: number; warpBoost: number; column?: { left: number; right: number } };
+/** Reasons the sky may not animate. Any one of them holds it on its last frame. */
+export type Hold = "motion" | "hidden" | "film" | "lost" | "idle";
 
 export class Sky {
   private gl: WebGLRenderingContext | null = null;
   private program: WebGLProgram | null = null;
   private u: Uniforms | null = null;
   private raf = 0;
-  private started = 0;
+  private clock = 4;
   private last = 0;
-  private frozenAt = 12.4;
+  private lastInput = performance.now();
   private scale = 0.7;
   private maxScale = 1;
   private samples: number[] = [];
@@ -28,15 +46,15 @@ export class Sky {
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
   private running = false;
-  private visible = true;
+  private holds = new Set<Hold>();
   readonly live: boolean;
 
   constructor(
     private canvas: HTMLCanvasElement,
     private state: () => SkyState,
     private onIgnited: () => void,
+    private onLive: (live: boolean) => void,
     force = false,
-    private fixedScale = 0,
   ) {
     this.live = this.init(force);
   }
@@ -54,63 +72,89 @@ export class Sky {
     const renderer = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : "";
     // Software rasterizers turn a GPU scene into main thread work. The painted poster is the better experience there.
     if (!force && SOFTWARE.test(renderer)) return false;
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "shader");
-      return s;
-    };
-    try {
-      const program = gl.createProgram()!;
-      gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX_SHADER));
-      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER));
-      gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
-      gl.useProgram(program);
-      const buffer = gl.createBuffer();
-      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-      const loc = gl.getAttribLocation(program, "aPos");
-      gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-      const names = [
-        "uRes",
-        "uTime",
-        "uTransit",
-        "uIgnite",
-        "uWarp",
-        "uDim",
-        "uPointer",
-        "uRing",
-        "uRot",
-        "uSun",
-        "uPlanet",
-      ] as const;
-      this.u = Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(program, n)])) as Uniforms;
-      this.gl = gl;
-      this.program = program;
-    } catch {
+    this.gl = gl;
+    if (!this.build()) {
+      this.gl = null;
       return false;
     }
     const coarse = matchMedia("(pointer: coarse)").matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.maxScale = this.fixedScale || dpr * (coarse ? 0.62 : 0.85);
-    this.scale = this.fixedScale || this.maxScale * 0.85;
+    this.maxScale = dpr * (coarse ? 0.62 : 0.85);
+    this.scale = this.maxScale * 0.85;
+
+    // A lost context shows the poster at once and comes back only once the scene is rebuilt.
     this.canvas.addEventListener("webglcontextlost", (e) => {
       e.preventDefault();
-      this.stop();
+      this.hold("lost", true);
+      this.onLive(false);
+    });
+    this.canvas.addEventListener("webglcontextrestored", () => {
+      if (!this.build()) return;
+      this.hold("lost", false);
+      this.redraw();
+      this.onLive(true);
     });
     window.addEventListener(
       "pointermove",
       (e) => {
         this.pointerTarget = [(e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1)];
+        this.wake();
       },
       { passive: true },
     );
-    document.addEventListener("visibilitychange", () => (document.hidden ? this.stop() : this.start()));
-    onMotionChange(() => (motionEnabled() ? this.start() : (this.stop(), this.draw(performance.now()))));
+    window.addEventListener("keydown", () => this.wake(), { passive: true });
+    document.addEventListener("visibilitychange", () => this.hold("hidden", document.hidden));
+    onMotionChange(() => this.hold("motion", !motionEnabled()));
+    this.holds = new Set<Hold>([
+      ...(motionEnabled() ? [] : ["motion" as const]),
+      ...(document.hidden ? ["hidden" as const] : []),
+    ]);
     return true;
+  }
+
+  /** Compile, link and upload the full screen triangle. Everything allocated is released if a step fails. */
+  private build(): boolean {
+    const gl = this.gl!;
+    const shaders: WebGLShader[] = [];
+    let program: WebGLProgram | null = null;
+    let buffer: WebGLBuffer | null = null;
+    try {
+      const compile = (type: number, src: string) => {
+        const s = gl.createShader(type);
+        if (!s) throw new Error("shader");
+        shaders.push(s);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "shader");
+        return s;
+      };
+      program = gl.createProgram();
+      if (!program) throw new Error("program");
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX_SHADER));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER));
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("link");
+      gl.useProgram(program);
+      buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(program, "aPos");
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      this.u = Object.fromEntries(UNIFORMS.map((n) => [n, gl.getUniformLocation(program!, n)])) as Uniforms;
+      this.program = program;
+      // Linked programs keep their code; the shader objects are no longer needed.
+      shaders.forEach((s) => gl.deleteShader(s));
+      this.canvas.width = 0;
+      return true;
+    } catch {
+      shaders.forEach((s) => gl.deleteShader(s));
+      if (program) gl.deleteProgram(program);
+      if (buffer) gl.deleteBuffer(buffer);
+      this.program = null;
+      this.u = null;
+      return false;
+    }
   }
 
   /** Light the gate. Animated once per session; instantly lit when motion is off or it already ran. */
@@ -123,50 +167,66 @@ export class Sky {
     this.igniteStart = performance.now() + 450;
   }
 
-  surge(amount = 1) {
-    this.warp = Math.max(this.warp, amount);
+  /** First frame, then motion if nothing holds the sky. */
+  begin() {
+    this.lastInput = performance.now();
+    if (this.holds.size) this.redraw();
+    else this.run();
   }
 
-  setVisible(v: boolean) {
-    this.visible = v;
-    if (v) this.start();
+  /** Add or lift one reason to stand still. The sky runs only when nothing holds it. */
+  hold(reason: Hold, on: boolean) {
+    if (on) this.holds.add(reason);
+    else this.holds.delete(reason);
+    if (this.holds.size) this.halt();
+    else this.run();
   }
 
-  start() {
-    if (!this.gl || this.running || document.hidden || !motionEnabled()) return;
+  /** Scroll, pointer and keys keep the sky awake. */
+  wake() {
+    this.lastInput = performance.now();
+    if (this.holds.has("idle")) this.hold("idle", false);
+  }
+
+  /** Draw one frame now, used for resize, scroll and every still. */
+  redraw() {
+    if (!this.running) this.draw(performance.now());
+  }
+
+  private run() {
+    if (!this.program || this.running) return;
     this.running = true;
-    if (!this.started) this.started = performance.now();
+    this.last = 0;
     this.raf = requestAnimationFrame(this.frame);
   }
 
-  stop() {
+  private halt() {
     this.running = false;
     cancelAnimationFrame(this.raf);
-  }
-
-  /** Draw one frame now, used for resize, scroll and the reduced motion still. */
-  redraw() {
-    if (!this.running) this.draw(performance.now());
+    this.redraw();
   }
 
   private frame = (now: number) => {
     if (!this.running) return;
     const s = this.state();
-    const deep = s.transit >= 1 && this.warp < 0.02;
+    const deep = s.transit >= 1;
+    if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && this.warp < 0.02 && this.igniteStart < 0) {
+      this.hold("idle", true);
+      return;
+    }
     // Behind the content the sky only needs half the frame rate.
-    const interval = deep ? 1000 / 30 : 0;
+    const interval = deep && this.warp < 0.02 ? 1000 / 30 : 0;
     if (now - this.last >= interval) {
       const dt = this.last ? now - this.last : 16;
       this.last = now;
+      this.clock += Math.min(dt, 50) / 1000;
       this.adapt(dt);
       this.draw(now);
     }
-    if (this.visible) this.raf = requestAnimationFrame(this.frame);
-    else this.running = false;
+    this.raf = requestAnimationFrame(this.frame);
   };
 
   private adapt(dt: number) {
-    if (this.fixedScale) return;
     // A very slow frame means the device cannot carry this resolution: step down at once.
     if (dt > 120 && this.scale > 0.32) {
       this.scale = Math.max(0.32, this.scale * 0.7);
@@ -185,7 +245,7 @@ export class Sky {
   private draw(now: number) {
     const gl = this.gl;
     const u = this.u;
-    if (!gl || !u) return;
+    if (!gl || !u || !this.program || gl.isContextLost()) return;
     const s = this.state();
     const motion = motionEnabled();
     // Cap the backing store near 2.1 million pixels so ultrawide screens cost what a laptop does.
@@ -212,10 +272,9 @@ export class Sky {
     this.warp = Math.max(s.warpBoost, this.warp * 0.94);
     this.pointer[0] += (this.pointerTarget[0] - this.pointer[0]) * 0.04;
     this.pointer[1] += (this.pointerTarget[1] - this.pointer[1]) * 0.04;
-    const time = motion ? (now - this.started) / 1000 + 4 : this.frozenAt;
     const L = layoutFor(innerWidth, innerHeight, s.column);
     gl.uniform2f(u.uRes, w, h);
-    gl.uniform1f(u.uTime, time);
+    gl.uniform1f(u.uTime, motion ? this.clock : 12.4);
     gl.uniform1f(u.uTransit, motion ? s.transit : 0);
     gl.uniform1f(u.uIgnite, this.ignite);
     gl.uniform1f(u.uWarp, motion ? Math.min(1, this.warp) : 0);

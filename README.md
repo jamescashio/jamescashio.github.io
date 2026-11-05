@@ -1,6 +1,6 @@
 # cAshIo V44 · Drummer
 
-**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on 11-05-2026 and named for the captain of _The Expanse_ who keeps a cool head when it counts. It is a preview until Doug approves publication.
+**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for the captain of _The Expanse_ who keeps a cool head when it counts. It is a preview until Doug approves publication.
 
 One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: hull segments ignite once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
@@ -50,7 +50,7 @@ The gate runs on a real GPU. Software rasterizers get the painted poster of the 
 
 ## Verification
 
-Run `npm run verify`. `tests/v44-drummer.test.mjs` covers the helm rule against the Odyssey teaching model, the gate layout at phone, laptop and ultrawide sizes, the evidence filler and the built page: strict security policy, station order, evidence parity with `status.json`, image dimensions and text, and links that resolve inside the build.
+Run `npm run verify`. `tests/v44-drummer.test.mjs` covers the helm rule against the Odyssey teaching model, the gate layout at phone, laptop and ultrawide sizes, the evidence filler and the built page: strict security policy, station order, evidence parity with `status.json`, image dimensions and text, and links that resolve inside the build. `npm run test:v44` opens the built front door in Chrome and checks what static tests cannot see: every arrival fits its first screen at nine sizes from 320 by 568 to 3822 by 1600, the header turns solid once the page scrolls, keyboard focus is visible inside every cut corner control, the station sheet moves focus and keeps Back, Pause leaves nothing moving, E.V.E. counts the list the page prints, the helm map follows the rule, the transcript matches the captions and Bit stays clear of the arrival on phones.
 
 ## History and publication
 

@@ -50,6 +50,8 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
   const label = screen.querySelector<HTMLElement>("[data-screen-label]")!;
   const meta = screen.querySelector<HTMLElement>("[data-screen-meta]")!;
   const title = screen.querySelector<HTMLElement>("[data-screen-title]")!;
+  // Only the trailer has spoken words; the silent shorts hide its transcript.
+  const words = document.querySelector<HTMLDetailsElement>("[data-transcript]");
   const reel = [...document.querySelectorAll<HTMLButtonElement>("[data-film]")];
   let film = "trailer";
 
@@ -74,6 +76,11 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
     label.textContent = f.label;
     meta.textContent = f.meta;
     title.textContent = f.title;
+    video.setAttribute("aria-label", f.title);
+    if (words) {
+      words.hidden = !f.captions;
+      if (!f.captions) words.open = false;
+    }
     reel.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.film === id)));
   };
   const start = () => {
@@ -96,6 +103,7 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
     video.hidden = false;
     screen.dataset.playing = "";
     onPlaying(true);
+    document.dispatchEvent(new CustomEvent("v44:film", { detail: { id: film, title: f.title } }));
     video.play().catch(() => {
       /* The visitor can still press play on the native controls. */
     });
