@@ -13,7 +13,7 @@ type HeroView = {
   telemetry: Array<{ label: string; value: string | number }>;
 };
 import { HeroPlanet } from "./hero-reel.tsx";
-import { presentation, observedMonth } from "./evidence.ts";
+import { presentation, observedMonth, versionLabel } from "./evidence.ts";
 
 export function ContinuumPrinciples() {
   return (
@@ -94,7 +94,7 @@ export function ContinuumHero({ v }: { v: HeroView }) {
       <HeroPlanet />
       <div className="continuum-grid" aria-hidden="true" />
       <div className="continuum-arrival">
-        <span>cAshIo / V42</span>
+        <span>cAshIo / {versionLabel}</span>
         <span>
           {presentation.name} · {presentation.subtitle}
         </span>

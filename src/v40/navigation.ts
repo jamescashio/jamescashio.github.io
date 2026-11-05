@@ -1,4 +1,5 @@
 import { isZenithFilm } from "../helios/zenith-routes.js";
+import { versionLabel } from "./evidence.ts";
 
 const rooms = new Set(["starship", "principles", "studios", "heritage"]);
 const experiments = new Set(["hermes", "cascade", "exposure", "briefing", "dashboards", "signal", "graphify"]);
@@ -124,7 +125,7 @@ export function setupV40Navigation() {
       scene = { dispose: () => window.cashioV40?.setState({ cinema: null }) };
       const trailer = hash === "#film=trailer";
       window.cashioV40?.setState({ cinema: trailer ? "trailer" : "intro" });
-      document.title = trailer ? "House Cashio: The Trailer · cAshIo V42" : "Eagle · cAshIo V42";
+      document.title = `${trailer ? "House Cashio: The Trailer" : "Eagle"} · cAshIo ${versionLabel}`;
       return;
     }
     const token = generation;
@@ -159,7 +160,7 @@ export function setupV40Navigation() {
               onClose: () => close(),
               onNavigate: navigate,
             });
-      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo V42`;
+      document.title = `${kind === "flight" ? "First flight" : hash === "#signature" ? "Celestial Forge" : hash.startsWith("#lensing") ? "Lensing Observatory" : "Cinema"} · cAshIo ${versionLabel}`;
       for (const node of document.body.children) {
         if (
           !(node instanceof HTMLElement) ||

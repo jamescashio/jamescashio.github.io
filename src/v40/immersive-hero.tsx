@@ -1,6 +1,7 @@
 import type { MouseEventHandler } from "react";
 import { discoveryRoutes } from "./discovery-routes";
 import { posterSources } from "./poster-sources.ts";
+import { presentation, versionLabel } from "./evidence.ts";
 type HeroView = {
   wide: boolean;
   scene: string;
@@ -145,8 +146,8 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       </div>
       <div className="continuum-horizon" aria-hidden="true" />
       <div className="continuum-arrival">
-        <span>cAshIo / V42</span>
-        <span>Omnius, Overruled</span>
+        <span>cAshIo / {versionLabel}</span>
+        <span>{presentation.name}</span>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Built after hours
         </span>

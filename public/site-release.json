@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "42.0.0",
-    "visualEdition": "Omnius, Overruled",
+    "experienceVersion": "43.0.0",
+    "visualEdition": "Centauri",
     "receipt": "/v40/site-release.json"
   }
 }

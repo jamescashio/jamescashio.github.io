@@ -18,6 +18,24 @@
   "everydayDark": "everyday-dark.svg",
   "everydayLight": "everyday-light.svg",
   "favicon": "favicon.svg",
+  "currentSite": {
+    "wordmark": "wordmark.svg",
+    "socialImage": "share-card.jpg",
+    "browserIcons": {
+      "svg": "favicon.svg",
+      "png16": "favicon-16.png",
+      "png32": "favicon-32.png",
+      "png48": "favicon-48.png",
+      "png64": "favicon-64.png"
+    },
+    "appleTouchIcon": "apple-touch-icon.png",
+    "webManifest": "site.webmanifest",
+    "appIcons": {
+      "standard": "icon-192.png",
+      "large": "icon-512.png"
+    },
+    "provenance": "provenance.json"
+  },
   "principles": [
     "Preserve detailed inlays and miniature A/I worlds",
     "Platinum dominant, electric blue primary light, red counterpoint",
@@ -27,6 +45,11 @@
   ],
   "files": [
     {
+      "name": "apple-touch-icon.png",
+      "bytes": 6186,
+      "sha256": "fe218911e6c1b4053a6a84b78bef978a794d0d8c84f03efbab3aa7d4f4190d90"
+    },
+    {
       "name": "everyday-dark.svg",
       "bytes": 3853,
       "sha256": "751fc0f32ab490e44a10d40cb5edf06804f5f6503f28bb54f722693ff92f0dee"
@@ -35,6 +58,26 @@
       "name": "everyday-light.svg",
       "bytes": 3853,
       "sha256": "cc0336baa1401337a439b121062167e39b2c7d93fa8498c61aec8a019a769380"
+    },
+    {
+      "name": "favicon-16.png",
+      "bytes": 453,
+      "sha256": "bd9b93a3b6274c85801095de50b8226e4b7cf6474f8463689b6e5ff3806619f3"
+    },
+    {
+      "name": "favicon-32.png",
+      "bytes": 732,
+      "sha256": "f909356fc1d382e143c9dff1735f16aeff20d511cef9999ec779319087e9c510"
+    },
+    {
+      "name": "favicon-48.png",
+      "bytes": 1122,
+      "sha256": "e77d5799eab34596d9b463ef084c3828653d4b497bddd3c3805656766a3f2c93"
+    },
+    {
+      "name": "favicon-64.png",
+      "bytes": 1377,
+      "sha256": "7a59c7749985627f623f8595f5375946f87b009bf6a83f334ae0b562697e7179"
     },
     {
       "name": "favicon.svg",
@@ -82,6 +125,16 @@
       "sha256": "42f89f6ccbd6904bb142c2df94e77a205d41be7426a38ffb891f67e7c53401d1"
     },
     {
+      "name": "provenance.json",
+      "bytes": 444,
+      "sha256": "ad6cc56cef5ecc2b3c26c3715650a96666c0d662bb22f120e44edb71320b03a2"
+    },
+    {
+      "name": "share-card.jpg",
+      "bytes": 133036,
+      "sha256": "e3d176a61947ffd5757584c3fcab91592a8c5ad7f86cb7f923777c1ffcc0f878"
+    },
+    {
       "name": "signature-1680.webp",
       "bytes": 157006,
       "sha256": "ac3450ba69a8f22f93b140c9cd263246cd15b3e56e7bd9ee6415c7a764d228ee"
@@ -102,6 +155,11 @@
       "sha256": "826f61d3bc6492005833c1e87953df29eac5773c6a04f9ea99aa3b0b52a16271"
     },
     {
+      "name": "site.webmanifest",
+      "bytes": 411,
+      "sha256": "6d140b167234c45d917a36864a0e445259e322f7aa0b95adc7964b02c24c5a17"
+    },
+    {
       "name": "social-preview.jpg",
       "bytes": 121217,
       "sha256": "8c485d42d3b06cb350fecff0e306a74fef2c3b6176a8eb0c8c25142ea877b9cb"
@@ -110,6 +168,11 @@
       "name": "tokens.css",
       "bytes": 713,
       "sha256": "4e11b1e9b55a2b8a6c318c8c0212fe88990226b2c783030afe04cb8a64032043"
+    },
+    {
+      "name": "wordmark.svg",
+      "bytes": 1232,
+      "sha256": "8c4fa69a4dee6a708bcfeb9840a708464a37c0b7e905cba872f23e0f9d007ee6"
     }
   ]
 }

@@ -123,7 +123,7 @@ test("the shared orbit stays steadily lit, pauses in place and Fold space does n
   assert.equal(await phase(), reduced);
 });
 
-test("Omnius polish keeps instrument text readable and phone navigation deliberate", async (t) => {
+test("Current polish keeps instrument text readable and phone navigation deliberate", async (t) => {
   for (const width of [320, 390]) {
     const page = await visit(t, {
       viewport: { width, height: 740 },
@@ -262,7 +262,7 @@ test("the tour respects reduced motion and phone keepsakes remain readable and f
   }
 });
 
-test("Omnius chapter rail is readable, unclipped and navigable on a short desktop", async (t) => {
+test("Current chapter rail is readable, unclipped and navigable on a short desktop", async (t) => {
   const page = await visit(t, { viewport: { width: 1280, height: 720 }, reducedMotion: "reduce" });
   const rail = page.getByRole("navigation", { name: "Sections", exact: true });
   const links = rail.locator(".v41-a0e1b1fc48 > a");
@@ -424,7 +424,7 @@ test("Continuum keeps a complete static illustration and content when scripts ar
   );
 });
 
-test("Omnius, Overruled visibly approaches the original artwork and freezes with pause, offscreen and dialog state", async (t) => {
+test("Current opening visibly approaches the original artwork and freezes with pause, offscreen and dialog state", async (t) => {
   const page = await visit(t, { reducedMotion: "no-preference" });
   const camera = page.locator(".hero-flight-camera");
   const view = () => camera.evaluate((el) => getComputedStyle(el).transform);
@@ -471,7 +471,7 @@ test("Omnius, Overruled visibly approaches the original artwork and freezes with
   assert.equal(await view(), reduced);
 });
 
-test("Omnius, Overruled keeps manual camera framing and the original hero usable on a reduced-motion phone", async (t) => {
+test("Current opening keeps manual camera framing and the original hero usable on a reduced-motion phone", async (t) => {
   const page = await visit(t, {
     viewport: { width: 320, height: 740 },
     isMobile: true,

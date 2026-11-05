@@ -177,7 +177,7 @@ export function OdysseyApp() {
       <header className="o-header">
         <a href="#top" className="o-brand" aria-label="cAshIo, back to the beginning">
           <span className="cashio-wordmark">
-            <img src="/cashio/icon.svg" width="29" height="29" alt="" />
+            <img src="/cashio/icon-gold-archive.svg" width="29" height="29" alt="" />
             <span>
               c<b>A</b>sh<i>I</i>o
             </span>

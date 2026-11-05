@@ -190,8 +190,9 @@ async function run() {
       });
       report.release = receipt;
       assert.equal(receipt.frontDoor.entry, "/");
-      assert.equal(receipt.frontDoor.experienceVersion, "42.0.0");
-      assert.equal(receipt.frontDoor.visualEdition, "Omnius, Overruled");
+      const currentReceipt = JSON.parse(await readFile(path.join(ROOT, "public/v40/site-release.json"), "utf8"));
+      assert.equal(receipt.frontDoor.experienceVersion, currentReceipt.experienceVersion);
+      assert.equal(receipt.frontDoor.visualEdition, currentReceipt.visualEdition);
       report.checks.push({
         name: "Current root, preserved V37 prerender, release identities and indexing",
         passed: true,

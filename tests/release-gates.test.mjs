@@ -11,6 +11,33 @@ import { ZENITH_FILM_IDS, isZenithFilm } from "../src/helios/zenith-routes.js";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const asset = (path) => new URL(`../${path}`, import.meta.url);
+const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
+const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
+
+test("Centauri identity advances the current release and preserves the exact V42 receipt", async () => {
+  assert.equal(currentRelease.experienceVersion, "43.0.0");
+  assert.equal(currentRelease.releaseName, "CENTAURI");
+  assert.equal(currentRelease.visualEdition, "Centauri");
+  assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
+  assert.equal(currentRelease.releaseDate, "2026-11-04");
+  assert.equal(currentRelease.status, "released");
+  assert.equal(currentRelease.published, true);
+  assert.deepEqual(currentRelease.previousRelease, {
+    version: "42.0.0",
+    name: "Omnius, Overruled",
+    receipt: "/v42/site-release.json",
+    commit: "d1728250e7968141c9d26be0b6ba90927521dec6",
+  });
+  assert.equal(currentRelease.rollbackCommit, currentRelease.previousRelease.commit);
+  const previous = await readFile(asset("public/v42/site-release.json"));
+  assert.equal(
+    createHash("sha256").update(previous).digest("hex"),
+    "f8e9685cc2e900c6b072aa2527cd56cf6c7359ddc5972146d268b3307a007ec8",
+  );
+  assert.deepEqual(await readFile(asset("dist/v42/site-release.json")), previous);
+  assert.equal(await read("dist/v40/site-release.json"), await read("public/v40/site-release.json"));
+  assert.equal(JSON.parse(await read("public/status.json")).release, "V41 Eagle");
+});
 
 test("V40 ships its real reading edition under the strict production security policy", async () => {
   const document = new JSDOM(await read("dist/index.html")).window.document;
@@ -56,7 +83,12 @@ test("V40 ships its real reading edition under the strict production security po
     "Read the " + observedMonth + " observation",
   );
   assert.ok(root.textContent.includes(observedMonth + " · Scheduler and routing not measured"));
-  assert.equal(receipt.presentation.name, "Omnius, Overruled");
+  assert.equal(receipt.presentation.name, currentRelease.presentation.name);
+  assert.equal(
+    root.querySelector("#top .continuum-arrival > span:first-child").textContent,
+    `cAshIo / ${currentVersionLabel}`,
+  );
+  assert.equal(document.title, `Doug Cashio · cAshIo · ${currentVersionLabel} ${currentRelease.presentation.name}`);
   assert.equal(
     root.querySelector("#top .continuum-arrival > span:nth-child(2)").textContent,
     receipt.presentation.name,
@@ -68,7 +100,13 @@ test("V40 ships its real reading edition under the strict production security po
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(receipt.updatedDate + "T12:00:00Z"));
-  assert.match(root.querySelector("footer").textContent, new RegExp("Omnius, Overruled.*Updated " + updatedDate));
+  assert.ok(
+    root
+      .querySelector("footer")
+      .textContent.includes(
+        `${currentVersionLabel} · ${receipt.presentation.name} · Directed by Doug Cashio · Updated ${updatedDate}`,
+      ),
+  );
   assert.doesNotMatch(root.querySelector("footer").textContent, /Preview 05|current public site/);
   assert.equal(root.querySelectorAll("[style]").length, 0, "the reading edition must not use inline style attributes");
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
@@ -242,7 +280,7 @@ function expandScript(scripts, name, seen = new Set()) {
 
 test("V37 software gates preserve the independent V35 dated evidence", async () => {
   const packageJson = JSON.parse(await read("package.json"));
-  assert.equal(packageJson.version, "42.0.0");
+  assert.equal(packageJson.version, currentRelease.experienceVersion);
   const lock = JSON.parse(await read("package-lock.json"));
   assert.equal(lock.version, packageJson.version);
   assert.equal(lock.packages[""].version, packageJson.version);
@@ -278,7 +316,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
     packageJson.scripts["test:artifact"],
     packageJson.scripts["test:release"],
   ]);
-  assert.match(expandedTest[0], /^node --import tsx --test /);
+  assert.match(expandedTest[0], /^node --import tsx --test --test-concurrency=1 /);
   assert.match(expandedTest[0], /tests\/prerender\.test\.mjs/);
   assert.doesNotMatch(expandedTest[0], /tests\/release-gates\.test\.mjs/);
   assert.equal(packageJson.scripts["test:artifact"], "node --import tsx --test tests/release-gates.test.mjs");
@@ -821,8 +859,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
     const compatibility = JSON.parse(await read(`dist/${name}`));
     assert.deepEqual(compatibility.frontDoor, {
       entry: "/",
-      experienceVersion: "42.0.0",
-      visualEdition: "Omnius, Overruled",
+      experienceVersion: currentRelease.experienceVersion,
+      visualEdition: currentRelease.visualEdition,
       receipt: "/v40/site-release.json",
     });
   }
@@ -871,8 +909,10 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.ok(doc.querySelector('#snapshot-story a[href="/evidence/console-snapshot-2026-10-03.json"]'));
   assert.deepEqual(JSON.parse(await read("dist/evidence/status.json")), JSON.parse(await read("status.json")));
-  assert.ok((await read("README.md")).startsWith("# cAshIo V42 · Omnius, Overruled"));
-  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], "V42.0.0");
+  assert.ok(
+    (await read("README.md")).startsWith(`# cAshIo ${currentVersionLabel} · ${currentRelease.presentation.name}`),
+  );
+  assert.equal((await read("CHANGELOG.md")).match(/^## (V[\d.]+)/m)?.[1], `V${currentRelease.experienceVersion}`);
   const sitemap = new JSDOM(await read("dist/sitemap.xml"), { contentType: "application/xml" }).window.document;
   const home = [...sitemap.querySelectorAll("url")].find(
     (entry) => entry.querySelector("loc")?.textContent === "https://cashio.us/",

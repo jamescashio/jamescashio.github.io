@@ -1,5 +1,6 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { chromium, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
@@ -124,7 +125,16 @@ test("current brand assets decode at their advertised sizes while the archived e
   }
 
   const archived = await readFile(new URL("../v39/index.html", import.meta.url), "utf8");
-  assert.match(archived, /rel="icon" href="\/cashio\/icon\.svg"/);
+  assert.match(archived, /rel="icon" href="\/cashio\/icon-gold-archive\.svg"/);
+  const archivedIcon = await readFile(new URL("../public/cashio/icon-gold-archive.svg", import.meta.url));
+  assert.equal(
+    createHash("sha256").update(archivedIcon).digest("hex"),
+    "b4c7fe338d1782f4d14b3594af4136f00e8467d46c8e068cdebe8bfd63e61c85",
+    "the archive icon preserves public/cashio/icon.svg from 6254986 byte for byte",
+  );
+  const servedArchivedIcon = await context.request.get(new URL("/cashio/icon-gold-archive.svg", url).href);
+  assert.equal(servedArchivedIcon.status(), 200);
+  assert.deepEqual(await servedArchivedIcon.body(), archivedIcon, "the archive serves the preserved original icon");
   assert.match(archived, /src="\/brand\/celestial-1680\.webp"/);
   assert.match(archived, /https:\/\/cashio\.us\/assets\/workshop\/share-card-v394\.jpg/);
   assert.doesNotMatch(archived, /\/brand\/platinum\//, "the historical edition does not inherit current brand assets");

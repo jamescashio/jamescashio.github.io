@@ -11,7 +11,7 @@ import { startTrace, traceCaps, runPacket, animPk } from "./request-trace.ts";
 import { renderVals } from "./view-values.ts";
 import { renderPage } from "./render-page.ts";
 import { resources } from "./page-assets.ts";
-import { observedDate, updatedDate, presentation } from "./evidence.ts";
+import { observedDate, updatedDate, presentation, versionLabel } from "./evidence.ts";
 
 import React from "react";
 
@@ -98,7 +98,7 @@ export class V40Page extends React.Component<PageProps, PageState> implements Pa
     traceStep: -1,
     tracing: false,
     eveLog: [
-      ["d", "Page updated · " + updatedDate + " · V42 / " + presentation.name],
+      ["d", "Page updated · " + updatedDate + " · " + versionLabel + " / " + presentation.name],
       [
         "d",
         // The date prints once; a second line names it only if the observation day differs.

@@ -42,7 +42,7 @@ export function ReleaseHearing() {
           ◇
         </span>
         <span className="hearing-invitation">
-          <small>V42 / Omnius, Overruled</small>
+          <small>From V42 / Omnius, Overruled</small>
           <strong>Overrule the overmind.</strong>
         </span>
         <span className="hearing-open">
@@ -54,8 +54,8 @@ export function ReleaseHearing() {
           <p className="hearing-kicker">A very small rebellion</p>
           <h2>Even an overmind needs supervision.</h2>
           <p>
-            Omnius is the machine overmind in Brian Herbert and Kevin J. Anderson’s Butlerian Jihad prequels. The name
-            of this release imagines a much smaller rebellion: the machine proposes, and a human has the last word.
+            Omnius is the machine overmind in Brian Herbert and Kevin J. Anderson’s Butlerian Jihad prequels. The V42
+            release name imagines a much smaller rebellion: the machine proposes, and a human has the last word.
           </p>
           <p>Useful machines. Independent humans. Absolutely no reserved parking for the algorithm.</p>
           <a
