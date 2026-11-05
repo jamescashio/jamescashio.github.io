@@ -38,9 +38,19 @@ async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFram
     const scheduled = new Map();
     const held = new Map();
     if (inspectFrames) {
+      let controlledTime = 0;
       window.holdRoadsterFrames = false;
       window.roadsterKnownCallbacks = () => roadsterCallbacks.size;
       window.roadsterHeldFrames = () => held.size;
+      window.advanceRoadsterFrame = (elapsed) => {
+        const entry = held.entries().next().value;
+        if (!entry) throw new Error("No Roadster frame is held for controlled advancement.");
+        const [id, callback] = entry;
+        held.delete(id);
+        controlledTime = elapsed === 0 ? performance.now() : controlledTime + elapsed;
+        callback(controlledTime);
+        record("advance-frame", { id, elapsed });
+      };
       window.releaseRoadsterFrames = () => {
         window.holdRoadsterFrames = false;
         const callbacks = [...held.values()];
@@ -271,7 +281,7 @@ test("the studio light is visible, keyboard adjustable, and quiet with reduced m
   }
 });
 
-test("a light sweep is finite and stops at its current angle on Stop, hidden, offscreen, or reduced motion", async (t) => {
+test("a light sweep is finite and stops at its current angle when hidden, offscreen, or reduced motion", async (t) => {
   const page = await openStudio(t, 1440, "no-preference");
   const canvas = page.locator(".roadster-inspection canvas");
   const start = () => page.getByRole("button", { name: "Sweep light", exact: true }).click();
@@ -280,12 +290,6 @@ test("a light sweep is finite and stops at its current angle on Stop, hidden, of
   await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "false", { timeout: 6000 });
   await expect(canvas).toHaveAttribute("data-light-angle", "80");
   await still(page);
-  await start();
-  await expect.poll(() => canvas.getAttribute("data-light-angle")).not.toBe("80");
-  await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
-  const stopped = await canvas.getAttribute("data-light-angle");
-  await still(page);
-  assert.equal(await canvas.getAttribute("data-light-angle"), stopped);
   await start();
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", { configurable: true, value: true });
@@ -359,7 +363,7 @@ test("component locators trace actual details, remain reachable after orbiting, 
   }
 });
 
-test("one sweep click reframes an offscreen Roadster and starts the light immediately", async (t) => {
+test("one sweep click reframes an offscreen Roadster and completes a finite light pass", async (t) => {
   const page = await openStudio(t, 320, "no-preference");
   const canvas = page.locator(".roadster-inspection canvas");
   await canvas.evaluate((element) =>
@@ -376,56 +380,74 @@ test("one sweep click reframes an offscreen Roadster and starts the light immedi
   await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "true");
   await expect(canvas).toBeInViewport({ ratio: 0.75 });
   await expect.poll(() => canvas.getAttribute("data-light-angle")).not.toBe("0");
-  await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
+  await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "false", { timeout: 6000 });
+  await expect(canvas).toHaveAttribute("data-light-angle", "80");
   await still(page);
 });
 
 test("Stop and reduced motion cancel delayed sweep frames while preserving a pending camera move", async (t) => {
-  const page = await openStudio(t, 1440, "no-preference", true);
-  const canvas = page.locator(".roadster-inspection canvas");
-  // Learn the viewer's callback from an actual first paint before holding it.
-  await expect.poll(() => page.evaluate(() => window.roadsterKnownCallbacks())).toBeGreaterThan(0);
-  await still(page);
-  for (const action of ["stop", "camera", "reduced-motion"]) {
-    const cameraMove = action === "camera";
-    await page.evaluate(() => {
-      window.holdRoadsterFrames = true;
-    });
-    await page.getByRole("button", { name: "Sweep light", exact: true }).click();
-    await expect.poll(() => page.evaluate(() => window.roadsterHeldFrames())).toBe(1);
-    if (cameraMove) await canvas.press("ArrowRight");
-    const stopped = await canvas.getAttribute("data-light-angle");
-    const draws = await page.evaluate(() => window.roadsterDraws);
-    if (action === "reduced-motion") await page.emulateMedia({ reducedMotion: "reduce" });
-    else await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
-    await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "false");
-    assert.equal(
-      await page.evaluate(() => window.roadsterHeldFrames()),
-      cameraMove ? 1 : 0,
-      cameraMove ? "the requested camera move keeps its pending frame" : "the redundant sweep frame is canceled",
-    );
-    await page.evaluate(() => window.releaseRoadsterFrames());
-    if (cameraMove) {
-      await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(draws);
-      // Wait for the requested 1.1-second camera move, then retain the strict idle check.
-      await page.evaluate(
-        () =>
-          new Promise((resolve) => {
-            const start = performance.now();
-            function tick(now) {
-              if (now - start >= 1300) resolve();
-              else requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
-          }),
-      );
-    } else
-      assert.equal(await page.evaluate(() => window.roadsterDraws), draws, `${action} does not repaint the same angle`);
+  for (const width of [1440, 320]) {
+    const page = await openStudio(t, width, "no-preference", true);
+    const canvas = page.locator(".roadster-inspection canvas");
+    // Learn the viewer's callback from an actual first paint before holding it.
+    await expect.poll(() => page.evaluate(() => window.roadsterKnownCallbacks())).toBeGreaterThan(0);
     await still(page);
-    assert.equal(
-      await canvas.getAttribute("data-light-angle"),
-      stopped,
-      `${action} preserves the displayed light angle`,
-    );
+    for (const action of width === 320 ? ["stop"] : ["stop", "camera", "reduced-motion"]) {
+      const cameraMove = action === "camera";
+      const initialAngle = await canvas.getAttribute("data-light-angle");
+      await page.evaluate(() => {
+        window.holdRoadsterFrames = true;
+      });
+      await page.getByRole("button", { name: "Sweep light", exact: true }).click();
+      await expect.poll(() => page.evaluate(() => window.roadsterHeldFrames())).toBe(1);
+      // Keep the next viewer frame held while browser actionability checks run.
+      // These two real paints reach an intermediate angle without consuming the finite sweep's wall time.
+      await page.evaluate(() => window.advanceRoadsterFrame(0));
+      await expect.poll(() => page.evaluate(() => window.roadsterHeldFrames())).toBe(1);
+      await page.evaluate(() => window.advanceRoadsterFrame(1000));
+      await expect.poll(() => page.evaluate(() => window.roadsterHeldFrames())).toBe(1);
+      await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "true");
+      const intermediateAngle = Number(await canvas.getAttribute("data-light-angle"));
+      assert.ok(intermediateAngle > -80 && intermediateAngle < 80, "the light is between its endpoints before Stop");
+      assert.notEqual(String(intermediateAngle), initialAngle, "the requested sweep has visibly advanced before Stop");
+      if (cameraMove) await canvas.press("ArrowRight");
+      const stopped = await canvas.getAttribute("data-light-angle");
+      const draws = await page.evaluate(() => window.roadsterDraws);
+      if (action === "reduced-motion") await page.emulateMedia({ reducedMotion: "reduce" });
+      else await page.getByRole("button", { name: "Stop sweep", exact: true }).click();
+      await expect(page.locator(".roadster-lighting")).toHaveAttribute("data-sweeping", "false");
+      assert.equal(
+        await page.evaluate(() => window.roadsterHeldFrames()),
+        cameraMove ? 1 : 0,
+        cameraMove ? "the requested camera move keeps its pending frame" : "the redundant sweep frame is canceled",
+      );
+      await page.evaluate(() => window.releaseRoadsterFrames());
+      if (cameraMove) {
+        await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(draws);
+        // Wait for the requested 1.1-second camera move, then retain the strict idle check.
+        await page.evaluate(
+          () =>
+            new Promise((resolve) => {
+              const start = performance.now();
+              function tick(now) {
+                if (now - start >= 1300) resolve();
+                else requestAnimationFrame(tick);
+              }
+              requestAnimationFrame(tick);
+            }),
+        );
+      } else
+        assert.equal(
+          await page.evaluate(() => window.roadsterDraws),
+          draws,
+          `${action} does not repaint the same angle`,
+        );
+      await still(page);
+      assert.equal(
+        await canvas.getAttribute("data-light-angle"),
+        stopped,
+        `${action} preserves the displayed light angle`,
+      );
+    }
   }
 });

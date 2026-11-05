@@ -532,6 +532,7 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   const page = await visit(t, { width: 390, height: 844, motion: "no-preference", hash: "#operator" });
   await page.locator("#sigplate").scrollIntoViewIfNeeded();
   await page.locator("#sig-art").evaluate((image) => image.decode());
+  const displayedArtwork = await page.locator("#sig-art").getAttribute("src");
   await page.locator("#sig-btn").click();
   await expect(page.locator("#sig-state")).toHaveText("ENERGIZED · GOLD INTENT");
   await expect(page.locator("#sig-state")).toHaveText("DORMANT · GOLD INTENT", { timeout: 6000 });
@@ -540,7 +541,7 @@ test("House Cashio signature loads, energizes, falls back to its original artwor
   await expect(page.getByRole("button", { name: "Close celestial signature" })).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator("#brand-studio-title")).toHaveCount(0);
-  await page.route(/\/brand\/celestial-\d+\.webp$/, (route) => route.abort());
+  await page.route(new URL(displayedArtwork, url).href, (route) => route.abort());
   await page.goto(url + "#operator");
   await page.reload();
   await page.locator("#sigplate").scrollIntoViewIfNeeded();
