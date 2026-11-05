@@ -5,9 +5,10 @@
 // Run after `npm run build`; set V44_URL to audit a served build instead of a local one.
 import { spawn, execFileSync } from "node:child_process";
 import { once } from "node:events";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import net from "node:net";
-import { fileURLToPath } from "node:url";
 import lighthouse from "lighthouse";
 import { launch } from "chrome-launcher";
 import desktop from "lighthouse/core/config/desktop-config.js";
@@ -41,11 +42,11 @@ const failures = [];
 const summary = [];
 try {
   for (const [form, run, config] of runs) {
-    const profile = new URL(`profile-${form}-${run}/`, out);
-    await mkdir(profile, { recursive: true });
+    // A fresh profile per run, outside the reports, so no run inherits another's cache or lock.
+    const profile = await mkdtemp(path.join(tmpdir(), "v44-audit-"));
     const chrome = await launch({
       ...(process.env.CHROME_PATH ? { chromePath: process.env.CHROME_PATH } : {}),
-      userDataDir: fileURLToPath(profile),
+      userDataDir: profile,
       chromeFlags: ["--headless=new", "--no-sandbox", "--disable-gpu"],
       logLevel: "silent",
     });
@@ -72,6 +73,7 @@ try {
         if (scores[key] < floor) failures.push(`${form} run ${run}: ${key} ${scores[key]} is under ${floor}`);
     } finally {
       await chrome.kill();
+      await rm(profile, { recursive: true, force: true });
     }
   }
 } finally {

@@ -77,6 +77,8 @@ export function mountStations({ surge, onStation }: Hooks): Stations {
     closeSheet();
     if (animate) surge(1400);
     target.scrollIntoView({ behavior: animate && motionEnabled() ? "smooth" : "auto" });
+    // The station being travelled to starts its arrival at once, rather than after the scroll settles.
+    target.querySelectorAll("[data-reveal]").forEach((plate) => plate.classList.add("in"));
     const heading = headingOf(target);
     if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
     heading.focus({ preventScroll: true });

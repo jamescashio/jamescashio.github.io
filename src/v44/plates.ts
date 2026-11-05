@@ -15,7 +15,8 @@ export function mountPlates() {
         reveal.unobserve(e.target);
       }
     },
-    { rootMargin: "0px 0px -8% 0px" },
+    // A plate starts to arrive a little before it reaches the screen.
+    { rootMargin: "0px 0px 12% 0px" },
   );
   $$(".station:not(.arrival) .station-head, .station .hull, .after-note").forEach((el) => {
     el.setAttribute("data-reveal", "");
