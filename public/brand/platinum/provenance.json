@@ -3,10 +3,14 @@
   "source_sha256": "98b34ec176dd3a27babb155cafd5d1e37b9dd1b497648804280e3416e7d9f654",
   "original_dimensions": [1847, 851],
   "processing": "Full-frame responsive resize and WebP encoding only. No crop, recolor or generated replacement.",
-  "icon_source": "Doug-approved platinum simplified C drafts",
+  "icon_source": "Doug-approved platinum simplified C kit, corrected November 5, 2026: red upper terminal and blue lower terminal. Approved SVG and PNG exports copied without artwork changes; root ICO packages the approved 16/32/48/64 PNGs.",
   "wordmark": "Original outlined compact cAshIo lettering; red A and blue barred I. Geometry and spacing preserved.",
   "logoAccentOrder": {
     "A": "red",
     "I": "blue"
+  },
+  "faviconAccentOrder": {
+    "top": "#FF3D55",
+    "bottom": "#3578FF"
   }
 }

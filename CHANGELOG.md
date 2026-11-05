@@ -2,6 +2,8 @@
 
 ## V43.0.0 · Centauri · 11-05-2026
 
+C icon correction · 11-05-2026: the simplified platinum C now has a red upper terminal and blue lower terminal across browser favicons, headers and phone icons. Versioned icon and manifest URLs avoid stale browser caches; the root ICO fallback contains the same approved artwork. The wordmark remains red A and blue I. The signature, historical artwork, page content and interactive behavior are unchanged.
+
 Prepared 11-04-2026. Branding corrected 11-05-2026. The publication date records this revision; the observation and historical release dates remain unchanged.
 
 The approved platinum cAshIo identity uses sculpted lettering, electric blue and a restrained laser-red counterpoint. The original planetary artwork, typefaces, cut corners, content, media, bookmarks and historical editions remain. The full signature sits within an instrument plaque; compact wordmarks, icons, focus indicators and buttons share the same identity. The narrow phone header preserves readable controls without hiding them under the scrollbar. The capital A is red and the barred capital I is blue. The coordinated personal-site update extends platinum themes and current marks to older editions and reading rooms; historical content, films and the original interactive Celestial artwork remain intact.

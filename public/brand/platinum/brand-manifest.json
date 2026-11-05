@@ -34,11 +34,13 @@
       "standard": "icon-192.png",
       "large": "icon-512.png"
     },
-    "provenance": "provenance.json"
+    "provenance": "provenance.json",
+    "iconCacheVersion": "c-red-top-20261105"
   },
   "principles": [
     "Preserve detailed inlays and miniature A/I worlds",
     "Logo: red A first, blue capital I second",
+    "Favicon and C icon: red on top, blue on bottom",
     "Platinum dominant, electric blue primary light, red counterpoint",
     "Subtly patriotic palette; preserve existing content and separate project identities",
     "No jade, emerald, mint or teal branding; preserve semantic status colors",
@@ -47,13 +49,13 @@
   "files": [
     {
       "name": "BRAND_GUIDE.md",
-      "bytes": 4067,
-      "sha256": "c6a4b3a46c118373528ab80c969c0769ad48d6178914d91766c988ae73d098f3"
+      "bytes": 4570,
+      "sha256": "fe28d84421f93d401552c79e4bf047df08cd2a0dde9196f3519bd3442e7e6898"
     },
     {
       "name": "apple-touch-icon.png",
-      "bytes": 6186,
-      "sha256": "fe218911e6c1b4053a6a84b78bef978a794d0d8c84f03efbab3aa7d4f4190d90"
+      "bytes": 5837,
+      "sha256": "2e0040c7dd12db9f10ba25a0cb32bcfb5c6cf84de635af18bb02838ffddf1774"
     },
     {
       "name": "everyday-dark.svg",
@@ -68,72 +70,72 @@
     {
       "name": "favicon-16.png",
       "bytes": 453,
-      "sha256": "bd9b93a3b6274c85801095de50b8226e4b7cf6474f8463689b6e5ff3806619f3"
+      "sha256": "bc17b3ff4f90f8bbf3a3b7d24013f596112d69f6ed7d60563a8e8213fac1bc55"
     },
     {
       "name": "favicon-32.png",
       "bytes": 732,
-      "sha256": "f909356fc1d382e143c9dff1735f16aeff20d511cef9999ec779319087e9c510"
+      "sha256": "bb165f94d7dc7ff7ace4795139e192b9402e783fee04d175307cb73ccebb9821"
     },
     {
       "name": "favicon-48.png",
-      "bytes": 1122,
-      "sha256": "e77d5799eab34596d9b463ef084c3828653d4b497bddd3c3805656766a3f2c93"
+      "bytes": 1136,
+      "sha256": "cfa3dfb6cb1a5f052b6d6997951b14dc175b98aa22e258f89cd01f71439522b4"
     },
     {
       "name": "favicon-64.png",
-      "bytes": 1377,
-      "sha256": "7a59c7749985627f623f8595f5375946f87b009bf6a83f334ae0b562697e7179"
+      "bytes": 1381,
+      "sha256": "bd689d2237fa8dc0d4b442883fd7e93814050c1b7027499ff74bd95794391da5"
     },
     {
       "name": "favicon.svg",
-      "bytes": 601,
-      "sha256": "8c7adc708bd8216cbcf2de45dd14036f4c88b04489d68c2b88d2451e773c1358"
+      "bytes": 604,
+      "sha256": "8be702491a08f842f3bf204b11564e4e302424b3a136e3ec951c5ef7dc796ffc"
     },
     {
       "name": "icon-16.png",
       "bytes": 453,
-      "sha256": "bd9b93a3b6274c85801095de50b8226e4b7cf6474f8463689b6e5ff3806619f3"
+      "sha256": "bc17b3ff4f90f8bbf3a3b7d24013f596112d69f6ed7d60563a8e8213fac1bc55"
     },
     {
       "name": "icon-180.png",
-      "bytes": 5838,
-      "sha256": "c94067c9667982b4a6705106e6a7aa3f2fc3d9b499f8e390e0ff57034739d206"
+      "bytes": 5837,
+      "sha256": "2e0040c7dd12db9f10ba25a0cb32bcfb5c6cf84de635af18bb02838ffddf1774"
     },
     {
       "name": "icon-192.png",
-      "bytes": 6597,
-      "sha256": "2356b1c229552b4ba2941810254faeb9fc1e0ed59f166981c67fa5f606a4abb5"
+      "bytes": 6166,
+      "sha256": "56d8a9f966d988c79191934dd482f361a158231121774b24e8fd5930d9487071"
     },
     {
       "name": "icon-32.png",
       "bytes": 732,
-      "sha256": "f909356fc1d382e143c9dff1735f16aeff20d511cef9999ec779319087e9c510"
+      "sha256": "bb165f94d7dc7ff7ace4795139e192b9402e783fee04d175307cb73ccebb9821"
     },
     {
       "name": "icon-48.png",
-      "bytes": 1122,
-      "sha256": "e77d5799eab34596d9b463ef084c3828653d4b497bddd3c3805656766a3f2c93"
+      "bytes": 1136,
+      "sha256": "cfa3dfb6cb1a5f052b6d6997951b14dc175b98aa22e258f89cd01f71439522b4"
     },
     {
       "name": "icon-512.png",
-      "bytes": 30942,
-      "sha256": "a64e182a990041119c0c1012378a6de038fa41cbbf6827ea41e61e93b22a32e8"
+      "bytes": 20228,
+      "sha256": "60a856b026b3cf53703fecc5157f440f2954d84370bdb769f73613680e86b7a4"
     },
     {
       "name": "icon-64.png",
-      "bytes": 1377,
-      "sha256": "7a59c7749985627f623f8595f5375946f87b009bf6a83f334ae0b562697e7179"
+      "bytes": 1381,
+      "sha256": "bd689d2237fa8dc0d4b442883fd7e93814050c1b7027499ff74bd95794391da5"
     },
     {
       "name": "icon.svg",
-      "bytes": 608,
-      "sha256": "42f89f6ccbd6904bb142c2df94e77a205d41be7426a38ffb891f67e7c53401d1"
+      "bytes": 611,
+      "sha256": "0ca2e2e7461dc242cfc49334cf770f8d00c4fe54a446a80a05d6175101b8d5cc"
     },
     {
       "name": "provenance.json",
-      "bytes": 566,
-      "sha256": "0fbbdf7a2c02eef110fddb1411783f6f312a5147ca906093e4c184a01361fe41"
+      "bytes": 823,
+      "sha256": "4a8fd4ff07ff859bee3d0616b5f82f56342f8c6c162704508797a73584600ef3"
     },
     {
       "name": "share-card.jpg",
@@ -162,8 +164,8 @@
     },
     {
       "name": "site.webmanifest",
-      "bytes": 411,
-      "sha256": "6d140b167234c45d917a36864a0e445259e322f7aa0b95adc7964b02c24c5a17"
+      "bytes": 509,
+      "sha256": "def671c4756e00d63647ed432c38e0518bf96a8b7d55104c688ef92870bba5a4"
     },
     {
       "name": "social-preview.jpg",
@@ -184,5 +186,10 @@
   "logoAccentOrder": {
     "A": "red",
     "I": "blue"
-  }
+  },
+  "faviconAccentOrder": {
+    "top": "#FF3D55",
+    "bottom": "#3578FF"
+  },
+  "faviconUpdated": "2026-11-05"
 }

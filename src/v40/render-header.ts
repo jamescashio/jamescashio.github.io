@@ -32,7 +32,7 @@ export function renderHeader(v: GeneratedView) {
         " ",
         h("img", {
           key: 51,
-          src: "/brand/platinum/icon.svg",
+          src: "/brand/platinum/icon.svg?v=c-red-top-20261105",
           alt: "",
           width: 34,
           height: 34,
