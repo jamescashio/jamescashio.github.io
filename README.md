@@ -18,9 +18,9 @@ The optional Omnius hearing is an original fictional scene retained from V42, wi
 
 ## Current evidence
 
-The verified record was refreshed on **November 4, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 19 running containers out of 20, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 161 snapshots and reported successful integrity verification for 22 of 22 latest reported guest snapshots.
+The verified record was refreshed on **November 5, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 20 running containers out of 21, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 181 snapshots and reported successful integrity verification for 23 of 23 latest reported guest snapshots.
 
-These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V43 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 2, 2026 record is preserved unchanged at `/evidence/status-2026-11-02.json`.
+These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. V43 describes the interface; the observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 4, 2026 record is preserved unchanged at `/evidence/status-2026-11-04.json`.
 
 ## Source ownership
 
