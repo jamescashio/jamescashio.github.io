@@ -156,7 +156,8 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   color: var(--pearl);
   text-shadow: 0 0 12px var(--blue);
 }
-@media (min-width: 900px) {
+/* On short laptop screens Bit's corner reaches the readout's line, so the readout steps aside. */
+@media (min-width: 900px) and (min-height: 761px) {
   .gate-readout {
     display: block;
   }
@@ -190,6 +191,22 @@ html[data-gate="open"] .gate-readout [data-gate-status] {
   }
   .arrival-actions {
     margin-top: 20px;
+  }
+}
+/*
+ * The painted gate is taller than these screens are wide. Tablets in portrait lower the ring toward the
+ * copy so no empty band opens between them; short phones lift it clear of the headline.
+ */
+@media (orientation: portrait) and (min-width: 700px) {
+  .sky-poster {
+    object-position: 50% 30%;
+    transform-origin: 54% 32%;
+  }
+}
+@media (orientation: portrait) and (max-height: 700px) {
+  .sky-poster {
+    object-position: 50% 75%;
+    transform-origin: 54% 16%;
   }
 }
 @media (orientation: portrait) and (max-height: 600px) {

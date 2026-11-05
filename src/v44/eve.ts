@@ -85,12 +85,19 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
     markTyping();
     tick();
   };
+  /**
+   * A visitor's command is echoed in their prompt and announced. E.V.E.'s own opening readout is
+   * printed as her line, with no prompt, and the log stays quiet until the visitor speaks first.
+   */
   const run = async (raw: string, byVisitor = true) => {
     const cmd = raw.trim().toLowerCase().slice(0, 40);
     if (!cmd) return;
     finishTyping();
-    say(cmd, "you");
-    if (byVisitor) document.dispatchEvent(new CustomEvent("v44:eve", { detail: { cmd } }));
+    if (byVisitor) {
+      log.setAttribute("aria-live", "polite");
+      say(cmd, "you");
+      document.dispatchEvent(new CustomEvent("v44:eve", { detail: { cmd } }));
+    }
     if (cmd === "clear") {
       log.replaceChildren();
       return;
@@ -111,22 +118,13 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       return;
     }
     if (cmd === "whoami") return say("A visitor with the helm. I keep the receipts.");
-    if (cmd === "version") {
-      const r = JSON.parse(root.dataset.record || "{}").release;
-      return say(
-        r
-          ? `${r.version} ${r.name}, the front door, updated ${r.updated}. The previous edition is preserved at /v43/.`
-          : "The release record is missing from this page.",
-      );
-    }
-
     if (cmd === "sources")
       return say(
         "This record: /status.json. Earlier dated records live under /evidence/. Nothing here calls a private service.",
       );
     const egg = EGGS.get(cmd);
     if (egg) return say(egg);
-    if (!["status", "backups", "limits", "law", "withheld"].includes(cmd)) {
+    if (!["status", "backups", "limits", "law", "withheld", "version"].includes(cmd)) {
       say("Unknown command. Type help. I will not judge, and if I do, I will publish the date.");
       return;
     }
@@ -137,7 +135,14 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       say("The printed record is missing from this page. The raw export lives at /status.json.");
       return;
     }
-    if (cmd === "status")
+    if (cmd === "version") {
+      const r = s.release;
+      say(
+        r
+          ? `${r.version} ${r.name}, the front door, updated ${r.updated}. The previous edition is preserved at /v43/.`
+          : "The release record is missing from this page.",
+      );
+    } else if (cmd === "status")
       say(
         `Observed ${s.verifiedDay}. ${s.containers.running} of ${s.containers.documented} containers running, ${s.virtualMachines.running} of ${s.virtualMachines.documented} virtual machines, ${s.cluster.hostsOnline} hosts reporting. Inventory, not application health.`,
       );

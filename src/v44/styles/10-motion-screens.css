@@ -19,9 +19,12 @@ html.js[data-motion="on"] [data-reveal="now"] {
 }
 html.js[data-motion="on"] .arrival .line,
 html.js[data-motion="on"] .arrival .lede,
-html.js[data-motion="on"] .arrival .arrival-actions,
 html.js[data-motion="on"] .arrival .kicker {
   animation: rise 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+/* The call to action slides in but is never transparent, so early keyboard focus always lands on something visible. */
+html.js[data-motion="on"] .arrival .arrival-actions {
+  animation: rise-move 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 .arrival .line:nth-child(2) {
   animation-delay: 90ms;
@@ -34,6 +37,11 @@ html.js[data-motion="on"] .arrival .kicker {
 }
 .arrival .arrival-actions {
   animation-delay: 420ms;
+}
+@keyframes rise-move {
+  from {
+    transform: translateY(24px);
+  }
 }
 @keyframes rise {
   from {
@@ -316,11 +324,8 @@ html[data-motion="off"] *::after {
   color: var(--red-text);
 }
 
-/* The narrowest phones: the kicker keeps its point, the segments keep their padding. */
+/* The narrowest phones: the segments keep their padding. */
 @media (max-width: 360px) {
-  .kicker-name {
-    display: none;
-  }
   .segmented span {
     font-size: 15px;
     padding: 0 8px;

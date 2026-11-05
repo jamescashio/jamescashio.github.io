@@ -27,6 +27,8 @@ uniform vec4 uRing;
 uniform float uRot;
 uniform vec2 uSun;
 uniform vec3 uPlanet;
+uniform vec3 uNebA;
+uniform vec3 uNebB;
 
 const float TAU = 6.28318530718;
 const float SEGMENTS = 44.0;
@@ -121,9 +123,10 @@ void main() {
   float band = exp(-pow((uv.y + uv.x * 0.42 - 0.05) / 0.42, 2.0));
   float neb = fbm(uv * 1.7 + drift + par * 2.0);
   float neb2 = fbm(uv * 3.3 - drift * 1.6 + 11.0);
-  vec3 nebula = mix(vec3(0.03, 0.07, 0.2), vec3(0.16, 0.05, 0.12), smoothstep(0.45, 0.8, neb2));
+  // Each station lends the nebula its own two colors; the gate itself keeps the house blue.
+  vec3 nebula = mix(uNebA, uNebB, smoothstep(0.45, 0.8, neb2));
   col += nebula * band * smoothstep(0.32, 0.85, neb) * 1.35;
-  col += vec3(0.04, 0.08, 0.2) * pow(neb, 3.0) * 0.5;
+  col += uNebA * 1.2 * pow(neb, 3.0) * 0.5;
 
   float dust = band * smoothstep(0.35, 0.8, neb);
   vec3 starCol = stars(uv + par * 0.2, 240.0, 3.0, 0.55 + 2.2 * dust) + stars(uv + par * 0.3, 90.0, 1.0, 0.85) + stars(uv + par * 0.7, 46.0, 17.0, 1.0) + stars(uv + par * 1.2, 22.0, 41.0, 1.25);

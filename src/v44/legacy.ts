@@ -1,6 +1,6 @@
 /**
- * Older bookmarks keep working. V44 owns seven station anchors; every V43 deep link
- * (tours, films, experiments, mission cards) is handed to the preserved edition at /v43/.
+ * Older bookmarks keep working. V44 owns its station anchors and every id on the page; any other
+ * V43 deep link (tours, films, experiments, mission cards) is handed to the preserved edition at /v43/.
  */
 const STATIONS = new Set(["arrival", "cinema", "worlds", "workshop", "helm", "evidence", "doug", "contact", "main"]);
 const ALIASES = new Map([
@@ -24,7 +24,11 @@ const ROOMS = new Map([
 
 export type LegacyRoute = { replace?: string; rewrite?: string };
 
-export function legacyRoute(href: string): LegacyRoute {
+/**
+ * `onPage` answers whether the front door itself has an element with that id, so a link to a heading
+ * or a field on this page stays here. Without it, only the station anchors count as local.
+ */
+export function legacyRoute(href: string, onPage: (id: string) => boolean = () => false): LegacyRoute {
   const url = new URL(href);
   const hash = url.hash;
   if (hash.startsWith("#deck=")) return { replace: "/command-deck.html" + url.search + hash };
@@ -36,8 +40,17 @@ export function legacyRoute(href: string): LegacyRoute {
   if (room) return { replace: `/rooms/${room}/interactive/` + url.search + hash };
   const alias = ALIASES.get(hash);
   if (alias) return { rewrite: url.pathname + url.search + alias };
-  if (hash.length > 1 && !STATIONS.has(hash.slice(1))) return { replace: "/v43/" + url.search + hash };
+  const id = safeDecode(hash.slice(1));
+  if (id && !STATIONS.has(id) && !onPage(id)) return { replace: "/v43/" + url.search + hash };
   return {};
+}
+
+function safeDecode(text: string): string {
+  try {
+    return decodeURIComponent(text);
+  } catch {
+    return text;
+  }
 }
 
 /** Where a front door hash link from another page should point, so it lands correctly even without JavaScript. */
@@ -50,7 +63,7 @@ export function frontDoorHref(hash: string): string {
 export function applyLegacyRoute(): string | null {
   // A packaged preview runs away from cashio.us, where its host owns the hash.
   if (document.querySelector('meta[name="cashio-preview"]')) return null;
-  const route = legacyRoute(location.href);
+  const route = legacyRoute(location.href, (id) => document.getElementById(id) !== null);
   if (route.replace) location.replace(route.replace);
   else if (route.rewrite) {
     history.replaceState(history.state, "", route.rewrite);

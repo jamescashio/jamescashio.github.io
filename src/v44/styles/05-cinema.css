@@ -36,6 +36,17 @@
   object-fit: contain;
   background: #000;
 }
+/* The trailer is letterboxed inside a 16:9 file. Its scope frame crops the black bars away, so poster and film share one shape. */
+.screen[data-frame="scope"] .screen-video {
+  aspect-ratio: 2.39 / 1;
+  object-fit: cover;
+}
+/* Captions sit low and compact, clear of the title cards in the middle of the frame. */
+.screen-video::cue {
+  font: 500 clamp(13px, 1.6vw, 19px) / 1.3 var(--body);
+  color: #f4f6fa;
+  background: rgba(5, 7, 12, 0.72);
+}
 .play {
   display: flex;
   align-items: center;

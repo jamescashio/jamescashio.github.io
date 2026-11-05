@@ -2,12 +2,17 @@
  * The screening room: one screen, a short reel, nothing plays until the visitor asks.
  * Every film is described once, on its reel button, so the page and the player cannot disagree.
  */
+import { motionEnabled } from "./motion.ts";
+
 type Film = {
   id: string;
   title: string;
   label: string;
   meta: string;
   poster: string;
+  /** Responsive poster candidates, kept when the visitor switches back to this film. */
+  posterSrcset?: string;
+  posterSizes?: string;
   /** Candidate files by minimum viewport width; the first that fits plays. A playlist plays in order. */
   sources: { minWidth: number; playlist: string[] }[];
   captions?: string;
@@ -27,6 +32,8 @@ function readFilm(button: HTMLButtonElement): Film {
     label: d.label || "Play",
     meta: d.meta || "",
     poster: d.poster || "",
+    posterSrcset: d.posterSrcset,
+    posterSizes: d.posterSizes,
     sources,
     captions: d.captions,
     frame: d.frame,
@@ -41,8 +48,8 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
   const meta = screen.querySelector<HTMLElement>("[data-screen-meta]")!;
   const title = screen.querySelector<HTMLElement>("[data-screen-title]")!;
   const status = screen.querySelector<HTMLElement>("[data-screen-status]");
-  // Only the trailer has spoken words; the silent shorts hide its transcript.
-  const words = document.querySelector<HTMLDetailsElement>("[data-transcript]");
+  // Each film has its own text alternative: the trailer's words, or a description of the silent shorts.
+  const texts = [...document.querySelectorAll<HTMLDetailsElement>("[data-film-words]")];
   const reel = [...document.querySelectorAll<HTMLButtonElement>("[data-film]")];
   const films = new Map(reel.map((b) => [b.dataset.film || "", readFilm(b)]));
   let film = films.get("trailer") || readFilm(reel[0]);
@@ -72,8 +79,13 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
     stop();
     film = f;
     say("");
-    poster.removeAttribute("srcset");
-    poster.removeAttribute("sizes");
+    if (f.posterSrcset) {
+      poster.srcset = f.posterSrcset;
+      poster.sizes = f.posterSizes || "100vw";
+    } else {
+      poster.removeAttribute("srcset");
+      poster.removeAttribute("sizes");
+    }
     poster.src = f.poster;
     poster.alt = `${f.title} poster`;
     label.textContent = f.label;
@@ -82,10 +94,11 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
     video.setAttribute("aria-label", f.title);
     if (f.frame) screen.dataset.frame = f.frame;
     else delete screen.dataset.frame;
-    if (words) {
-      words.hidden = !f.captions;
-      if (!f.captions) words.open = false;
-    }
+    texts.forEach((text) => {
+      const mine = text.dataset.filmWords === f.id;
+      text.hidden = !mine;
+      if (!mine) text.open = false;
+    });
     reel.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.film === id)));
   };
   const load = (src: string) => {
@@ -108,6 +121,15 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
       track.srclang = "en";
       track.src = film.captions;
       track.default = true;
+      // Lines sit in the lower fifth of the picture, under the title cards in the middle and clear of the native controls.
+      track.addEventListener("load", () => {
+        for (const cue of Array.from(track.track.cues || [])) {
+          if (!(cue instanceof VTTCue)) continue;
+          cue.snapToLines = false;
+          cue.line = 84;
+          cue.lineAlign = "end";
+        }
+      });
       video.appendChild(track);
     }
     queue = source.playlist.slice(1);
@@ -126,10 +148,19 @@ export function mountCinema(screen: HTMLElement, onPlaying: (playing: boolean) =
   });
   // A playlist runs its clips in order, then returns to the poster.
   video.addEventListener("ended", () => (queue.length ? load(queue.shift()!) : stop()));
+  /** On a phone the reel sits below the screen: bring the screen into view so the film never starts out of sight. */
+  const showScreen = () => {
+    const r = screen.getBoundingClientRect();
+    // The page's scroll padding already keeps the header clear; the screen lands just under it.
+    const top = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    if (r.top < top - 1 || r.bottom > innerHeight + 1)
+      screen.scrollIntoView({ block: "start", behavior: motionEnabled() ? "smooth" : "auto" });
+  };
   play.addEventListener("click", start);
   reel.forEach((b) =>
     b.addEventListener("click", () => {
       select(b.dataset.film || "trailer");
+      showScreen();
       start();
     }),
   );

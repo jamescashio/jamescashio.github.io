@@ -1,26 +1,45 @@
 /* Station 05: the helm, its controls, result and route map. */
 /* Helm */
+/* Phones read the result straight after the inputs that change it, with the map below; wider screens set the result beside both. */
 .helm-grid {
   display: grid;
   gap: 0;
-}
-@media (min-width: 760px) {
-  .helm-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-  }
+  grid-template-areas: "controls" "result" "map";
 }
 .helm-controls {
+  grid-area: controls;
   padding: clamp(20px, 3vw, 36px);
   display: grid;
   gap: 22px;
   align-content: start;
   border-bottom: 1px solid var(--line);
 }
+.helm-result {
+  grid-area: result;
+}
+.helm-map {
+  grid-area: map;
+  padding: 4px clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px);
+  border-top: 1px solid var(--line);
+}
 @media (min-width: 760px) {
-  .helm-controls {
+  .helm-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "controls result" "map result";
+  }
+  .helm-controls,
+  .helm-map {
     border-bottom: 0;
+    border-top: 0;
     border-right: 1px solid var(--line);
   }
+  .helm-controls {
+    padding-bottom: 8px;
+  }
+}
+.helm-hint {
+  margin: 0;
 }
 fieldset {
   border: 0;
@@ -202,10 +221,11 @@ html[data-motion="on"] .steps.run li {
 }
 /* The helm's route map: the chosen lane lights, a packet rides it, and a held request stops at the gate. */
 .route-map {
+  display: block;
   width: 100%;
   max-width: 440px;
   height: auto;
-  margin: 8px 0 4px;
+  margin: 8px auto 0;
 }
 .rm-wire {
   fill: none;

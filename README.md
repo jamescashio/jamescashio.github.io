@@ -14,7 +14,7 @@ The previous front door is preserved unchanged as [V43 Centauri at /v43/](https:
 | 02 Cinema   | Plays House Cashio: The Trailer or the studio shorts; The Sovereign links to YouTube        |
 | 03 Worlds   | Enters the starship lab, principles engine, Studios, flight heritage or the Roadster hangar |
 | 04 Workshop | Reads the system map of the design and an example decision brief                            |
-| 05 Helm     | Steers a teaching model of the routing rule and watches its route map, in the browser       |
+| 05 Helm     | Steers an illustration of the routing rule and watches its route map, in the browser        |
 | 06 Evidence | Reads the dated record and asks E.V.E. about it                                             |
 | 07 Doug     | Meets Doug and says hello                                                                   |
 
@@ -34,7 +34,10 @@ The V44 page prints these figures at build time from `public/status.json`, the e
 | Evidence figures filled from the record        | `scripts/v44-status.mjs`                              |
 | Gate, sun, planet, nebula and stars            | `src/v44/shader.ts`                                   |
 | Sky engine: layout, ignition, budget, fallback | `src/v44/sky.ts`                                      |
-| Page wiring: stations, transit, reveal, eggs   | `src/v44/main.ts`                                     |
+| Page wiring: scroll, sky state, motion button  | `src/v44/main.ts`                                     |
+| Stations, phone sheet, travel and Back         | `src/v44/stations.ts`                                 |
+| Plate reveals, focus and pointer light         | `src/v44/plates.ts`                                   |
+| Toasts, copying the address, typed eggs        | `src/v44/eggs.ts`                                     |
 | Motion preference and Pause                    | `src/v44/motion.ts`                                   |
 | Screening room                                 | `src/v44/cinema.ts`                                   |
 | Helm routing model                             | `src/v44/route.ts`                                    |
@@ -48,11 +51,11 @@ The V44 page prints these figures at build time from `public/status.json`, the e
 
 ## Performance and motion
 
-The gate runs on a real GPU. Software rasterizers get the painted poster of the same scene, because a full screen shader on a CPU costs more than it gives. The canvas backing store is capped near 2.1 million pixels, steps down at once after a slow frame, renders the sky behind content at half rate, rests on a still frame when nobody scrolls, points or types, and stops when the tab is hidden, motion is paused, a film plays or the context is lost. Pause and the reduced motion preference leave a complete still page. Nothing makes sound.
+Each station lends the deep sky its own light: amber for the screening room, green for the worlds, steel for the workshop, violet at the helm, a cold archive light for the evidence and the house red for Doug. The live gate eases its nebula between them in the shader; the painted poster carries the same colors in a light layer. The gate runs on a real GPU. Software rasterizers get the painted poster of the same scene, because a full screen shader on a CPU costs more than it gives. The canvas backing store is capped near 2.1 million pixels, steps down at once after a slow frame, renders the sky behind content at half rate, rests on a still frame when nobody scrolls, points or types, and stops when the tab is hidden, motion is paused, a film plays or the context is lost. Pause and the reduced motion preference leave a complete still page. Nothing makes sound.
 
 ## Verification
 
-Run `npm run verify`. `tests/v44-drummer.test.mjs` covers the helm rule against the Odyssey teaching model, the gate layout at phone, laptop and ultrawide sizes, the evidence filler and the built page: strict security policy, station order, evidence parity with `status.json`, image dimensions and text, and links that resolve inside the build. `npm run test:v44` opens the built front door in Chrome and checks what static tests cannot see: every arrival fits its first screen at nine sizes from 320 by 568 to 3822 by 1600, the header turns solid once the page scrolls, keyboard focus is visible inside every cut corner control, the station sheet moves focus and keeps Back, Pause leaves nothing moving, E.V.E. counts the list the page prints, the helm map follows the rule, the transcript matches the captions and Bit stays clear of the arrival on phones.
+Run `npm run verify`. `tests/v44-drummer.test.mjs` covers the helm rule against the Odyssey routing example, the gate layout at phone, laptop and ultrawide sizes, the evidence filler and the built page: strict security policy, station order, evidence parity with `status.json`, image dimensions and text, and links that resolve inside the build. `npm run test:v44` opens the built front door in Chrome and checks what static tests cannot see: every arrival fits its first screen at nine sizes from 320 by 568 to 3822 by 1600, the header turns solid once the page scrolls, keyboard focus is visible inside every cut corner control, the station sheet moves focus and keeps Back, Pause leaves nothing moving, E.V.E. counts the list the page prints, the helm map follows the rule, the transcript matches the captions and Bit stays clear of the arrival on phones. On phones it also checks that the helm's result and the chosen film land on screen, and it checks that the header chips stay on one line from 1024 to 1366 wide, that the gate readout steps aside for Bit on short laptops, that links to ids on the page stay on the page and that E.V.E. opens without speaking for the visitor.
 
 ## History and publication
 

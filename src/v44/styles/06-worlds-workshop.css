@@ -225,14 +225,13 @@ html[data-motion="on"] .system-map.in[data-visible] .packet-d {
     opacity: 0;
   }
 }
+/* The brief keeps its own height beside the taller map, so no empty band opens above its link. */
 .receipt {
   padding: 24px 24px 18px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-.receipt .text-link {
-  margin-top: auto;
+  align-self: start;
 }
 /* A small paper copy of the brief: four labelled lines, printed from the dated record. */
 .brief-preview {

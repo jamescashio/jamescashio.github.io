@@ -76,6 +76,7 @@
         />
       </picture>
       <canvas class="sky-canvas"></canvas>
+      <div class="sky-tint"></div>
       <div class="sky-scrim"></div>
     </div>
 
@@ -112,6 +113,8 @@
         </nav>
         <div class="hud-actions">
           <button
+            disabled
+            data-needs-js
             type="button"
             class="chip menu-toggle"
             data-menu-toggle
@@ -120,7 +123,7 @@
           >
             Stations
           </button>
-          <button type="button" class="chip" data-motion-toggle aria-label="Pause motion">
+          <button disabled data-needs-js type="button" class="chip" data-motion-toggle aria-label="Pause motion">
             <span class="motion-long" data-motion-long>Pause motion</span
             ><span class="motion-short" data-motion-short>Pause</span>
           </button>
@@ -128,16 +131,14 @@
         </div>
       </div>
       <div class="transit-line" aria-hidden="true"><span data-transit-fill></span></div>
-      <div class="station-sheet" id="station-sheet" hidden></div>
+      <nav class="station-sheet" id="station-sheet" aria-label="Stations menu" hidden></nav>
     </header>
 
     <main id="main">
       <section class="station arrival" id="arrival" aria-labelledby="arrival-title" data-station="arrival">
         <div class="frame arrival-frame">
           <div class="arrival-copy">
-            <p class="kicker">
-              <span class="dot"></span><span class="kicker-name">Doug Cashio ·&nbsp;</span>Local AI workshop
-            </p>
+            <p class="kicker"><span class="dot"></span><span>Local AI workshop</span></p>
             <h1 id="arrival-title" class="headline">
               <span class="line">The machines</span>
               <span class="line">can think.</span>
@@ -156,7 +157,7 @@
             </div>
           </div>
           <div class="gate-readout" aria-hidden="true">
-            <p><span class="label">Gate</span> <span data-gate-status>Aligning</span></p>
+            <p><span class="label">Gate</span> <span data-gate-status>Open</span></p>
             <p><span class="label">Helm</span> Human</p>
           </div>
         </div>
@@ -202,7 +203,7 @@
                     data-screen-video
                     aria-label="House Cashio: The Trailer"
                   ></video>
-                  <button type="button" class="play" data-screen-play>
+                  <button disabled data-needs-js type="button" class="play" data-screen-play>
                     <span class="play-icon" aria-hidden="true"></span>
                     <span class="play-text"
                       ><span data-screen-label>Play the trailer</span
@@ -218,7 +219,7 @@
                   <span class="screen-status" role="status" data-screen-status></span>
                 </figcaption>
               </figure>
-              <details class="transcript" data-transcript>
+              <details class="transcript" data-transcript data-film-words="trailer">
                 <summary>Read the trailer’s words</summary>
                 <ol class="transcript-lines">
                   {{film.trailerWords}}
@@ -228,6 +229,21 @@
                   station.
                 </p>
               </details>
+              <details class="transcript" data-film-words="shorts" hidden>
+                <summary>Read what happens in the shorts</summary>
+                <ol class="transcript-lines">
+                  <li>
+                    <strong>Portal Arrival.</strong> A doorway opens in space, with a ringed planet on the other side.
+                  </li>
+                  <li>
+                    <strong>Starship Flyby.</strong> A slow departure over the workshop, into the deep blue evening.
+                  </li>
+                  <li>
+                    <strong>The Long View.</strong> From a dark observatory, a telescope looks out toward a blue world.
+                  </li>
+                </ol>
+                <p class="fine">Three silent shorts, about five seconds each, with no dialogue or sound.</p>
+              </details>
             </div>
             <div class="reel">
               <h3>From the screening room</h3>
@@ -235,13 +251,17 @@
               <ul class="reel-list">
                 <li>
                   <button
+                    disabled
+                    data-needs-js
                     type="button"
                     class="reel-item"
                     data-film="trailer"
                     data-title="House Cashio: The Trailer"
                     data-label="Play the trailer"
                     data-meta="61 seconds · Starts muted · Captions on"
-                    data-poster="/assets/hero/cashio-trailer-poster.webp"
+                    data-poster="/v40/posters/cashio-trailer-poster-960-0dc12884eb9c.webp"
+                    data-poster-srcset="/v40/posters/cashio-trailer-poster-640-417bd0f1e6e8.webp 640w, /v40/posters/cashio-trailer-poster-960-0dc12884eb9c.webp 960w, /v40/posters/cashio-trailer-poster-1280-0926f58aed40.webp 1280w"
+                    data-poster-sizes="(max-width: 1000px) calc(100vw - 36px), 860px"
                     data-sources="1100 /assets/hero/cashio-trailer-1080p.mp4, 0 /assets/hero/cashio-trailer-720p.mp4"
                     data-captions="/assets/hero/cashio-trailer-text.vtt"
                     data-frame="scope"
@@ -260,6 +280,8 @@
                 </li>
                 <li>
                   <button
+                    disabled
+                    data-needs-js
                     type="button"
                     class="reel-item"
                     data-film="shorts"
@@ -446,8 +468,8 @@
               <p class="kicker">How it is built</p>
               <h2 id="workshop-title">Built at home. Open to inspect.</h2>
               <p class="sub">
-                Two servers I own, Zeus and Apollo, do the computing. Hermes, my job scheduler, is designed to choose
-                where each task runs, and the design keeps a person responsible for reviewing the results.
+                Two servers I own, Zeus and Apollo, do the computing. Hermes, my scheduler, is built to pick where each
+                task runs. They are named for gods, and they still answer to a person.
               </p>
             </div>
           </header>
@@ -455,9 +477,8 @@
             <figure class="system-map hull" aria-labelledby="map-title" aria-describedby="map-desc">
               <p class="sr" id="map-title">How a request is meant to move through the lab</p>
               <p class="sr" id="map-desc">
-                Intended flow: a person sends intent to Hermes, the scheduler. Hermes places the work on Zeus or Apollo,
-                and the result returns to the person for review. Scheduling and routing are not part of the dated
-                record.
+                The design: a person sends intent to Hermes, the scheduler. Hermes places the work on Zeus or Apollo,
+                and the result returns to the person for review.
               </p>
               <svg class="map-wide" viewBox="0 0 520 320" aria-hidden="true">
                 <defs>
@@ -523,16 +544,15 @@
                 </g>
                 <text class="map-note" x="150" y="372">Results come back to a person</text>
               </svg>
-              <figcaption>
-                The design, drawn as a map. Addresses and host roles are left out, and routing is not part of the dated
-                record.
-              </figcaption>
             </figure>
 
             <article class="receipt hull">
               <p class="world-tag">An example brief</p>
               <h3>A brief worth keeping.</h3>
-              <p>Turn a question into a decision someone can stand behind.</p>
+              <p>
+                Every question I take on ends as a one page brief: what was seen, where it came from, what is unknown
+                and who decides.
+              </p>
               <dl class="brief-preview">
                 <div>
                   <dt>Observed</dt>
@@ -571,34 +591,61 @@
               <p class="kicker">Your turn</p>
               <h2 id="helm-title">Take the helm.</h2>
               <p class="sub">
-                Change an input and watch the route change. A teaching model of how I route work, running entirely in
+                Change an input and watch the route change. An illustration of my routing rules, running entirely in
                 your browser. No request is sent.
               </p>
             </div>
           </header>
           <div class="helm-grid hull">
             <form class="helm-controls" data-helm aria-label="Routing inputs">
+              <p class="fine helm-hint">Try this: choose Research, then add private information. Watch what wins.</p>
               <fieldset>
                 <legend>Choose the work</legend>
                 <div class="segmented">
-                  <label><input type="radio" name="intent" value="draft" checked /> <span>Draft</span></label>
-                  <label><input type="radio" name="intent" value="research" /> <span>Research</span></label>
-                  <label><input type="radio" name="intent" value="analyze" /> <span>Analyze</span></label>
+                  <label
+                    ><input disabled data-needs-js type="radio" name="intent" value="draft" checked />
+                    <span>Draft</span></label
+                  >
+                  <label
+                    ><input disabled data-needs-js type="radio" name="intent" value="research" />
+                    <span>Research</span></label
+                  >
+                  <label
+                    ><input disabled data-needs-js type="radio" name="intent" value="analyze" />
+                    <span>Analyze</span></label
+                  >
                 </div>
               </fieldset>
               <fieldset>
                 <legend>Add a boundary</legend>
                 <label class="switch"
-                  ><input type="checkbox" name="privateData" /> <span class="switch-track" aria-hidden="true"></span>
-                  <span>Contains private information</span></label
+                  ><input disabled data-needs-js type="checkbox" name="privateData" />
+                  <span class="switch-track" aria-hidden="true"></span> <span>Contains private information</span></label
                 >
                 <label class="switch"
-                  ><input type="checkbox" name="sources" /> <span class="switch-track" aria-hidden="true"></span>
+                  ><input disabled data-needs-js type="checkbox" name="sources" />
+                  <span class="switch-track" aria-hidden="true"></span>
                   <span>Requires attributable sources</span></label
                 >
               </fieldset>
+            </form>
+            <div class="helm-result" aria-live="polite" data-helm-result>
               <p class="helm-example" data-helm-example>Example task: a first draft of a project update.</p>
-              <p class="fine">Try this: choose Research, then add private information. Watch what wins.</p>
+              <p class="kicker">Illustrative route</p>
+              <p class="lane" data-helm-lane>Workhorse</p>
+              <p class="code"><span data-helm-code>Suggested lane</span></p>
+              <p class="detail" data-helm-detail>
+                Routine drafting fits a capable general lane. A costlier one needs a reason.
+              </p>
+              <ol class="steps" data-helm-steps>
+                <li>Intent identified</li>
+                <li>Public input accepted</li>
+                <li>Workhorse lane selected</li>
+                <li>Decision recorded</li>
+                <li>Operator reviews the draft</li>
+              </ol>
+            </div>
+            <div class="helm-map">
               <svg class="route-map" viewBox="0 0 320 200" aria-hidden="true" data-route-map data-route="workhorse">
                 <defs>
                   <linearGradient id="lane-glow" gradientUnits="userSpaceOnUse" x1="20" x2="300" y1="0" y2="0">
@@ -634,26 +681,11 @@
                 </g>
                 <circle class="route-packet" r="5" />
               </svg>
-            </form>
-            <div class="helm-result" aria-live="polite" data-helm-result>
-              <p class="kicker">Illustrative route</p>
-              <p class="lane" data-helm-lane>Workhorse</p>
-              <p class="code"><span data-helm-code>Qualified</span></p>
-              <p class="detail" data-helm-detail>
-                Routine drafting fits a general work lane. Greater expense needs a reason.
-              </p>
-              <ol class="steps" data-helm-steps>
-                <li>Intent identified</li>
-                <li>Public input accepted</li>
-                <li>Workhorse lane selected</li>
-                <li>Decision recorded</li>
-                <li>Operator reviews the draft</li>
-              </ol>
             </div>
           </div>
           <p class="after-note">
-            Six more experiments, from escalation to exposure triage, live in the previous edition.
-            <a href="/v43/#studies">Open them in V43 Centauri&nbsp;↗</a>
+            Six more experiments, from escalation to exposure triage, wait in the lab archive.
+            <a href="/v43/#studies">Open the archive&nbsp;↗</a>
           </p>
           <p class="next-station">
             <a href="#evidence" data-station-next><span class="num">06</span> Next: Evidence&nbsp;↓</a>
@@ -725,7 +757,7 @@
               <div
                 class="eve-log"
                 role="log"
-                aria-live="polite"
+                aria-live="off"
                 aria-label="E.V.E. console output"
                 tabindex="0"
                 data-eve-log
@@ -736,6 +768,8 @@
               <form class="eve-input" data-eve-form>
                 <label for="eve-cmd" class="eve-prompt">eve&gt;</label>
                 <input
+                  disabled
+                  data-needs-js
                   id="eve-cmd"
                   aria-label="E.V.E. command"
                   name="cmd"
@@ -745,13 +779,13 @@
                   enterkeyhint="send"
                   placeholder="type a command"
                 />
-                <button type="submit" class="chip">Run</button>
+                <button type="submit" class="chip" disabled data-needs-js>Run</button>
               </form>
               <div class="eve-quick" role="group" aria-label="Quick commands">
-                <button type="button" class="chip" data-eve-cmd="status">status</button>
-                <button type="button" class="chip" data-eve-cmd="backups">backups</button>
-                <button type="button" class="chip" data-eve-cmd="limits">limits</button>
-                <button type="button" class="chip" data-eve-cmd="help">help</button>
+                <button type="button" class="chip" disabled data-needs-js data-eve-cmd="status">status</button>
+                <button type="button" class="chip" disabled data-needs-js data-eve-cmd="backups">backups</button>
+                <button type="button" class="chip" disabled data-needs-js data-eve-cmd="limits">limits</button>
+                <button type="button" class="chip" disabled data-needs-js data-eve-cmd="help">help</button>
               </div>
             </div>
           </div>
@@ -817,7 +851,7 @@
                   href="mailto:doug@cashio.us?subject=Comparing%20notes%20from%20cashio.us"
                   >doug@cashio.us</a
                 ><!--/email_off-->
-                <button type="button" class="chip" data-copy-email>Copy email address</button>
+                <button disabled data-needs-js type="button" class="chip" data-copy-email>Copy email address</button>
               </p>
             </div>
           </div>
@@ -870,7 +904,15 @@
       </div>
     </footer>
 
-    <button type="button" class="bit" data-bit-open aria-haspopup="dialog" aria-label="Talk to Bit, your copilot">
+    <button
+      disabled
+      data-needs-js
+      type="button"
+      class="bit"
+      data-bit-open
+      aria-haspopup="dialog"
+      aria-label="Talk to Bit, your copilot"
+    >
       <canvas class="bit-face" width="96" height="96" aria-hidden="true"></canvas>
       <span class="bit-name">Bit</span>
     </button>
@@ -890,7 +932,9 @@
     </dialog>
     <noscript
       ><p class="noscript">
-        This page reads fully without JavaScript. The gate, the helm and E.V.E. need JavaScript to move.
+        This page reads fully without JavaScript. The gate, the films, the helm, E.V.E. and Bit need it to move, so
+        their controls stay switched off. Every film is described in the
+        <a href="/rooms/studios/">Studios reading edition</a>.
       </p></noscript
     >
   </body>

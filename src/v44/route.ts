@@ -1,6 +1,7 @@
 /**
  * The helm's teaching model. Deliberately the same rule as the Odyssey routing example
- * (src/odyssey/data.ts, routeExample); a test keeps the two in step.
+ * (src/odyssey/data.ts, routeExample): the same input always reaches the same lane and code, and a
+ * test keeps the two in step. The wording is this edition's own.
  */
 export type Intent = "draft" | "research" | "analyze";
 export type RouteInput = { intent: Intent; privateData: boolean; sources: boolean };
@@ -40,13 +41,13 @@ export function route(input: RouteInput): Route {
     code: "QUALIFIED",
     detail: analyze
       ? "A synthesis task needs connected reasoning. Preserve the assumptions and send the result for review."
-      : "Routine drafting fits a general work lane. Greater expense needs a reason.",
+      : "Routine drafting fits a capable general lane. A costlier one needs a reason.",
     steps: [
       "Intent identified",
       "Public input accepted",
       analyze ? "Synthesis lane selected" : "Workhorse lane selected",
       "Decision recorded",
-      "Operator reviews the draft",
+      analyze ? "Operator reviews the analysis" : "Operator reviews the draft",
     ],
   };
 }
@@ -61,7 +62,7 @@ const EXAMPLES: Record<Intent, string> = {
 const CODE_LABEL: Record<Route["code"], string> = {
   HOLD: "Held for a person",
   EVIDENCE: "Evidence required",
-  QUALIFIED: "Qualified",
+  QUALIFIED: "Suggested lane",
 };
 
 export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
@@ -71,7 +72,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   const steps = result.querySelector<HTMLOListElement>("[data-helm-steps]")!;
   // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
   const map = (form.closest(".helm-grid") || result).querySelector<SVGSVGElement>("[data-route-map]");
-  const example = form.querySelector<HTMLElement>("[data-helm-example]");
+  const example = result.querySelector<HTMLElement>("[data-helm-example]");
   const read = (): RouteInput => {
     const data = new FormData(form);
     return {

@@ -13,11 +13,13 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (p) => readFile(path.join(root, p), "utf8");
 
 test("the helm keeps the Odyssey routing rule for every input", () => {
+  // The rule is the lane and code each input reaches, and the length of the trail; each edition words it in its own voice.
+  const rule = ({ lane, code, steps }) => ({ lane, code, steps: steps.length });
   for (const intent of ["draft", "research", "analyze"])
     for (const privateData of [false, true])
       for (const sources of [false, true]) {
         const input = { intent, privateData, sources };
-        assert.deepEqual(route(input), routeExample(input), JSON.stringify(input));
+        assert.deepEqual(rule(route(input)), rule(routeExample(input)), JSON.stringify(input));
       }
   assert.equal(route({ intent: "research", privateData: true, sources: true }).code, "HOLD", "privacy wins");
 });
@@ -101,6 +103,19 @@ test("the front door source keeps a strict policy and makes no network calls of 
   assert.match(csp, /style-src 'self';/);
   assert.doesNotMatch(csp, /unsafe|https:/);
   assert.doesNotMatch(html, /\sstyle="/, "no inline style attributes");
-  for (const file of ["main.ts", "sky.ts", "eve.ts", "bit.ts", "cinema.ts", "route.ts", "motion.ts", "layout.ts"])
+  for (const file of [
+    "main.ts",
+    "stations.ts",
+    "plates.ts",
+    "eggs.ts",
+    "sky.ts",
+    "eve.ts",
+    "bit.ts",
+    "cinema.ts",
+    "route.ts",
+    "motion.ts",
+    "layout.ts",
+    "legacy.ts",
+  ])
     assert.doesNotMatch(await read(`src/v44/${file}`), /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon/, file);
 });

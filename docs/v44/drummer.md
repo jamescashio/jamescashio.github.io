@@ -6,6 +6,8 @@ Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
 
 - The front door at `/` is rebuilt: new composition, a generative transit gate, station navigation and seven stations.
 - V43 Centauri stays reachable, unchanged in content, at `/v43/` (noindex, canonical to itself). Its receipt is preserved byte for byte at `/v43/site-release.json`.
+- The page title keeps the repository's release convention, `Doug Cashio · cAshIo · V44 Drummer`, which `scripts/check_release_consistency.py` enforces; share cards use `Doug Cashio · cAshIo · Local AI workshop`.
+- The helm keeps the Odyssey rule (the same input reaches the same lane and code) and words it in this edition's voice.
 - Rooms, films, evidence archives and older editions keep their URLs. V43 deep links on `/` open the matching place in `/v43/`; room bookmarks open the room; the reading editions point straight at the V44 stations or the preserved player, so they work without JavaScript.
 
 ## Acceptance
@@ -19,7 +21,7 @@ Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
 - The preserved V43 edition loads no code from another page's entry; shared modules have their own chunks.
 - No hyphens or em or en dashes in visible copy, except handles such as @james-cashio and aircraft designations.
 
-- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement.
+- `npm run test:v44` passes: arrival fit, solid header on scroll, visible focus inside clipped controls, sheet focus and history, Pause, E.V.E. parity, helm map, transcript and Bit placement; on phones the helm result and the chosen film land on screen; the scope film keeps its frame; header chips keep one line; on page ids stay on the page; E.V.E. opens without speaking for the visitor; each station lights the sky.
 
 ## Known limits
 

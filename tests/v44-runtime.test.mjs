@@ -203,6 +203,9 @@ test("the trailer's words come from its captions and step aside for the silent s
   await expect(words.locator("li")).toHaveCount(cues.length);
   await page.locator('[data-film="shorts"]').click();
   await expect(words).toBeHidden();
+  // The silent shorts bring their own text alternative: what happens on screen.
+  await expect(page.locator('[data-film-words="shorts"]')).toBeVisible();
+  await expect(page.locator('[data-film-words="shorts"] li')).toHaveCount(3);
   await expect(page.locator("[data-screen-video]")).toHaveAttribute("aria-label", "Studio shorts");
   await page.locator('[data-film="trailer"]').click();
   await expect(words).toBeVisible();
@@ -228,6 +231,12 @@ test("V43 deep links open the preserved edition and V44 stations stay home", asy
   await page.goto(new URL("/#rooms", url).href);
   await expect.poll(() => new URL(page.url()).hash).toBe("#worlds");
   assert.equal(new URL(page.url()).pathname, "/");
+  // A link to a heading or a field on this page is this page's own, never the old edition's.
+  for (const id of ["helm-title", "evidence-title", "eve-cmd", "map-title"]) {
+    await page.goto(new URL(`/#${id}`, url).href, { waitUntil: "networkidle" });
+    assert.equal(new URL(page.url()).pathname, "/", id);
+    assert.equal(new URL(page.url()).hash, `#${id}`, id);
+  }
 });
 
 test("an old alias on a loaded page travels to its station and moves focus there", async (t) => {
@@ -303,4 +312,145 @@ test("the station sheet closes when the window widens to the desktop navigation"
   await expect(page.locator("#station-sheet")).toBeVisible();
   await page.setViewportSize({ width: 1300, height: 900 });
   await expect(page.locator("#station-sheet")).toBeHidden();
+});
+
+test("without JavaScript the controls that need it are switched off and the notice says why", async (t) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  await page.goto(new URL("/", url).href);
+  await expect(page.locator("[data-screen-play]")).toBeDisabled();
+  await expect(page.locator("[data-bit-open]")).toBeDisabled();
+  await expect(page.locator("#eve-cmd")).toBeDisabled();
+  await expect(page.locator(".noscript")).toContainText("their controls stay switched off");
+  await expect(page.locator("h1")).toBeVisible();
+});
+
+test("on a phone the helm's result follows the inputs that change it", async (t) => {
+  for (const [width, height] of [
+    [320, 568],
+    [390, 844],
+  ]) {
+    const page = await visit(t, { width, height, mobile: true });
+    const toggle = page.locator('input[name="privateData"]');
+    // Put the switch a third of the way down the screen, where a thumb would use it, then flip it.
+    await toggle.evaluate((el) => {
+      const top = el.closest(".switch").getBoundingClientRect().top;
+      scrollTo({ top: scrollY + top - innerHeight * 0.35, behavior: "auto" });
+    });
+    await toggle.check({ force: true });
+    await expect(page.locator("[data-helm-lane]")).toHaveText("Human review");
+    const lane = await page.locator("[data-helm-lane]").boundingBox();
+    assert.ok(lane.y >= 0 && lane.y + lane.height <= height, `${width}x${height}: lane at ${lane.y}`);
+  }
+});
+
+test("on a phone, choosing a film brings the screen into view under the header", async (t) => {
+  for (const [width, height] of [
+    [320, 568],
+    [390, 844],
+  ]) {
+    const page = await visit(t, { width, height, mobile: true });
+    const reel = page.locator('[data-film="shorts"]');
+    await reel.scrollIntoViewIfNeeded();
+    await reel.click();
+    await expect(page.locator("[data-screen-video]")).toBeVisible();
+    await expect
+      .poll(async () => {
+        const header = await page.locator(".hud-bar").boundingBox();
+        const video = await page.locator("[data-screen-video]").boundingBox();
+        return video.y >= header.y + header.height - 1 && video.y + video.height <= height;
+      })
+      .toBe(true);
+  }
+});
+
+test("the scope film keeps the poster's 2.39 frame while it plays", async (t) => {
+  const page = await visit(t);
+  const before = await page.locator("[data-screen-poster]").boundingBox();
+  await page.locator("[data-screen-play]").click();
+  const video = page.locator("[data-screen-video]");
+  await expect(video).toBeVisible();
+  const box = await video.boundingBox();
+  assert.ok(Math.abs(box.width / box.height - 2.39) < 0.02, `ratio ${box.width / box.height}`);
+  assert.ok(Math.abs(box.height - before.height) < 2, "the frame does not grow on Play");
+});
+
+test("the header keeps its chips on one line at every width, and the stations fit beside them", async (t) => {
+  const page = await visit(t, { width: 1180, height: 800 });
+  for (const width of [1024, 1180, 1200, 1220, 1239, 1240, 1260, 1366]) {
+    await page.setViewportSize({ width, height: 800 });
+    const m = await page.evaluate(() => {
+      const chips = [...document.querySelectorAll(".hud-actions .chip")].filter(
+        (c) => getComputedStyle(c).display !== "none",
+      );
+      const list = document.querySelector(".stations ol").getBoundingClientRect();
+      const actions = document.querySelector(".hud-actions").getBoundingClientRect();
+      const nav = getComputedStyle(document.querySelector(".stations")).display !== "none";
+      return {
+        tallest: Math.max(...chips.map((c) => c.getBoundingClientRect().height)),
+        clear: !nav || list.right <= actions.left,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+      };
+    });
+    assert.ok(m.tallest <= 44, `${width}: a chip wrapped (${m.tallest}px)`);
+    assert.ok(m.clear, `${width}: the stations run into the chips`);
+    assert.equal(m.overflow, false, `${width}: sideways scroll`);
+  }
+});
+
+test("on short laptop screens the gate readout steps aside for Bit", async (t) => {
+  for (const [width, height, shown] of [
+    [1280, 720, false],
+    [1024, 600, false],
+    [1366, 768, true],
+    [1440, 900, true],
+  ]) {
+    const page = await visit(t, { width, height });
+    const readout = page.locator(".gate-readout");
+    if (!shown) {
+      await expect(readout).toBeHidden();
+      continue;
+    }
+    await expect(readout).toBeVisible();
+    const r = await readout.boundingBox();
+    const b = await page.locator("[data-bit-open]").boundingBox();
+    const overlap = !(r.x + r.width <= b.x || b.x + b.width <= r.x || r.y + r.height <= b.y || b.y + b.height <= r.y);
+    assert.equal(overlap, false, `${width}x${height}: Bit covers the readout`);
+  }
+});
+
+test("E.V.E. opens with her own reading and stays quiet until the visitor speaks", async (t) => {
+  const page = await visit(t);
+  const log = page.locator("[data-eve-log]");
+  await page.locator("[data-eve]").scrollIntoViewIfNeeded();
+  await expect(log).toContainText("containers running");
+  await expect(log.locator(".you")).toHaveCount(0);
+  await expect(log).toHaveAttribute("aria-live", "off");
+  await page.locator("#eve-cmd").fill("version");
+  await page.locator("#eve-cmd").press("Enter");
+  await expect(log.locator(".you")).toHaveText(["version"]);
+  await expect(log).toHaveAttribute("aria-live", "polite");
+  await expect(log).toContainText("Drummer");
+});
+
+test("each station lights the sky in its own color", async (t) => {
+  const page = await visit(t);
+  const sky = page.locator(".sky");
+  for (const id of ["cinema", "helm", "doug"]) {
+    await page.evaluate((s) => document.getElementById(s).scrollIntoView(), id);
+    await expect(sky).toHaveAttribute("data-at", id);
+  }
+  const tint = await sky.evaluate((el) => getComputedStyle(el).getPropertyValue("--tint"));
+  assert.notEqual(tint.trim(), "rgba(53, 120, 255, 0)", "the station light is not the arrival's");
+});
+
+test("keyboard focus finishes a fade that scrolling had already started", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  const card = page.locator(".world").first();
+  await card.scrollIntoViewIfNeeded();
+  await expect(card).toHaveClass(/\bin\b/);
+  await card.locator("a").first().focus();
+  await expect(card).toHaveAttribute("data-reveal", "now");
+  assert.equal(await card.evaluate((node) => getComputedStyle(node).opacity), "1");
 });

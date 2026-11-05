@@ -15,7 +15,9 @@ function stored(): string | null {
   }
 }
 
-const initial = () => stored() !== "off" && !reduce.matches;
+// The visitor's own choice this visit, kept in memory so a blocked storage cannot undo it.
+let chosen: string | null = null;
+const initial = () => (stored() ?? chosen) !== "off" && !reduce.matches;
 let enabled = initial();
 
 export function motionEnabled(): boolean {
@@ -24,6 +26,7 @@ export function motionEnabled(): boolean {
 
 export function setMotion(on: boolean) {
   enabled = on;
+  chosen = on ? "on" : "off";
   try {
     localStorage.setItem(KEY, on ? "on" : "off");
   } catch {

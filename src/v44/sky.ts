@@ -2,10 +2,8 @@ import { FRAGMENT_SHADER, VERTEX_SHADER } from "./shader.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
 import { layoutFor } from "./layout.ts";
 
-type Uniforms = Record<
-  "uRes" | "uTime" | "uTransit" | "uIgnite" | "uWarp" | "uDim" | "uPointer" | "uRing" | "uRot" | "uSun" | "uPlanet",
-  WebGLUniformLocation | null
->;
+type Uniforms = Record<(typeof UNIFORMS)[number], WebGLUniformLocation | null>;
+type Rgb = [number, number, number];
 
 const SOFTWARE = /swiftshader|llvmpipe|softpipe|software|basic render|microsoft basic/i;
 const UNIFORMS = [
@@ -20,12 +18,56 @@ const UNIFORMS = [
   "uRot",
   "uSun",
   "uPlanet",
+  "uNebA",
+  "uNebB",
 ] as const;
+/**
+ * The nebula's two colors at each station, so travel reads as travel: the gate's blue, the
+ * screening room's amber, green for the worlds, steel for the workshop, violet at the helm,
+ * a cold archive light for the evidence and the house red for the human in command.
+ */
+const NEBULA: Record<string, [Rgb, Rgb]> = {
+  arrival: [
+    [0.03, 0.07, 0.2],
+    [0.16, 0.05, 0.12],
+  ],
+  cinema: [
+    [0.13, 0.07, 0.04],
+    [0.2, 0.06, 0.08],
+  ],
+  worlds: [
+    [0.02, 0.11, 0.12],
+    [0.05, 0.15, 0.09],
+  ],
+  workshop: [
+    [0.03, 0.07, 0.17],
+    [0.06, 0.1, 0.2],
+  ],
+  helm: [
+    [0.07, 0.04, 0.2],
+    [0.17, 0.05, 0.19],
+  ],
+  evidence: [
+    [0.04, 0.09, 0.15],
+    [0.1, 0.12, 0.17],
+  ],
+  doug: [
+    [0.14, 0.04, 0.06],
+    [0.19, 0.09, 0.05],
+  ],
+};
 /** Without scroll, pointer or keys, the sky settles into a still frame: soon behind the reading, later at the gate. */
 const IDLE_DEEP_MS = 2500;
 const IDLE_GATE_MS = 30000;
 
-export type SkyState = { transit: number; dim: number; warpBoost: number; column?: { left: number; right: number } };
+export type SkyState = {
+  transit: number;
+  dim: number;
+  warpBoost: number;
+  column?: { left: number; right: number };
+  /** The station on screen, which picks the nebula's colors. */
+  station?: string;
+};
 /** Reasons the sky may not animate. Any one of them holds it on its last frame. */
 export type Hold = "motion" | "hidden" | "film" | "lost" | "idle" | "slow";
 
@@ -45,6 +87,8 @@ export class Sky {
   private warp = 0;
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
+  private nebula: [Rgb, Rgb] = [[...NEBULA.arrival[0]], [...NEBULA.arrival[1]]];
+  private nebulaShift = 0;
   private running = false;
   private holds = new Set<Hold>();
   readonly live: boolean;
@@ -212,12 +256,13 @@ export class Sky {
     if (!this.running) return;
     const s = this.state();
     const deep = s.transit >= 1;
-    if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && this.warp < 0.02 && this.igniteStart < 0) {
+    const settled = this.warp < 0.02 && this.igniteStart < 0 && this.nebulaShift < 0.002;
+    if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && settled) {
       this.hold("idle", true);
       return;
     }
-    // Behind the content the sky only needs half the frame rate.
-    const interval = deep && this.warp < 0.02 ? 1000 / 30 : 0;
+    // Sixty frames a second at most, so a 120 or 144 Hz display costs what a 60 Hz one does; half that behind content.
+    const interval = deep && this.warp < 0.02 ? 1000 / 30 : 1000 / 60 - 1.5;
     if (now - this.last >= interval) {
       const dt = this.last ? now - this.last : 16;
       this.last = now;
@@ -280,6 +325,16 @@ export class Sky {
     this.warp = Math.max(s.warpBoost, this.warp * 0.94);
     this.pointer[0] += (this.pointerTarget[0] - this.pointer[0]) * 0.04;
     this.pointer[1] += (this.pointerTarget[1] - this.pointer[1]) * 0.04;
+    // The nebula eases toward the station's colors over about two seconds, or changes at once when motion is off.
+    const target = NEBULA[s.station || "arrival"] || NEBULA.arrival;
+    const ease = motion && this.running ? 0.05 : 1;
+    this.nebulaShift = 0;
+    for (let k = 0; k < 2; k++)
+      for (let c = 0; c < 3; c++) {
+        const d = target[k][c] - this.nebula[k][c];
+        this.nebula[k][c] += d * ease;
+        this.nebulaShift = Math.max(this.nebulaShift, Math.abs(d));
+      }
     const L = layoutFor(innerWidth, innerHeight, s.column);
     gl.uniform2f(u.uRes, w, h);
     gl.uniform1f(u.uTime, motion ? this.clock : 12.4);
@@ -292,6 +347,8 @@ export class Sky {
     gl.uniform1f(u.uRot, L.rot);
     gl.uniform2f(u.uSun, ...L.sun);
     gl.uniform3f(u.uPlanet, ...L.planet);
+    gl.uniform3f(u.uNebA, ...this.nebula[0]);
+    gl.uniform3f(u.uNebB, ...this.nebula[1]);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 }
