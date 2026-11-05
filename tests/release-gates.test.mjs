@@ -613,7 +613,7 @@ test("responsive Celestial identity assets retain their approved bytes within de
   }
   const document = new JSDOM(await read("dist/odyssey.html")).window.document;
   const logo = document.querySelector(".cashio-brand-mark img");
-  assert.ok(logo?.getAttribute("srcset").includes("celestial-1680.webp"));
+  assert.ok(logo?.getAttribute("srcset").includes("/brand/platinum/signature-1680.webp"));
   assert.equal(
     document.querySelectorAll('img[src$=".gif"]').length,
     0,
@@ -877,8 +877,8 @@ test("Helios release identity, signature assets and compatibility receipts agree
   );
   assert.equal(home?.querySelector("lastmod")?.textContent, "2026-11-04");
   // The home signature and the Celestial Forge share one full size artwork file, so the forge reuses the cached copy.
-  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/celestial-1680.webp");
-  assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/celestial-1680.webp 1680w"));
+  assert.equal(doc.querySelector("#sig-art").getAttribute("src"), "/brand/platinum/signature-1680.webp");
+  assert.ok((await read("src/odyssey/brand-mark.tsx")).includes("/brand/platinum/signature-1680.webp 1680w"));
   assert.equal(
     doc.querySelector('#sigplate a[href="#signature"]').textContent.trim(),
     "Explore the celestial signature in 3D →",

@@ -1,0 +1,67 @@
+/* Palette only; semantic status colors and scene artwork stay authored. */
+:root {
+  --color-void: #0d1017;
+  --color-void-2: #111217;
+  --color-surface: #111217;
+  --color-surface-2: #111217;
+  --color-ink: #f5f5f7;
+  --color-muted: #e2e6ee;
+  --color-dim: #aab2c3;
+  --color-accent: #e2e6ee;
+  --color-accent-2: #f5f5f7;
+  --color-cyan: #9abeff;
+  --color-line: #313849;
+  --color-line-warm: #e2e6ee57;
+  --color-iris: #ff8a9d;
+  --color-on-accent: #111217;
+  --color-glass: #111217b8;
+  --shadow-glow: 0 0 28px #3578ff59;
+}
+.za-command-header {
+  background: linear-gradient(180deg, #0d1017f5, #0d1017d9, transparent);
+}
+.za-lcars-cap.warm {
+  background: #ff3d55;
+  color: #111217;
+}
+.za-lcars-cap.cool {
+  background: #3578ff;
+  color: #111217;
+}
+.za-flight-launch {
+  background: linear-gradient(105deg, #e2e6ee, #f5f5f7);
+  color: #111217;
+}
+.za-snapshot .za-flight-launch {
+  box-shadow: 0 0 28px #3578ff22;
+}
+.za-kicker {
+  color: #9abeff;
+}
+.za-btn:hover {
+  box-shadow:
+    0 12px 40px #3578ff45,
+    0 0 24px #3578ff35;
+}
+.za-btn-ghost:hover {
+  background: #3578ff14;
+  border-color: #9abeff;
+}
+.za-lcars-pip.on .za-lcars-pip-mark {
+  box-shadow: 0 0 14px #3578ffb3;
+}
+.za-build-example,
+.za-route-demo {
+  background: #111217;
+  border-color: #313849;
+}
+.za-build-story {
+  border-color: #313849;
+}
+.za-build-outcome {
+  color: #f5f5f7;
+}
+::selection {
+  background: #3578ff59;
+  color: #f5f5f7;
+}

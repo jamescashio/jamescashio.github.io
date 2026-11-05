@@ -1,0 +1,89 @@
+/* Palette only; project categories, instruments and interactive lighting remain authored. */
+:root,
+:root.aurora-root {
+  background: #0d1017;
+}
+.event-horizon.aurora.lensing.lightwake {
+  --a-abyss: #0d1017;
+  --a-surface: #111217;
+  --a-raised: #111217;
+  --a-cyan: #9abeff;
+  --a-gold: #e2e6ee;
+  --a-coral: #ff8a9d;
+  --a-paper: #e2e6ee;
+  --a-ink: #111217;
+  --a-muted: #aab2c3;
+  --a-rule: #313849;
+  --a-light-muted: #313849;
+  --a-teal-ink: #111217;
+  --ln-gold: #e2e6ee;
+  --ln-gold-ink: #111217;
+  --ln-paper: #f5f5f7;
+  --ln-rule: #31384957;
+  --lw-blue: #9abeff;
+  --lw-paper: #f5f5f7;
+}
+.event-horizon.aurora .o-projects {
+  --a-cyan: #22d3ee;
+  --a-gold: #edc991;
+  --a-coral: #fa927a;
+}
+.event-horizon.aurora.lensing.lightwake .o-header {
+  background: linear-gradient(#0d1017fc, #111217f5);
+  border-bottom-color: #313849;
+}
+.event-horizon.aurora.lensing.lightwake .o-brand {
+  color: #e2e6ee;
+}
+.event-horizon.aurora.lensing.lightwake .o-brand > svg {
+  color: #ff3d55;
+}
+.event-horizon.aurora.lensing.lightwake .o-header-hail {
+  color: #ff8a9d;
+  border-color: #ff3d5585;
+}
+.event-horizon.aurora.lensing.lightwake .o-header-hail:hover {
+  background: #ff3d5516;
+}
+.event-horizon.aurora.lensing.lightwake .o-header > nav a:after,
+.event-horizon.aurora.lensing.lightwake .o-scroll-progress {
+  background: #3578ff;
+}
+.event-horizon.aurora.lensing.lightwake .o-hero h1 em {
+  color: #e2e6ee;
+}
+.event-horizon.aurora.lensing.lightwake :is(.o-work, .o-principles) {
+  background: #111217;
+  color: #e2e6ee;
+}
+.event-horizon.aurora.lensing.lightwake :is(.o-universe, .o-operator) {
+  background: #f5f5f7;
+  color: #111217;
+  --o-gold: #111217;
+  --o-muted: #313849;
+}
+.event-horizon.aurora.lensing.lightwake :is(.o-universe .o-section-heading, .o-operator-copy) h2,
+.event-horizon.aurora.lensing.lightwake :is(.o-universe .o-section-heading, .o-operator-copy) h2 em {
+  color: #111217;
+}
+.event-horizon.aurora.lensing.lightwake .o-operator-copy .o-operator-lead {
+  color: #313849;
+}
+.visitor-path {
+  background: #0d1017;
+  border-color: #313849;
+}
+.visitor-path :is(a, button) {
+  border-color: #313849;
+  color: #e2e6ee;
+}
+.visitor-path :is(a, button):hover {
+  background: #111217;
+  color: #f5f5f7;
+}
+.visitor-step {
+  color: #9abeff;
+}
+.event-horizon.aurora.lensing.lightwake .eh-world-section :is(.o-kicker, h2 em) {
+  color: #e2e6ee;
+}

@@ -69,8 +69,8 @@ export function BrandMark({
       data-detail={studio ? "studio" : large ? "large" : "compact"}
     >
       <img
-        src="/brand/celestial-420.webp"
-        srcSet="/brand/celestial-420.webp 420w, /brand/celestial-840.webp 840w, /brand/celestial-1680.webp 1680w"
+        src="/brand/platinum/signature-420.webp"
+        srcSet="/brand/platinum/signature-420.webp 420w, /brand/platinum/signature-840.webp 840w, /brand/platinum/signature-1680.webp 1680w"
         sizes={
           studio
             ? magnified
@@ -80,8 +80,8 @@ export function BrandMark({
               ? "(max-width: 600px) 190px, 420px"
               : "(max-width: 360px) 110px, (max-width: 600px) 138px, (max-width: 1100px) 170px, 210px"
         }
-        width="2055"
-        height="765"
+        width="1680"
+        height="774"
         alt="cAshIo"
         decoding="async"
         loading={eager || studio ? "eager" : "lazy"}

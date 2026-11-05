@@ -6,7 +6,7 @@ Approved by Doug Cashio on November 4, 2026. This is the current personal identi
 
 Rich, precise and futuristic, with a subtly patriotic platinum/blue/red palette. Keep the signature's recessed circuitry, architectural scenes inside the A and I, dimensional frames and orbital details. Preserve the established personality and original worlds.
 
-The exact wordmark is **cAshIo**: lowercase c, uppercase A, lowercase s, lowercase h, uppercase I, lowercase o. The display name may be **cAshIo AI**. Preserve readable top and bottom bars on the everyday capital I.
+The exact wordmark is **cAshIo**: lowercase c, uppercase A, lowercase s, lowercase h, uppercase I, lowercase o. The display name may be **cAshIo AI**. The capital **A is red** and capital **I is blue**, as corrected by Doug on November 5, 2026. Preserve readable top and bottom bars on the everyday capital I.
 
 ## Palette
 
@@ -37,6 +37,6 @@ Keep the detailed signature intact at comfortable display sizes. Simplify the ma
 
 ## Application guardrails
 
-Preserve site content, project-specific artwork, historical editions, dates and evidence, access settings, schedules, keyboard behavior, reduced motion and opt-in audio. Earlier gold films remain earlier gold films and must be labeled accurately. Do not apply this palette wholesale to unrelated organizations or separately branded projects.
+Apply the palette to all Cashio-branded personal-site themes, including older editions. Preserve site content, project-specific artwork, historical edition content, dates and evidence, access settings, schedules, keyboard behavior, reduced motion and opt-in audio. Earlier gold films remain earlier gold films and must be labeled accurately. Do not apply this palette wholesale to unrelated organizations or separately branded projects.
 
 Check 1440, 390 and 320 pixel layouts, contrast, asset loading and focus before publication. Use the existing deployment path, record the source revision and retain rollback.

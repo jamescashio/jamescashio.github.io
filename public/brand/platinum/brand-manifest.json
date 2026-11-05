@@ -2,6 +2,10 @@
   "brand": "cAshIo AI",
   "edition": "Platinum",
   "approved": "2026-11-04",
+  "logoAccentOrder": {
+    "A": "red",
+    "I": "blue"
+  },
   "palette": {
     "platinum": "#E2E6EE",
     "pearl": "#F5F5F7",
@@ -20,6 +24,7 @@
   "favicon": "favicon.svg",
   "principles": [
     "Preserve detailed inlays and miniature A/I worlds",
+    "Logo: red A first, blue capital I second",
     "Platinum dominant, electric blue primary light, red counterpoint",
     "Subtly patriotic palette; preserve existing content and separate project identities",
     "No jade, emerald, mint or teal branding; preserve semantic status colors",
@@ -27,14 +32,19 @@
   ],
   "files": [
     {
+      "name": "BRAND_GUIDE.md",
+      "bytes": 2859,
+      "sha256": "572d7e12492774c287da36e637830a38974c8dccaca342d5b96c4524b462ccdd"
+    },
+    {
       "name": "everyday-dark.svg",
       "bytes": 3853,
-      "sha256": "751fc0f32ab490e44a10d40cb5edf06804f5f6503f28bb54f722693ff92f0dee"
+      "sha256": "12e4fc8ddb03541212c59178a1c5f74de71c96cb23e1ec1701fa49be46217800"
     },
     {
       "name": "everyday-light.svg",
       "bytes": 3853,
-      "sha256": "cc0336baa1401337a439b121062167e39b2c7d93fa8498c61aec8a019a769380"
+      "sha256": "1e17e468724012b3bd0c7af8db9f010e054c23ca2e2edae21803712d6b34d154"
     },
     {
       "name": "favicon.svg",
@@ -83,28 +93,28 @@
     },
     {
       "name": "signature-1680.webp",
-      "bytes": 132496,
-      "sha256": "83359e2d74df59fd7fed09528fa73fabeaa993c78a628bde1e6ce4fd7e246d86"
+      "bytes": 133520,
+      "sha256": "0ddf9af7acfdcf4db5272219ad5fd7ac547ec3e95529c92667b89dc9cac0d794"
     },
     {
       "name": "signature-420.webp",
-      "bytes": 15790,
-      "sha256": "5be3256fec8fd33d02b6fde2d5ca47963782be328a9768f726966b82c58333fc"
+      "bytes": 15694,
+      "sha256": "786d0ddd5cbcbec2824098a7e6b52cc2236e6d98acde1d2200442148b2a2f451"
     },
     {
       "name": "signature-840.webp",
-      "bytes": 46580,
-      "sha256": "90ff8002c54c832e3a896e0198f2c17bd5c77b6641dc5034b18af7c4382a5661"
+      "bytes": 47012,
+      "sha256": "cc800bdd3ffc13870234d4ca0fd8c06e172e0bf2c3343102002296ffe4caf4bd"
     },
     {
       "name": "signature.png",
-      "bytes": 1932330,
-      "sha256": "826f61d3bc6492005833c1e87953df29eac5773c6a04f9ea99aa3b0b52a16271"
+      "bytes": 1930333,
+      "sha256": "98b34ec176dd3a27babb155cafd5d1e37b9dd1b497648804280e3416e7d9f654"
     },
     {
       "name": "social-preview.jpg",
-      "bytes": 121217,
-      "sha256": "8c485d42d3b06cb350fecff0e306a74fef2c3b6176a8eb0c8c25142ea877b9cb"
+      "bytes": 122421,
+      "sha256": "3252597eb494e4d4500994b50860e17fe45c691eeb3d5712aa8b1463f7d23704"
     },
     {
       "name": "tokens.css",

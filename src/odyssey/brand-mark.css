@@ -1,6 +1,6 @@
 .cashio-brand-mark {
-  --celestial-ion: #8ceaff;
-  --celestial-gold: #ffe0a1;
+  --celestial-ion: #3578ff;
+  --celestial-gold: #ff3d55;
   position: relative;
   display: block;
   width: 210px;
@@ -9,16 +9,16 @@
   flex-shrink: 0;
 }
 .cashio-brand-mark[data-light="gold"] {
-  --celestial-ion: #ffe0a1;
+  --celestial-ion: #ff3d55;
 }
 .cashio-brand-mark[data-light="ion"] {
-  --celestial-gold: #8ceaff;
+  --celestial-gold: #3578ff;
 }
 .cashio-brand-mark img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 2055 / 765;
+  aspect-ratio: 1680 / 774;
   mix-blend-mode: screen;
 }
 .cashio-circuit {
