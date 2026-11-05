@@ -1,4 +1,4 @@
-import { bitJokes } from "../v40/ship-humor.ts";
+import { bitJokes } from "../shared/ship-humor.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
 
 /** Bit, the copilot: an icosahedron in platinum with a blue core, a line for every station, and a memory for what you just did. */
@@ -103,7 +103,7 @@ const ROUTE_LINES: Record<string, string> = {
   HOLD: "You held it for a person. Correct. I would have done the same and then taken the credit.",
   EVIDENCE: "Research lane. Sources first, opinions second. E.V.E. approves.",
   Workhorse: "Workhorse lane. Unglamorous, reliable, my favorite kind of hero.",
-  Synthesis: "Synthesis. Connected reasoning with the assumptions kept. Very grown up of you.",
+  Synthesis: "Synthesis lane. Connected reasoning, with the assumptions kept for your review.",
 };
 
 export function mountBit(
@@ -158,7 +158,7 @@ export function mountBit(
     remark =
       f.id === "trailer"
         ? "You watched the trailer. The cat has notes. The cat always has notes."
-        : `${f.title}. Five quiet seconds, beautifully lit. I counted.`;
+        : `${f.title}. Fifteen quiet seconds, beautifully lit. I counted.`;
     wake(900);
   });
   document.addEventListener("v44:eve", (e) => {
@@ -185,6 +185,11 @@ export function mountBit(
   dialog.querySelector("[data-bit-close]")?.addEventListener("click", close);
   dialog.addEventListener("keydown", (e) => {
     if (e.key === "Escape") close();
+  });
+  // A tap outside Bit's card closes it, as the station sheet does.
+  document.addEventListener("pointerdown", (e) => {
+    const t = e.target as Node;
+    if (dialog.open && !dialog.contains(t) && !button.contains(t)) dialog.close();
   });
   dialog.querySelector("[data-bit-joke]")?.addEventListener("click", () => {
     line.textContent = bitJokes[joke++ % bitJokes.length];

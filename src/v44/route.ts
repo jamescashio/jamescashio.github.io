@@ -63,7 +63,7 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   const detail = result.querySelector<HTMLElement>("[data-helm-detail]")!;
   const steps = result.querySelector<HTMLOListElement>("[data-helm-steps]")!;
   // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
-  const map = result.querySelector<SVGSVGElement>("[data-route-map]");
+  const map = (form.closest(".helm-grid") || result).querySelector<SVGSVGElement>("[data-route-map]");
   const read = (): RouteInput => {
     const data = new FormData(form);
     return {

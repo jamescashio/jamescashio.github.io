@@ -1,0 +1,234 @@
+/* Stations 06 and 07: the dated record, E.V.E., the bio and contact. */
+/* Evidence */
+.evidence-grid {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1000px) {
+  .evidence-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+.readings {
+  padding: clamp(20px, 3vw, 34px);
+  display: grid;
+  gap: 18px;
+  align-content: start;
+}
+.observed {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: baseline;
+}
+.observed time {
+  font: 650 24px/1.1 var(--display);
+  color: var(--pearl);
+}
+.figures {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+/* Labels on top, figures on one shared baseline at the bottom, however the labels wrap. */
+.figures div {
+  background: rgba(9, 11, 17, 0.96);
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+.figures dt {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+.figures dd {
+  margin: 4px 0 0;
+  font-size: 16px;
+  color: var(--platinum);
+}
+.figures strong {
+  font: 700 clamp(34px, 4vw, 48px) / 1 var(--display);
+  color: var(--pearl);
+  margin-right: 4px;
+}
+.withheld summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.withheld ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  font-size: 15.5px;
+  color: var(--muted);
+}
+.withheld li strong {
+  color: var(--platinum);
+  margin-right: 4px;
+}
+.record-list a {
+  min-height: 24px;
+  display: inline-block;
+}
+.evidence-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+.evidence-links a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+}
+.eve {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  min-height: 360px;
+  --hull-fill: linear-gradient(180deg, rgba(6, 9, 16, 0.97), rgba(9, 12, 21, 0.97));
+  font-family: var(--mono);
+}
+.eve-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.eve-top strong {
+  color: var(--pearl);
+  letter-spacing: 0.12em;
+}
+.eve-top span {
+  color: var(--muted);
+}
+.eve-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 12px var(--blue);
+}
+.eve-log {
+  padding: 16px 18px;
+  overflow-y: auto;
+  max-height: 300px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--platinum);
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+.eve-log p.you {
+  color: var(--blue-text);
+}
+.eve-log p.you::before {
+  content: "eve> ";
+  color: var(--muted);
+}
+kbd {
+  font: inherit;
+  color: var(--pearl);
+  border: 1px solid var(--line-strong);
+  padding: 0 5px;
+}
+.eve-input {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+}
+.eve-prompt {
+  color: var(--blue-text);
+  font-size: 15px;
+}
+.eve-input input {
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  color: var(--pearl);
+  font: 400 16px var(--mono);
+  outline: none;
+  min-width: 0;
+}
+.eve-input:focus-within {
+  box-shadow: inset 0 0 0 1px var(--blue-text);
+}
+.eve-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+.eve-quick .chip {
+  font-family: var(--mono);
+  font-size: 13.5px;
+}
+
+/* Doug */
+.doug-grid {
+  display: grid;
+  gap: 28px;
+}
+@media (min-width: 1000px) {
+  .doug-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+.bio {
+  display: grid;
+  gap: 16px;
+  font-size: 18.5px;
+  max-width: 38em;
+}
+.profile-links {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.profile-links .chip {
+  min-height: 44px;
+  font-size: 15px;
+}
+.contact {
+  padding: clamp(22px, 3vw, 38px);
+  display: grid;
+  gap: 16px;
+}
+.signature {
+  width: min(100%, 420px);
+  height: auto;
+  filter: drop-shadow(0 8px 30px rgba(53, 120, 255, 0.35));
+}
+.contact-title {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1;
+}
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.contact-actions .chip {
+  min-height: 48px;
+}

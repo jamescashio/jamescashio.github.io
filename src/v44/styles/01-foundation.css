@@ -1,0 +1,160 @@
+/* Fonts, tokens, base elements, focus rings and the cut corner stroke. */
+@font-face {
+  font-family: "Oxanium";
+  src: url("/fonts/oxanium-latin-variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/fonts/exo2-500.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/fonts/exo2-700.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-400.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  --bg: #05070c;
+  --deep: #0d1017;
+  --graphite: #111217;
+  --platinum: #e2e6ee;
+  --pearl: #f5f5f7;
+  --muted: #aab2c3;
+  --line: rgba(226, 230, 238, 0.14);
+  --line-strong: rgba(226, 230, 238, 0.3);
+  --blue: #3578ff;
+  --blue-text: #9abeff;
+  --red: #ff3d55;
+  --red-text: #ff8a9d;
+  --display: "Oxanium", "Exo 2", system-ui, sans-serif;
+  --body: "Exo 2", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gutter: clamp(18px, 4vw, 56px);
+  --cut: 16px;
+  --hud-h: 68px;
+  --frame-max: 1320px;
+  --edge: var(--line);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  background: var(--bg);
+  scroll-padding-top: calc(var(--hud-h) + 12px);
+  /* Bit floats at the bottom right; focused controls scroll clear of it. */
+  scroll-padding-bottom: 88px;
+  -webkit-text-size-adjust: 100%;
+}
+html[data-motion="on"] {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  color: var(--platinum);
+  font: 500 18px/1.6 var(--body);
+  background: transparent;
+  overflow-x: clip;
+}
+img,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+img {
+  height: auto;
+}
+[hidden] {
+  display: none !important;
+}
+a {
+  color: var(--blue-text);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+a:hover {
+  color: var(--pearl);
+}
+:focus-visible {
+  outline: 2px solid var(--blue-text);
+  outline-offset: 3px;
+}
+/* Cut corner shapes clip anything drawn outside them, so their focus ring is drawn just inside the edge. */
+.chip:focus-visible,
+.cta:focus-visible,
+.play:focus-visible,
+a.hull:focus-visible {
+  outline: 3px solid var(--blue-text);
+  outline-offset: -6px;
+}
+.cta:focus-visible,
+.chip-solid:focus-visible {
+  outline-color: var(--blue);
+}
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  color: var(--pearl);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+p {
+  margin: 0;
+}
+cite {
+  font-style: italic;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip {
+  position: fixed;
+  left: 16px;
+  top: 12px;
+  z-index: 100;
+  padding: 12px 18px;
+  background: var(--pearl);
+  color: var(--deep);
+  font-weight: 700;
+  transform: translateY(-160%);
+}
+.skip:focus {
+  transform: none;
+}
+
+/* A one pixel diagonal that strokes a cut corner the way the border strokes the straight edges.
+   Declared where it is used, so each shape's own --edge colors it. */
+.chip,
+.hull {
+  --corner: linear-gradient(
+    to top right,
+    transparent calc(50% - 0.75px),
+    var(--edge) calc(50% - 0.75px) calc(50% + 0.75px),
+    transparent calc(50% + 0.75px)
+  );
+}
+.frame {
+  width: min(100% - 2 * var(--gutter), var(--frame-max));
+  margin-inline: auto;
+}

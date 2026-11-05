@@ -4,7 +4,7 @@ import { snapshot, observedDate, observedShortDate, fleetSummary, fleetLine } fr
 
 import { posterForViewport } from "./poster-sources.ts";
 
-import { foldReply } from "./ship-humor.ts";
+import { foldReply } from "../shared/ship-humor.ts";
 
 import { openingValues } from "./view-opening.ts";
 import { experimentValues } from "./view-experiments.ts";

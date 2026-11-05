@@ -1,0 +1,399 @@
+/* Reveal and toast, then the rules for phones, touch, ultrawide, Pause and the arrival effects. */
+/* Reveal and toast */
+html.js[data-motion="on"] [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 800ms ease,
+    transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+html.js[data-motion="on"] [data-reveal].in {
+  opacity: 1;
+  transform: none;
+}
+html.js[data-motion="on"] .arrival .line,
+html.js[data-motion="on"] .arrival .lede,
+html.js[data-motion="on"] .arrival .arrival-actions,
+html.js[data-motion="on"] .arrival .kicker {
+  animation: rise 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.arrival .line:nth-child(2) {
+  animation-delay: 90ms;
+}
+.arrival .line:nth-child(3) {
+  animation-delay: 180ms;
+}
+.arrival .lede {
+  animation-delay: 300ms;
+}
+.arrival .arrival-actions {
+  animation-delay: 420ms;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  z-index: 40;
+  transform: translateX(-50%);
+  padding: 12px 18px;
+  background: rgba(9, 11, 17, 0.97);
+  border: 1px solid var(--blue);
+  color: var(--pearl);
+  font-size: 16px;
+  max-width: calc(100vw - 32px);
+}
+
+@media (pointer: coarse) {
+  .chip {
+    min-height: 44px;
+  }
+  .stations a {
+    min-height: 44px;
+  }
+}
+@media (max-width: 560px) {
+  body {
+    font-size: 17px;
+  }
+  .hud-actions [data-motion-toggle] {
+    padding: 0 10px;
+  }
+  .hud-actions .chip-solid,
+  .bit-name,
+  .motion-long {
+    display: none;
+  }
+  .bit {
+    padding: 6px;
+  }
+  .brand-word {
+    width: 92px;
+  }
+  .station-head {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .station-num {
+    font-size: 56px;
+  }
+  .figures strong {
+    font-size: 32px;
+  }
+  .cta {
+    width: 100%;
+  }
+  .eve {
+    min-height: 340px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Station arrival: the number lights from edge to edge, once. */
+.station-num {
+  background: linear-gradient(100deg, transparent 0 40%, rgba(154, 190, 255, 0.95) 50%, transparent 60% 100%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 120% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+@keyframes num-sweep {
+  from {
+    background-position: 120% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
+}
+.station-head h2::after {
+  content: "";
+  display: block;
+  width: 88px;
+  height: 2px;
+  margin-top: 18px;
+  background: linear-gradient(90deg, var(--blue), var(--red));
+  box-shadow: 0 0 14px rgba(53, 120, 255, 0.7);
+  transform-origin: left;
+}
+html.js[data-motion="on"] .station-head.in h2::after {
+  animation: underline 900ms 350ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes underline {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.swipe-hint {
+  display: none;
+  font: 400 13px/1.3 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: -8px 0 10px;
+}
+/* Phones: swipe through worlds and films instead of stacking them. */
+@media (max-width: 760px) {
+  .world-grid,
+  .reel-list {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: min(82%, 320px);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 4px var(--gutter) 14px;
+    scrollbar-width: thin;
+  }
+  .world,
+  .reel-list li {
+    scroll-snap-align: start;
+  }
+  .reel-list {
+    grid-auto-columns: min(74%, 280px);
+  }
+  .reel-item {
+    grid-template-columns: 1fr;
+    height: 100%;
+  }
+  .reel-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .swipe-hint {
+    display: block;
+  }
+  .station {
+    padding: 44px 0;
+  }
+  .station-head {
+    margin-bottom: 24px;
+  }
+  .footer-links {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+/* The narrowest phones keep the wordmark and both controls on one line by letting the icon go. */
+@media (max-width: 360px) {
+  .hud-bar {
+    gap: 12px;
+  }
+  .brand img:first-child {
+    display: none;
+  }
+  .hud-actions .chip {
+    padding: 0 11px;
+  }
+}
+@media (pointer: coarse) {
+  .record-list a,
+  .screen-caption a,
+  .after-note a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
+
+/* Transcript of the trailer, read from its captions at build time. */
+.transcript {
+  margin-top: 12px;
+  padding: 4px 18px 14px;
+  border: 1px solid var(--line);
+  background: rgba(9, 11, 17, 0.88);
+}
+.transcript summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--blue-text);
+}
+.transcript-lines {
+  margin: 4px 0 12px;
+  padding-left: 22px;
+  columns: 2 220px;
+  column-gap: 32px;
+  font-size: 16px;
+  color: var(--platinum);
+}
+.transcript-lines li {
+  break-inside: avoid;
+  margin-bottom: 4px;
+}
+
+/* Long headings and subtitles break without leaving a single word alone. */
+.sub,
+.station-head h2,
+.detail,
+.world p,
+.lede {
+  text-wrap: pretty;
+}
+
+/* Ultrawide screens widen the reading column and the type instead of leaving the sky empty. */
+@media (min-width: 2400px) {
+  :root {
+    --frame-max: 1680px;
+  }
+  body {
+    font-size: 20px;
+  }
+  .headline {
+    font-size: clamp(46px, 4.2vw, 140px);
+  }
+  .station-head h2 {
+    font-size: clamp(34px, 2.6vw, 84px);
+  }
+  .arrival-copy {
+    max-width: 1080px;
+  }
+}
+
+/* Pause and reduced motion leave a still page: every transition and animation lands on its final state at once. */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  transition: none !important;
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* A quiet way on at the end of each station. */
+.next-station {
+  margin-top: clamp(28px, 4vh, 44px);
+  display: flex;
+  justify-content: flex-end;
+}
+.next-station a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font: 400 13.5px/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+}
+.next-station a:hover {
+  color: var(--pearl);
+}
+
+/* The helm map is drawn about 0.76 of its size at 320 pixels; its labels grow so they still read at 12 px. */
+@media (max-width: 380px) {
+  .rm-node text {
+    font-size: 17px;
+  }
+  .rm-held {
+    font-size: 16px;
+  }
+}
+.screen-status:empty {
+  display: none;
+}
+.screen-status {
+  color: var(--red-text);
+}
+
+/* The narrowest phones: the kicker keeps its point, the segments keep their padding. */
+@media (max-width: 360px) {
+  .kicker-name {
+    display: none;
+  }
+  .segmented span {
+    font-size: 15px;
+    padding: 0 8px;
+  }
+}
+
+/* Touch screens read labels at 14 px or more; very wide screens scale them with the body text. */
+@media (pointer: coarse) {
+  .kicker,
+  .label,
+  .world-tag,
+  .num,
+  legend,
+  .brief-preview dt,
+  .swipe-hint,
+  .next-station a {
+    font-size: 14px;
+  }
+}
+@media (min-width: 2400px) {
+  .kicker,
+  .label,
+  .world-tag,
+  .num,
+  legend,
+  .brief-preview dt,
+  .next-station a {
+    font-size: 15px;
+  }
+}
+
+/* Bit on phones: a smaller badge that steps aside while the visitor reads downward. */
+@media (max-width: 760px) {
+  .bit {
+    padding: 4px;
+    min-height: 0;
+  }
+  .bit-face {
+    width: 38px;
+    height: 38px;
+  }
+  html.js[data-scrolling="down"] .bit {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(16px);
+  }
+}
+
+/* A station jump lights the painted gate briefly, the way the live gate surges its warp. */
+.sky:not([data-live]) .sky-poster {
+  transition:
+    filter 900ms ease,
+    opacity 900ms ease;
+}
+html[data-motion="on"] .sky[data-surge]:not([data-live]) .sky-poster {
+  filter: brightness(1.3) saturate(1.25);
+  transition: filter 160ms ease;
+}
+html[data-motion="on"] .sky[data-stage="deep"][data-surge]:not([data-live]) .sky-poster {
+  filter: brightness(0.75) saturate(1.2);
+}
+
+/* Each station number arrives out of the gate: it rushes in from depth, then the light sweeps across it. */
+html.js[data-motion="on"] .station-head.in .station-num {
+  animation:
+    num-arrive 900ms cubic-bezier(0.16, 0.8, 0.2, 1) both,
+    num-sweep 1600ms 500ms cubic-bezier(0.3, 0.6, 0.2, 1) both;
+}
+@keyframes num-arrive {
+  from {
+    opacity: 0;
+    transform: scale(2.2);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    transform: none;
+  }
+}

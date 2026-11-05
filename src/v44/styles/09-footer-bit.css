@@ -1,0 +1,151 @@
+/* The footer and Bit. */
+/* Footer */
+.footer {
+  padding: 48px 0 120px;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(5, 7, 12, 0.6), rgba(5, 7, 12, 0.95));
+}
+.footer-grid {
+  display: grid;
+  gap: 28px;
+}
+@media (min-width: 900px) {
+  .footer-grid {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+.footer-grid > div {
+  display: grid;
+  gap: 12px;
+  font-size: 16px;
+}
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px 28px;
+}
+.footer-nav .label {
+  display: block;
+  margin-bottom: 4px;
+}
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+.footer-links a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-size: 15.5px;
+}
+
+/* Bit. On wide screens Bit stands just outside the reading column; narrower, it keeps to the corner. */
+.bit {
+  --bit-w: 104px;
+  position: fixed;
+  right: max(
+    12px,
+    env(safe-area-inset-right),
+    calc((100vw - min(100vw - 2 * var(--gutter), var(--frame-max))) / 2 - var(--bit-w) - 28px)
+  );
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  min-height: 56px;
+  border: 1px solid var(--line-strong);
+  background: rgba(9, 11, 17, 0.9);
+  color: var(--pearl);
+  cursor: pointer;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  font: 700 15px/1 var(--display);
+  letter-spacing: 0.06em;
+}
+.bit:hover {
+  border-color: var(--blue-text);
+}
+.bit {
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease,
+    visibility 300ms;
+}
+/* Phones keep the arrival clear for the call to action; Bit joins once the transit begins. */
+@media (max-width: 760px) {
+  html.js[data-stage="gate"] .bit {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+  }
+}
+@media (max-width: 1599px) {
+  .bit-name {
+    display: none;
+  }
+  .bit {
+    --bit-w: 58px;
+    padding: 6px;
+  }
+}
+.bit-face {
+  width: 44px;
+  height: 44px;
+}
+.bit-dialog {
+  position: fixed;
+  z-index: 35;
+  right: max(16px, env(safe-area-inset-right));
+  max-height: calc(100dvh - 110px);
+  overflow-y: auto;
+  bottom: 86px;
+  left: auto;
+  top: auto;
+  margin: 0;
+  width: min(380px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid var(--line-strong);
+  background: rgba(9, 11, 17, 0.98);
+  color: var(--platinum);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.bit-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+.bit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.bit-head strong {
+  font: 700 18px var(--display);
+  color: var(--pearl);
+}
+.bit-head span {
+  color: var(--muted);
+  font-size: 14.5px;
+}
+.bit-line {
+  font-size: 17px;
+  min-height: 3.2em;
+}
+.bit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.noscript {
+  position: relative;
+  z-index: 2;
+  padding: 16px var(--gutter);
+  background: var(--deep);
+}

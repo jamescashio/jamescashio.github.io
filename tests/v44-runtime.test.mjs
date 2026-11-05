@@ -199,9 +199,9 @@ test("the trailer's words come from its captions and step aside for the silent s
   );
   const words = page.locator("[data-transcript]");
   await expect(words.locator("li")).toHaveCount(cues.length);
-  await page.locator('[data-film="portal"]').click();
+  await page.locator('[data-film="shorts"]').click();
   await expect(words).toBeHidden();
-  await expect(page.locator("[data-screen-video]")).toHaveAttribute("aria-label", "Portal Arrival");
+  await expect(page.locator("[data-screen-video]")).toHaveAttribute("aria-label", "Studio shorts");
   await page.locator('[data-film="trailer"]').click();
   await expect(words).toBeVisible();
 });
@@ -226,4 +226,62 @@ test("V43 deep links open the preserved edition and V44 stations stay home", asy
   await page.goto(new URL("/#rooms", url).href);
   await expect.poll(() => new URL(page.url()).hash).toBe("#worlds");
   assert.equal(new URL(page.url()).pathname, "/");
+});
+
+test("an old alias on a loaded page travels to its station and moves focus there", async (t) => {
+  const page = await visit(t);
+  await page.evaluate(() => (location.hash = "#rooms"));
+  await expect.poll(() => new URL(page.url()).hash).toBe("#worlds");
+  await expect(page.locator("#worlds-title")).toBeFocused();
+  await expect(page.locator("#worlds-title")).toBeInViewport();
+});
+
+test("a film that ends returns to its poster without taking focus from elsewhere", async (t) => {
+  const page = await visit(t);
+  const video = page.locator("[data-screen-video]");
+  await page.locator('[data-film="shorts"]').click();
+  await expect(video).toBeVisible();
+  // Skip to the end of each clip in the shorts reel, so the whole playlist finishes quickly.
+  await page.evaluate(() => {
+    const v = document.querySelector("[data-screen-video]");
+    const skip = () => (v.currentTime = Math.max(0, v.duration - 0.3));
+    v.addEventListener("loadedmetadata", skip);
+    if (v.duration) skip();
+  });
+  await page.locator("#eve-cmd").focus();
+  await expect(video).toBeHidden({ timeout: 20000 });
+  await expect(page.locator("[data-screen-play]")).toBeVisible();
+  await expect(page.locator("#eve-cmd")).toBeFocused();
+});
+
+test("the trailer poster shows its art without letterbox bars, with Play underneath", async (t) => {
+  const page = await visit(t);
+  const poster = await page.locator("[data-screen-poster]").boundingBox();
+  const play = await page.locator("[data-screen-play]").boundingBox();
+  assert.ok(Math.abs(poster.width / poster.height - 2.39) < 0.02, "the poster is framed at 2.39 to 1");
+  assert.ok(play.y >= poster.y + poster.height - 1, "the play row sits below the poster, not over it");
+});
+
+test("Back after the first jump returns to the top of the arrival", async (t) => {
+  const page = await visit(t);
+  await page.locator(".cta[data-transit-go]").click();
+  await expect.poll(() => new URL(page.url()).hash).toBe("#cinema");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(300);
+  await page.goBack();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeLessThan(5);
+});
+
+test("on phones Bit steps aside while reading down, returns, and its card closes on an outside tap", async (t) => {
+  const page = await visit(t, { width: 390, height: 844, mobile: true });
+  const bit = page.locator("[data-bit-open]");
+  await page.evaluate(() => scrollTo(0, document.querySelector("#worlds").offsetTop));
+  await expect(bit).toBeVisible();
+  await page.evaluate(() => scrollBy(0, 400));
+  await expect(bit).toBeHidden();
+  await expect(bit).toBeVisible({ timeout: 4000 });
+  await bit.click();
+  const card = page.locator("[data-bit-dialog]");
+  await expect(card).toBeVisible();
+  await page.mouse.click(30, 300);
+  await expect(card).toBeHidden();
 });

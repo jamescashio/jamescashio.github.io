@@ -87,7 +87,7 @@ test("evidence placeholders fill from status.json and refuse to publish a missin
   const fake = await mkdtemp(path.join(tmpdir(), "v44-status-"));
   await mkdir(path.join(fake, "public/evidence"), { recursive: true });
   await writeFile(
-    path.join(fake, "status.json"),
+    path.join(fake, "public/status.json"),
     JSON.stringify({ ...status, containers: { ...status.containers, running: null } }),
   );
   assert.throws(() => statusTokens(fake), /containers\.running/);

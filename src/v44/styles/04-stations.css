@@ -1,0 +1,74 @@
+/* What every station shares: rhythm, heads and hull plates. */
+/* Stations */
+.station {
+  padding: clamp(56px, 8vh, 112px) 0;
+}
+@media (orientation: portrait) {
+  .station {
+    padding: clamp(44px, 5vh, 88px) 0;
+  }
+}
+.station-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(16px, 3vw, 44px);
+  align-items: start;
+  margin-bottom: clamp(32px, 5vh, 56px);
+}
+.station-num {
+  font: 300 clamp(64px, 9vw, 150px) / 0.8 var(--display);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(154, 190, 255, 0.55);
+  letter-spacing: -0.04em;
+}
+.station-head h2 {
+  margin-top: 10px;
+  font-size: clamp(34px, 4.8vw, 68px);
+  font-weight: 650;
+  line-height: 1;
+  text-shadow: 0 2px 24px rgba(5, 7, 12, 0.7);
+}
+
+.hull {
+  position: relative;
+  --hull-fill: linear-gradient(160deg, rgba(22, 26, 37, 0.9), rgba(9, 11, 17, 0.94));
+  background:
+    var(--corner) top right / var(--cut) var(--cut) no-repeat border-box,
+    var(--corner) bottom left / var(--cut) var(--cut) no-repeat border-box,
+    var(--hull-fill) border-box;
+  border: 1px solid var(--edge);
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+  );
+  overflow: hidden;
+}
+.hull::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, -40%),
+    rgba(53, 120, 255, 0.16),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.hull:hover::before {
+  opacity: 1;
+}
+a.hull:hover {
+  --edge: rgba(154, 190, 255, 0.45);
+}
+.world-tag {
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}

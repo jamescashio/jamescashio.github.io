@@ -19,7 +19,7 @@
     <link rel="manifest" href="/brand/platinum/site.webmanifest" />
     <link rel="canonical" href="https://cashio.us/" />
     <meta property="og:url" content="https://cashio.us/" />
-    <meta property="og:title" content="Doug Cashio · cAshIo · V44 Drummer" />
+    <meta property="og:title" content="Doug Cashio · cAshIo · Local AI workshop" />
     <meta
       property="og:description"
       content="Fly through the gate: original films, four worlds, a routing experiment you can steer and a dated record of the lab. Human in command."
@@ -135,7 +135,9 @@
       <section class="station arrival" id="arrival" aria-labelledby="arrival-title" data-station="arrival">
         <div class="frame arrival-frame">
           <div class="arrival-copy">
-            <p class="kicker"><span class="dot"></span>Doug Cashio · Local AI workshop</p>
+            <p class="kicker">
+              <span class="dot"></span><span class="kicker-name">Doug Cashio ·&nbsp;</span>Local AI workshop
+            </p>
             <h1 id="arrival-title" class="headline">
               <span class="line">The machines</span>
               <span class="line">can think.</span>
@@ -148,12 +150,12 @@
             <div class="arrival-actions">
               <a class="cta" href="#cinema" data-transit-go>
                 <span class="cta-label">Begin the transit</span>
-                <span class="cta-note">Seven stations. Sound stays off.</span>
+                <span class="cta-note">Seven stations through one gate.</span>
                 <span class="cta-arrow" aria-hidden="true">↓</span>
               </a>
             </div>
           </div>
-          <div class="gate-readout" aria-live="polite">
+          <div class="gate-readout" aria-hidden="true">
             <p><span class="label">Gate</span> <span data-gate-status>Aligning</span></p>
             <p><span class="label">Helm</span> Human</p>
           </div>
@@ -167,12 +169,12 @@
             <div>
               <p class="kicker">Now showing</p>
               <h2 id="cinema-title">House Cashio: The Trailer</h2>
-              <p class="sub">A subscription villain, an unlikely crew, and a cat who was not consulted.</p>
+              <p class="sub">A subscription villain, an unlikely crew and a cat who was not consulted.</p>
             </div>
           </header>
           <div class="cinema-grid">
             <div class="screen-col">
-              <figure class="screen hull" data-screen>
+              <figure class="screen hull" data-screen data-frame="scope">
                 <div class="screen-media">
                   <img
                     class="screen-poster"
@@ -209,8 +211,11 @@
                   </button>
                 </div>
                 <figcaption class="screen-caption">
-                  <span data-screen-title>House Cashio: The Trailer</span>
-                  <span>Sound stays off until you turn it on.</span>
+                  <span
+                    ><span class="label">On screen</span>&nbsp;
+                    <span data-screen-title>House Cashio: The Trailer</span></span
+                  >
+                  <span class="screen-status" role="status" data-screen-status></span>
                 </figcaption>
               </figure>
               <details class="transcript" data-transcript>
@@ -226,10 +231,22 @@
             </div>
             <div class="reel">
               <h3>From the screening room</h3>
-              <p class="swipe-hint" aria-hidden="true">Swipe for more films&nbsp;→</p>
+              <p class="swipe-hint" aria-hidden="true">Swipe for the shorts&nbsp;→</p>
               <ul class="reel-list">
                 <li>
-                  <button type="button" class="reel-item" data-film="trailer" aria-pressed="true">
+                  <button
+                    type="button"
+                    class="reel-item"
+                    data-film="trailer"
+                    data-title="House Cashio: The Trailer"
+                    data-label="Play the trailer"
+                    data-meta="61 seconds · Starts muted · Captions on"
+                    data-poster="/assets/hero/cashio-trailer-poster.webp"
+                    data-sources="1100 /assets/hero/cashio-trailer-1080p.mp4, 0 /assets/hero/cashio-trailer-720p.mp4"
+                    data-captions="/assets/hero/cashio-trailer-text.vtt"
+                    data-frame="scope"
+                    aria-pressed="true"
+                  >
                     <img
                       src="/v40/posters/cashio-trailer-poster-320-03211a533579.webp"
                       width="320"
@@ -242,7 +259,17 @@
                   </button>
                 </li>
                 <li>
-                  <button type="button" class="reel-item" data-film="portal" aria-pressed="false">
+                  <button
+                    type="button"
+                    class="reel-item"
+                    data-film="shorts"
+                    data-title="Studio shorts"
+                    data-label="Play the studio shorts"
+                    data-meta="Three silent shorts · 15 seconds"
+                    data-poster="/assets/zenith/portal-arrival-poster.webp"
+                    data-sources="0 /assets/zenith/portal-arrival.mp4 /assets/zenith/starship-flyby.mp4 /assets/zenith/the-long-view.mp4"
+                    aria-pressed="false"
+                  >
                     <img
                       src="/v40/thumbs/zenith-portal-arrival-poster-320.webp"
                       width="320"
@@ -251,33 +278,10 @@
                       loading="lazy"
                       decoding="async"
                     />
-                    <span><strong>Portal Arrival</strong><small>Silent short · 5 seconds</small></span>
-                  </button>
-                </li>
-                <li>
-                  <button type="button" class="reel-item" data-film="flyby" aria-pressed="false">
-                    <img
-                      src="/v40/posters/zenith-starship-flyby-poster-320-cb2b1898d62c.webp"
-                      width="320"
-                      height="180"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <span><strong>Starship Flyby</strong><small>Silent short · 5 seconds</small></span>
-                  </button>
-                </li>
-                <li>
-                  <button type="button" class="reel-item" data-film="longview" aria-pressed="false">
-                    <img
-                      src="/v40/thumbs/zenith-the-long-view-poster-320.webp"
-                      width="320"
-                      height="180"
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <span><strong>The Long View</strong><small>Silent short · 5 seconds</small></span>
+                    <span
+                      ><strong>Studio shorts</strong
+                      ><small>Portal Arrival, Starship Flyby and The Long View · 15 silent seconds</small></span
+                    >
                   </button>
                 </li>
               </ul>
@@ -311,7 +315,7 @@
           <header class="station-head">
             <p class="station-num" aria-hidden="true">03</p>
             <div>
-              <p class="kicker">Four rooms and a hangar</p>
+              <p class="kicker">Four worlds and a hangar</p>
               <h2 id="worlds-title">Pick a world. Stay a while.</h2>
               <p class="sub">
                 Four original worlds, each with its own kind of curiosity, and a roadster waiting in the hangar.
@@ -442,19 +446,20 @@
               <p class="kicker">How it is built</p>
               <h2 id="workshop-title">Built at home. Open to inspect.</h2>
               <p class="sub">
-                Two servers I own, Zeus and Apollo, do the computing. Hermes, my job scheduler, is built to choose where
-                each task runs. Whatever comes back, a person approves.
+                Two servers I own, Zeus and Apollo, do the computing. Hermes, my job scheduler, is designed to choose
+                where each task runs, and the design keeps a person responsible for reviewing the results.
               </p>
             </div>
           </header>
           <div class="workshop-grid">
-            <figure class="system-map hull">
-              <svg class="map-wide" viewBox="0 0 520 300" role="img" aria-labelledby="map-title map-desc">
-                <title id="map-title">How a request moves through the lab</title>
-                <desc id="map-desc">
-                  A person sends intent to Hermes, the scheduler. Hermes places work on Zeus or Apollo, and the result
-                  returns to the person for review.
-                </desc>
+            <figure class="system-map hull" aria-labelledby="map-title" aria-describedby="map-desc">
+              <p class="sr" id="map-title">How a request is meant to move through the lab</p>
+              <p class="sr" id="map-desc">
+                Intended flow: a person sends intent to Hermes, the scheduler. Hermes places the work on Zeus or Apollo,
+                and the result returns to the person for review. Scheduling and routing are not part of the dated
+                record.
+              </p>
+              <svg class="map-wide" viewBox="0 0 520 320" aria-hidden="true">
                 <defs>
                   <linearGradient id="wire" gradientUnits="userSpaceOnUse" x1="40" x2="460" y1="0" y2="0">
                     <stop offset="0" stop-color="#3578ff" stop-opacity="0.2" />
@@ -464,7 +469,7 @@
                 <path class="wire" d="M70 150 C150 150 160 150 230 150" />
                 <path class="wire" d="M290 150 C350 150 360 80 420 80" />
                 <path class="wire" d="M290 150 C350 150 360 220 420 220" />
-                <path class="wire wire-back" d="M450 112 C470 190 300 268 70 186" />
+                <path class="wire wire-back" d="M450 246 C450 296 96 296 46 180" />
                 <circle class="packet packet-a" r="4" />
                 <circle class="packet packet-b" r="4" />
                 <g class="node node-human" transform="translate(40 150)">
@@ -484,7 +489,7 @@
                   <rect x="-34" y="-26" width="68" height="52" rx="8" />
                   <text y="5">Apollo</text>
                 </g>
-                <text class="map-note" x="190" y="284">Results come back to a person for review</text>
+                <text class="map-note" x="260" y="312">Results come back to a person for review</text>
               </svg>
               <svg class="map-tall" viewBox="0 0 300 400" aria-hidden="true">
                 <defs>
@@ -519,13 +524,13 @@
                 <text class="map-note" x="150" y="372">Results come back to a person</text>
               </svg>
               <figcaption>
-                The design, drawn as a map. Private addresses and per host roles stay private, and routing is not part
-                of the dated record.
+                The design, drawn as a map. Addresses and host roles are left out, and routing is not part of the dated
+                record.
               </figcaption>
             </figure>
 
             <article class="receipt hull">
-              <p class="world-tag">A tool to take with you</p>
+              <p class="world-tag">An example brief</p>
               <h3>A brief worth keeping.</h3>
               <p>Turn a question into a decision someone can stand behind.</p>
               <dl class="brief-preview">
@@ -593,11 +598,6 @@
                 >
               </fieldset>
               <p class="fine">Try this: choose Research, then add private information. Watch what wins.</p>
-            </form>
-            <div class="helm-result" aria-live="polite" data-helm-result>
-              <p class="kicker">Route chosen</p>
-              <p class="lane" data-helm-lane>Workhorse</p>
-              <p class="code"><span data-helm-code>Qualified</span></p>
               <svg class="route-map" viewBox="0 0 320 200" aria-hidden="true" data-route-map data-route="workhorse">
                 <defs>
                   <linearGradient id="lane-glow" gradientUnits="userSpaceOnUse" x1="20" x2="300" y1="0" y2="0">
@@ -633,6 +633,11 @@
                 </g>
                 <circle class="route-packet" r="5" />
               </svg>
+            </form>
+            <div class="helm-result" aria-live="polite" data-helm-result>
+              <p class="kicker">Route chosen</p>
+              <p class="lane" data-helm-lane>Workhorse</p>
+              <p class="code"><span data-helm-code>Qualified</span></p>
               <p class="detail" data-helm-detail>
                 Routine drafting fits a general work lane. Greater expense needs a reason.
               </p>
@@ -646,8 +651,8 @@
             </div>
           </div>
           <p class="after-note">
-            Six more experiments, from escalation to exposure triage, wait in the full lab.
-            <a href="/v43/#studies">Open the full lab&nbsp;↗</a>
+            Six more experiments, from escalation to exposure triage, live in the previous edition.
+            <a href="/v43/#studies">Open them in V43 Centauri&nbsp;↗</a>
           </p>
           <p class="next-station">
             <a href="#evidence" data-station-next><span class="num">06</span> Next: Evidence&nbsp;↓</a>
@@ -828,8 +833,8 @@
             panic. Capable tools. Human judgment in command.
           </p>
           <p class="fine">
-            V44 · Drummer, named for the captain of <cite>The Expanse</cite> who keeps a cool head when it counts.
-            Directed by Doug Cashio. Updated Thu Nov 5, 2026.
+            V44 · Drummer, named for Camina Drummer of <cite>The Expanse</cite>, who keeps a cool head when it counts.
+            Directed by Doug Cashio. Updated {{release.updated}}.
           </p>
           <p class="fine">A personal site. The builds and views here are my own and do not speak for my employer.</p>
         </div>

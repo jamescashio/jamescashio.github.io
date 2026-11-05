@@ -2,6 +2,7 @@
 import { onMotionChange } from "./motion.ts";
 
 type Status = {
+  release?: { version: string; name: string; updated: string };
   verifiedDay: string;
   law?: string;
   containers: { running: number; documented: number };
@@ -107,8 +108,15 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
       return;
     }
     if (cmd === "whoami") return say("A visitor with the helm. I keep the receipts.");
-    if (cmd === "version")
-      return say("V44 Drummer, the front door rebuilt on Thu Nov 5, 2026. V43 Centauri is preserved at /v43/.");
+    if (cmd === "version") {
+      const r = JSON.parse(root.dataset.record || "{}").release;
+      return say(
+        r
+          ? `${r.version} ${r.name}, the front door, updated ${r.updated}. The previous edition is preserved at /v43/.`
+          : "The release record is missing from this page.",
+      );
+    }
+
     if (cmd === "sources")
       return say(
         "This record: /status.json. Earlier dated records live under /evidence/. Nothing here calls a private service.",

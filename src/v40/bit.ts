@@ -1,4 +1,4 @@
-import { bitJokes } from "./ship-humor.ts";
+import { bitJokes } from "../shared/ship-humor.ts";
 
 /* Bit geometry and lighting adapted from the site's original Helios copilot. */
 (() => {

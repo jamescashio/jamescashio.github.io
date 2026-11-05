@@ -40,7 +40,12 @@ test("V44 Drummer is the built front door with seven stations in order", async (
 
 test("the built page prints the record exactly and keeps a strict policy", async () => {
   const document = await page();
-  const status = JSON.parse(await read("status.json"));
+  // The page is compared with the export it actually ships beside: dist/status.json.
+  const status = JSON.parse(await read("dist/status.json"));
+  const record = JSON.parse(document.querySelector("[data-eve]").dataset.record);
+  assert.equal(record.containers.running, status.containers.running);
+  assert.equal(record.backup.latestVerified, status.backup.latestVerified);
+  assert.equal(record.withheld.length, document.querySelectorAll("details.withheld:first-of-type li").length);
   const figures = [...document.querySelectorAll(".figures dd strong")].map((n) => Number(n.textContent));
   assert.deepEqual(figures, [
     status.containers.running,
@@ -54,7 +59,7 @@ test("the built page prints the record exactly and keeps a strict policy", async
     true,
   );
   const csp = document.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
-  assert.doesNotMatch(csp, /unsafe|https:/);
+  assert.doesNotMatch(csp, /unsafe|https:|data:/);
   assert.equal(document.querySelectorAll("script:not([src])").length, 0);
   assert.equal(document.querySelectorAll("[style]").length, 0);
 });

@@ -7,8 +7,8 @@ import { mountEve } from "./eve.ts";
 import { mountBit } from "./bit.ts";
 import { mountCinema } from "./cinema.ts";
 
-applyLegacyRoute();
-addEventListener("hashchange", applyLegacyRoute);
+// An old alias such as #rooms is rewritten to its station; the page then travels there once it is ready.
+const arrivedAlias = applyLegacyRoute();
 
 const root = document.documentElement;
 root.classList.add("js");
@@ -46,10 +46,15 @@ const state = (): SkyState => {
     column,
   };
 };
+// A surge flies the live gate's warp; the painted poster answers with a short pulse of light.
+let pulse = 0;
 const surge = (ms: number) => {
   if (!motionEnabled()) return;
   surgeUntil = performance.now() + ms;
   skyEngine?.wake();
+  sky.setAttribute("data-surge", "");
+  clearTimeout(pulse);
+  pulse = window.setTimeout(() => sky.removeAttribute("data-surge"), Math.min(ms, 900));
 };
 
 /* The station sheet for narrow screens is built from the one station list in the header. */
@@ -73,6 +78,18 @@ const stationObserver = new IntersectionObserver(
 );
 $$("[data-station]").forEach((s) => stationObserver.observe(s));
 
+// On phones Bit steps aside while the visitor reads downward, and returns when they pause or scroll back.
+let scrollIdle = 0;
+let lastDirectionY = scrollY;
+const trackDirection = (y: number) => {
+  if (Math.abs(y - lastDirectionY) < 6) return;
+  if (y > lastDirectionY && y > innerHeight * 0.5) root.dataset.scrolling = "down";
+  else delete root.dataset.scrolling;
+  lastDirectionY = y;
+  clearTimeout(scrollIdle);
+  scrollIdle = window.setTimeout(() => delete root.dataset.scrolling, 1400);
+};
+
 let ticking = false;
 const onScroll = () => {
   if (ticking) return;
@@ -93,6 +110,7 @@ const onScroll = () => {
     sky.dataset.stage = stage;
     root.dataset.stage = stage;
     hud.toggleAttribute("data-scrolled", y > 8);
+    trackDirection(y);
     skyEngine?.wake();
     skyEngine?.redraw();
   });
@@ -213,17 +231,30 @@ document.addEventListener("pointerdown", (e) => {
 /* Navigation with a warp surge through the gate. Focus moves to the station's heading, and Back returns. */
 const headingOf = (target: HTMLElement) =>
   (target.matches("h1, h2, h3") ? target : target.querySelector<HTMLElement>("h1, h2")) || target;
-const go = (id: string) => {
+const go = (id: string, animate = true) => {
   const target = document.getElementById(id);
   if (!target) return;
+  const fromY = scrollY;
   closeSheet();
-  surge(1400);
-  target.scrollIntoView({ behavior: motionEnabled() ? "smooth" : "auto" });
+  if (animate) surge(1400);
+  target.scrollIntoView({ behavior: animate && motionEnabled() ? "smooth" : "auto" });
   const heading = headingOf(target);
   if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
   heading.focus({ preventScroll: true });
-  if (location.hash !== `#${id}`) history.pushState(null, "", `#${id}`);
+  if (location.hash !== `#${id}`) {
+    // Remember where the visitor was, so Back returns to that place and not the browser's guess.
+    history.replaceState({ ...(history.state || {}), y: fromY }, "");
+    history.pushState({ station: id }, "", `#${id}`);
+  }
 };
+addEventListener("popstate", (e) => {
+  const y = (e.state as { y?: number } | null)?.y;
+  // After the browser's own restoration, so the remembered place wins.
+  requestAnimationFrame(() => {
+    if (typeof y === "number") scrollTo({ top: y, behavior: "auto" });
+    else if (!location.hash) scrollTo({ top: 0, behavior: "auto" });
+  });
+});
 $$<HTMLAnchorElement>("[data-transit-go], [data-station-link], [data-station-next], .brand").forEach((a) =>
   a.addEventListener("click", (e) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
@@ -281,6 +312,12 @@ mountCinema($("[data-screen]")!, (playing) => {
   filmPlaying = playing;
   skyEngine?.hold("film", playing);
 });
+
+addEventListener("hashchange", () => {
+  const alias = applyLegacyRoute();
+  if (alias) go(alias);
+});
+if (arrivedAlias) requestAnimationFrame(() => go(arrivedAlias, false));
 
 addEventListener("resize", () => {
   measure();

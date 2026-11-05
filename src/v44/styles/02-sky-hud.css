@@ -1,0 +1,237 @@
+/* The sky behind everything, the header, the station sheet and the chips. */
+/* The sky: poster first, live gate when a real GPU is present. */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: radial-gradient(120% 80% at 75% 40%, #0b1430 0%, #05070c 60%);
+}
+.sky-poster,
+.sky-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sky-poster {
+  transition: filter 900ms ease;
+  /* Scroll flies the painted gate toward its ring, so software and low power visitors get the approach too. */
+  transform-origin: 77% 48%;
+  transform: scale(calc(1 + var(--transit, 0) * 0.85));
+  will-change: transform;
+}
+@media (orientation: portrait) {
+  .sky-poster {
+    transform-origin: 54% 27%;
+  }
+}
+.sky-canvas {
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.sky[data-live] .sky-canvas {
+  opacity: 1;
+}
+.sky[data-stage="deep"]:not([data-live]) .sky-poster {
+  filter: brightness(0.45) saturate(1.1);
+}
+.sky-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 7, 12, 0.82) 0%, rgba(5, 7, 12, 0.38) 38%, rgba(5, 7, 12, 0) 62%),
+    linear-gradient(0deg, rgba(5, 7, 12, 0.7) 0%, rgba(5, 7, 12, 0) 30%);
+  transition: opacity 700ms ease;
+}
+.sky[data-stage="deep"] .sky-scrim {
+  opacity: 0.55;
+}
+
+main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* HUD */
+.hud {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 20;
+  background: linear-gradient(180deg, rgba(5, 7, 12, 0.92), rgba(5, 7, 12, 0.6) 70%, rgba(5, 7, 12, 0));
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+/* Once the page scrolls, the header becomes a solid instrument panel so text never runs behind it. */
+.hud[data-scrolled] {
+  background: rgba(5, 7, 12, 0.9);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom-color: var(--line);
+}
+.hud-bar {
+  height: var(--hud-h);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  flex: none;
+}
+.brand-word {
+  width: 104px;
+  height: auto;
+}
+.stations {
+  flex: 1;
+  display: none;
+  justify-content: center;
+}
+.stations ol {
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.stations a,
+.station-sheet a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  color: var(--muted);
+  text-decoration: none;
+  font: 500 15px/1 var(--body);
+  border-bottom: 2px solid transparent;
+}
+.stations a:hover,
+.stations a[aria-current="true"] {
+  color: var(--pearl);
+  border-bottom-color: var(--blue);
+}
+.num {
+  font: 400 12.5px/1 var(--mono);
+  color: var(--blue-text);
+  letter-spacing: 0.04em;
+}
+.hud-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  align-items: center;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  --edge: var(--line-strong);
+  border: 1px solid var(--edge);
+  background-color: rgba(13, 16, 23, 0.72);
+  background-image: var(--corner), var(--corner);
+  background-position:
+    top right,
+    bottom left;
+  background-size: 9px 9px;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  color: var(--platinum);
+  font: 500 14.5px/1 var(--body);
+  text-decoration: none;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+.chip:hover {
+  --edge: var(--blue-text);
+  color: var(--pearl);
+  background-color: rgba(53, 120, 255, 0.16);
+}
+.chip[aria-pressed="true"],
+.chip[data-paused] {
+  --edge: var(--blue);
+  background-color: rgba(53, 120, 255, 0.22);
+}
+.chip-solid {
+  --edge: var(--pearl);
+  background-color: var(--pearl);
+  color: var(--deep);
+  font-weight: 700;
+}
+.chip-solid:hover {
+  --edge: #fff;
+  background-color: #fff;
+  color: var(--deep);
+}
+.transit-line {
+  height: 2px;
+  background: rgba(226, 230, 238, 0.08);
+}
+.transit-line span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(var(--progress, 0));
+  background: linear-gradient(90deg, var(--blue), var(--blue-text) 80%, var(--red));
+  box-shadow: 0 0 12px rgba(53, 120, 255, 0.8);
+}
+.station-sheet {
+  position: absolute;
+  top: calc(var(--hud-h) + 2px);
+  right: var(--gutter);
+  width: min(320px, calc(100vw - 2 * var(--gutter)));
+  background: rgba(9, 11, 17, 0.97);
+  border: 1px solid var(--line-strong);
+  padding: 10px;
+  max-height: calc(100dvh - var(--hud-h) - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.station-sheet a[aria-current="true"] {
+  color: var(--pearl);
+  box-shadow: inset 3px 0 0 var(--blue);
+}
+.station-sheet ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.station-sheet a {
+  min-height: 48px;
+  font-size: 17px;
+  color: var(--platinum);
+  width: 100%;
+}
+@media (min-width: 1180px) {
+  .stations {
+    display: flex;
+  }
+  .menu-toggle {
+    display: none;
+  }
+}
+
+.motion-short {
+  display: none;
+}
+@media (max-width: 560px) {
+  .motion-short {
+    display: inline;
+  }
+}

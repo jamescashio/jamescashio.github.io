@@ -46,11 +46,15 @@ export function frontDoorHref(hash: string): string {
   return route.replace ?? route.rewrite ?? "/" + hash;
 }
 
-export function applyLegacyRoute() {
+/** Apply the route for the current address. Returns the station an alias now points at, so the page can go there. */
+export function applyLegacyRoute(): string | null {
   // A packaged preview runs away from cashio.us, where its host owns the hash.
-  if (document.querySelector('meta[name="cashio-preview"]')) return false;
+  if (document.querySelector('meta[name="cashio-preview"]')) return null;
   const route = legacyRoute(location.href);
   if (route.replace) location.replace(route.replace);
-  else if (route.rewrite) history.replaceState(history.state, "", route.rewrite);
-  return Boolean(route.replace);
+  else if (route.rewrite) {
+    history.replaceState(history.state, "", route.rewrite);
+    return new URL(route.rewrite, location.href).hash.slice(1);
+  }
+  return null;
 }

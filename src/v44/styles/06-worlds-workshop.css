@@ -1,0 +1,275 @@
+/* Stations 03 and 04: the worlds, the hangar, the system map and the brief. */
+/* Worlds */
+.world-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+@media (min-width: 1100px) {
+  .world-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.world {
+  display: flex;
+  flex-direction: column;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 300ms ease;
+}
+.world img {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.04);
+}
+.world-copy {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.world h3 {
+  font-size: 23px;
+  font-weight: 650;
+}
+.world p {
+  color: var(--platinum);
+  font-size: 16.5px;
+}
+/* Links sit on the bottom edge of every card, one per line, so cards in a row line up. */
+.world-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.world-links a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  font-weight: 700;
+}
+.world-links .quiet {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Workshop */
+.workshop-grid {
+  display: grid;
+  gap: 20px;
+}
+@media (min-width: 1000px) {
+  .workshop-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .system-map {
+    grid-column: span 7;
+  }
+  .receipt {
+    grid-column: span 5;
+  }
+}
+/* The hangar: one wide card under the four worlds. */
+.hangar {
+  margin-top: 20px;
+  display: grid;
+  text-decoration: none;
+  color: var(--platinum);
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 300ms ease;
+}
+@media (min-width: 900px) {
+  .hangar {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+.hangar img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.hangar-copy {
+  display: grid;
+  gap: 8px;
+  padding: 22px clamp(20px, 3vw, 40px) 24px;
+  max-width: 46ch;
+}
+.hangar-copy strong {
+  font: 650 clamp(26px, 3vw, 36px) / 1.1 var(--display);
+  color: var(--pearl);
+}
+.system-map {
+  margin: 0;
+  padding: 18px 18px 14px;
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+.system-map svg {
+  width: 100%;
+  height: auto;
+}
+/* Phones get the map drawn top to bottom, so its labels stay at reading size. */
+.map-tall {
+  display: none;
+  max-width: 360px;
+  margin-inline: auto;
+}
+@media (max-width: 560px) {
+  .map-wide {
+    display: none;
+  }
+  .map-tall {
+    display: block;
+  }
+  .map-tall .wire {
+    stroke: url(#wire-tall);
+  }
+  /* The tall map scales down to about 0.8 on the narrowest phones; these sizes keep its labels at 12 px or more. */
+  .map-tall .node text {
+    font-size: 18px;
+  }
+  .map-tall .node .node-sub,
+  .map-tall .map-note {
+    font-size: 15px;
+  }
+  .map-tall .wire-back {
+    stroke: rgba(255, 138, 157, 0.55);
+  }
+}
+.system-map figcaption {
+  font-size: 14px;
+  color: var(--muted);
+}
+.wire {
+  fill: none;
+  stroke: url(#wire);
+  stroke-width: 2;
+}
+.wire-back {
+  stroke: rgba(255, 138, 157, 0.55);
+  stroke-dasharray: 4 6;
+}
+.node circle,
+.node rect {
+  fill: rgba(13, 16, 23, 0.95);
+  stroke: rgba(154, 190, 255, 0.7);
+  stroke-width: 1.5;
+}
+.node-human circle {
+  stroke: var(--red-text);
+}
+.node-hermes rect {
+  stroke: var(--blue);
+  stroke-width: 2;
+}
+.node text {
+  fill: var(--pearl);
+  font: 600 15px var(--display);
+  text-anchor: middle;
+}
+.node .node-sub {
+  font: 400 13px var(--mono);
+  fill: var(--muted);
+}
+.map-note {
+  fill: var(--muted);
+  font: 400 13px var(--mono);
+  text-anchor: middle;
+}
+.packet {
+  fill: var(--pearl);
+  filter: drop-shadow(0 0 6px var(--blue));
+  offset-rotate: 0deg;
+  opacity: 0;
+}
+.packet-a {
+  offset-path: path("M70 150 C150 150 160 150 230 150 L290 150 C350 150 360 80 420 80");
+}
+.packet-b {
+  offset-path: path("M70 150 C150 150 160 150 230 150 L290 150 C350 150 360 220 420 220");
+}
+.packet-c {
+  offset-path: path("M150 68 L150 188 C150 230 75 230 75 265");
+}
+.packet-d {
+  offset-path: path("M150 68 L150 188 C150 230 225 230 225 265");
+}
+html[data-motion="on"] .system-map.in .packet {
+  animation: packet 5.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+html[data-motion="on"] .system-map.in .packet-b,
+html[data-motion="on"] .system-map.in .packet-d {
+  animation-delay: 2.6s;
+}
+@keyframes packet {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+.receipt {
+  padding: 24px 24px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.receipt .text-link {
+  margin-top: auto;
+}
+/* A small paper copy of the brief: four labelled lines, printed from the dated record. */
+.brief-preview {
+  margin: 6px 0 4px;
+  padding: 14px 16px;
+  display: grid;
+  gap: 10px;
+  background: rgba(226, 230, 238, 0.04);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  font-size: 16px;
+}
+.brief-preview div {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+.brief-preview dt {
+  font: 400 12.5px/1.3 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+}
+.brief-preview dd {
+  margin: 0;
+  color: var(--platinum);
+}
+.receipt h3 {
+  font-size: 25px;
+  font-weight: 650;
+}
+.receipt-figure {
+  font-size: 17px;
+}
+.receipt-figure strong {
+  font: 700 30px/1 var(--display);
+  color: var(--pearl);
+  margin-right: 6px;
+}

@@ -2,6 +2,7 @@
 // so the published page and the published record can never disagree.
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
+import { houseDate } from "../src/shared/dates.ts";
 
 const LABELS = {
   "lanes.public": "Public capability lanes",
@@ -24,19 +25,8 @@ const escapeHtml = (value) =>
     (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
   );
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 /** An ISO calendar date in the house style: "Wed Nov 4, 2026". Anything but a real YYYY-MM-DD date throws. */
-export function longDate(iso) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso));
-  if (!match) throw new Error(`not an ISO calendar date: ${iso}`);
-  const [y, m, d] = match.slice(1).map(Number);
-  const day = new Date(Date.UTC(y, m - 1, d));
-  if (day.getUTCFullYear() !== y || day.getUTCMonth() !== m - 1 || day.getUTCDate() !== d)
-    throw new Error(`not a calendar date: ${iso}`);
-  return `${DAYS[day.getUTCDay()]} ${MONTHS[m - 1]} ${d}, ${y}`;
-}
+export const longDate = houseDate;
 
 /** The withheld items the page prints, in order, with their labels. E.V.E. counts this same list. */
 export function withheldList(status) {
@@ -58,7 +48,8 @@ export function transcript(vtt) {
 }
 
 export function statusTokens(root) {
-  const status = JSON.parse(readFileSync(path.join(root, "status.json"), "utf8"));
+  // The published export itself, so the page and /status.json are built from one file.
+  const status = JSON.parse(readFileSync(path.join(root, "public/status.json"), "utf8"));
   const tokens = new Map();
   const put = (key, value) => {
     if (value === null || value === undefined) throw new Error(`status.json has no value for ${key}`);
@@ -73,7 +64,17 @@ export function statusTokens(root) {
   put("cluster.hostsOnline", status.cluster.hostsOnline);
   put("backup.latestVerified", status.backup.latestVerified);
   put("backup.latestChecked", status.backup.latestChecked);
+  // The release date and name come from the receipt, so the footer and E.V.E. never drift from it.
+  const receipt = JSON.parse(readFileSync(path.join(root, "public/v40/site-release.json"), "utf8"));
+  const release = {
+    version: `V${String(receipt.experienceVersion).split(".")[0]}`,
+    name: receipt.presentation?.name,
+    updated: houseDate(receipt.updatedDate),
+  };
+  if (!release.name) throw new Error("the release receipt has no presentation name");
+  tokens.set("{{release.updated}}", escapeHtml(release.updated));
   const record = {
+    release,
     verifiedDay: longDate(status.verified),
     law: status.law,
     containers: { running: status.containers.running, documented: status.containers.documented },
@@ -108,7 +109,7 @@ export function statusTokens(root) {
 export function fillStatus(html, root) {
   let out = html;
   for (const [token, value] of statusTokens(root)) out = out.split(token).join(value);
-  const left = out.match(/\{\{(?:status|film)\.[^}]+\}\}/);
+  const left = out.match(/\{\{(?:status|film|release)\.[^}]+\}\}/);
   if (left) throw new Error(`Unfilled evidence placeholder ${left[0]}`);
   return out;
 }
@@ -119,7 +120,7 @@ export function v44Status(root) {
     transformIndexHtml: {
       order: "pre",
       handler(html, ctx) {
-        if (!html.includes("{{status.") && !html.includes("{{film.")) return html;
+        if (!/\{\{(?:status|film|release)\./.test(html)) return html;
         if (ctx.filename && path.resolve(ctx.filename) !== path.join(root, "index.html")) return html;
         return fillStatus(html, root);
       },

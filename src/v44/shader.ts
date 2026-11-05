@@ -243,6 +243,19 @@ void main() {
   col += shootingStar(uv, 0.0) + shootingStar(uv, 1.0);
 
   // A whisper of light as the gate surface passes the camera.
+  // The next gate in the chain: far ahead and faint, so the sky behind the stations still has somewhere to go.
+  float ahead = smoothstep(0.85, 1.0, transit);
+  if (ahead > 0.0) {
+    vec2 q = uv - (uRing.xy * 0.55 + vec2(0.06, 0.05));
+    q = vec2(cr * q.x + sr * q.y, -sr * q.x + cr * q.y);
+    float R2 = R * 0.17;
+    vec2 e2 = vec2(q.x, q.y / tilt);
+    float th2 = atan(e2.y, e2.x);
+    float d2 = (length(e2) - R2) * length(vec2(cos(th2), tilt * sin(th2)));
+    float glow2 = exp(-abs(d2) / (R2 * 0.05)) * 0.55 + exp(-abs(d2) / (R2 * 0.35)) * 0.12;
+    float blink = step(0.985, fract(th2 / TAU * 22.0 + 0.5)) * (0.6 + 0.4 * sin(uTime * 2.0 + th2 * 3.0));
+    col += vec3(0.35, 0.58, 1.0) * (glow2 + blink * exp(-abs(d2) / (R2 * 0.08)) * 0.6) * ahead * uIgnite;
+  }
   col += vec3(0.25, 0.45, 1.0) * smoothstep(0.55, 0.85, transit) * fall(1.0, 0.86, transit) * 0.22;
 
   col *= mix(1.0, 0.5, uDim);
