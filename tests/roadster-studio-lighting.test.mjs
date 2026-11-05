@@ -26,6 +26,7 @@ async function openStudio(t, width = 1440, reducedMotion = "reduce", inspectFram
       const cancel = window.cancelAnimationFrame.bind(window);
       const held = new Map();
       window.holdRoadsterFrames = false;
+      window.roadsterKnownCallbacks = () => roadsterCallbacks.size;
       window.roadsterHeldFrames = () => held.size;
       window.releaseRoadsterFrames = () => {
         window.holdRoadsterFrames = false;
@@ -312,7 +313,7 @@ test("Stop and reduced motion cancel delayed sweep frames while preserving a pen
   const page = await openStudio(t, 1440, "no-preference", true);
   const canvas = page.locator(".roadster-inspection canvas");
   // Learn the viewer's callback from an actual first paint before holding it.
-  await expect.poll(() => page.evaluate(() => window.roadsterDraws)).toBeGreaterThan(0);
+  await expect.poll(() => page.evaluate(() => window.roadsterKnownCallbacks())).toBeGreaterThan(0);
   await still(page);
   for (const action of ["stop", "camera", "reduced-motion"]) {
     const cameraMove = action === "camera";
