@@ -223,7 +223,8 @@ test("Bit stays out of the arrival on phones and answers for what the visitor di
   await expect(page.locator("[data-bit-line]")).toContainText("held it for a person");
   await expect(page.locator('[data-bit-go="helm"]')).toBeHidden();
   await page.locator('[data-bit-go="eve"]').click();
-  await expect(page.locator("#eve-cmd")).toBeFocused();
+  // On a touch screen Bit lands on E.V.E.'s console, so arriving does not raise the keyboard.
+  await expect(page.locator("[data-eve-log]")).toBeFocused();
 });
 
 test("V43 deep links open the preserved edition and V44 stations stay home", async (t) => {
@@ -571,4 +572,38 @@ test("the helm says its decision in one line to screen readers", async (t) => {
   await page.locator('input[name="privateData"]').check({ force: true });
   await expect(page.locator("[data-helm-say]")).toHaveText("Human review. Held for a person.");
   assert.equal(await page.locator("[data-helm-result]").getAttribute("aria-live"), null);
+});
+
+test("Back hands keyboard focus to the control the journey started from", async (t) => {
+  const page = await visit(t);
+  await page.locator(".cta[data-transit-go]").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#cinema-title")).toBeFocused();
+  await page.goBack();
+  await expect(page.locator(".cta[data-transit-go]")).toBeFocused();
+});
+
+test("the live gate takes over from its poster only at the gate, never mid flight", async (t) => {
+  const gl = await chromium.launch({
+    ...CHROME,
+    headless: true,
+    args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"],
+  });
+  t.after(() => gl.close());
+  const context = await gl.newContext({ viewport: { width: 640, height: 400 }, reducedMotion: "reduce" });
+  // Note whether the live scene ever took over, even if a slow software renderer hands back to the poster later.
+  await context.addInitScript(() => {
+    window.__wentLive = false;
+    new MutationObserver(() => {
+      if (document.querySelector(".sky")?.hasAttribute("data-live")) window.__wentLive = true;
+    }).observe(document, { attributes: true, subtree: true, attributeFilter: ["data-live"] });
+  });
+  const page = await context.newPage();
+  await page.goto(new URL("/?gl=force", url).href, { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => scrollTo(0, 300));
+  await page.waitForLoadState("networkidle");
+  await page.waitForTimeout(1500);
+  assert.equal(await page.evaluate(() => window.__wentLive), false, "the poster keeps the scene while away");
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.__wentLive), { timeout: 10000 }).toBe(true);
 });

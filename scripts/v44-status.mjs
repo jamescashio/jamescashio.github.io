@@ -11,7 +11,7 @@ const LABELS = {
   "lanes.privateCatalog": "Which models run privately",
   routingVerified: "Whether routing works end to end",
   "cluster.version": "Server software versions",
-  "cluster.quorate": "Whether the servers agree they are healthy",
+  "cluster.quorate": "Whether the cluster has enough votes to coordinate",
   "containers.zeus": "What runs on each server",
   "containers.apollo": null,
   "scheduler.enabled": "Whether the job scheduler is on",

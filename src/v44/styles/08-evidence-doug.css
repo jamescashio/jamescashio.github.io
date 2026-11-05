@@ -205,7 +205,17 @@ kbd {
 }
 .eve-quick .chip {
   font-family: var(--mono);
-  font-size: 13.5px;
+  font-size: 14px;
+}
+/* Four quick commands, one row on phones. */
+@media (max-width: 560px) {
+  .eve-quick {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .eve-quick .chip {
+    padding: 0 6px;
+  }
 }
 
 /* Doug */

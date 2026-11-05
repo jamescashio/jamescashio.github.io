@@ -129,6 +129,13 @@
   font: 700 21px/1.15 var(--display);
   letter-spacing: 0.01em;
 }
+/* The narrowest phones keep the call to action on one line. */
+@media (max-width: 360px) {
+  .cta-label {
+    font-size: 19px;
+    white-space: nowrap;
+  }
+}
 .cta-note {
   grid-column: 1;
   font-size: 14.5px;

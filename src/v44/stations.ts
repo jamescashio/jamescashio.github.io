@@ -64,14 +64,23 @@ export function mountStations({ surge, onStation }: Hooks): Stations {
 
   /* Travel, with a warp surge through the gate. */
   // Focus lands on the control a place names for arrivals (E.V.E. names her input), else on its heading.
+  // On touch screens a place may name a quieter target, so arriving never raises the keyboard.
+  const coarse = matchMedia("(pointer: coarse)");
   const headingOf = (target: HTMLElement) =>
+    (coarse.matches &&
+      target.dataset.arriveFocusTouch &&
+      target.querySelector<HTMLElement>(target.dataset.arriveFocusTouch)) ||
     (target.dataset.arriveFocus && target.querySelector<HTMLElement>(target.dataset.arriveFocus)) ||
     (target.matches("h1, h2, h3") ? target : target.querySelector<HTMLElement>("h1, h2")) ||
     target;
+  // The control each journey started from, by history entry, so Back hands focus back to it.
+  const origins = new Map<number, HTMLElement>();
+  let entries = (history.state as { entry?: number } | null)?.entry ?? 0;
   const go = (id: string, animate = true) => {
     const target = document.getElementById(id);
     if (!target) return;
     const fromY = scrollY;
+    const from = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     closeSheet();
     if (animate) surge(1400);
     target.scrollIntoView({ behavior: animate && motionEnabled() ? "smooth" : "auto" });
@@ -82,16 +91,21 @@ export function mountStations({ surge, onStation }: Hooks): Stations {
     heading.focus({ preventScroll: true });
     if (location.hash !== `#${id}`) {
       // Remember where the visitor was, so Back returns to that place and not the browser's guess.
-      history.replaceState({ ...(history.state || {}), y: fromY }, "");
-      history.pushState({ station: id }, "", `#${id}`);
+      const here = (history.state as { entry?: number } | null)?.entry ?? entries;
+      if (from && from !== document.body) origins.set(here, from);
+      history.replaceState({ ...(history.state || {}), y: fromY, entry: here }, "");
+      entries = here + 1;
+      history.pushState({ station: id, entry: entries }, "", `#${id}`);
     }
   };
   addEventListener("popstate", (e) => {
-    const y = (e.state as { y?: number } | null)?.y;
-    // After the browser's own restoration, so the remembered place wins.
+    const state = e.state as { y?: number; entry?: number } | null;
+    // After the browser's own restoration, so the remembered place and control win.
     requestAnimationFrame(() => {
-      if (typeof y === "number") scrollTo({ top: y, behavior: "auto" });
+      if (typeof state?.y === "number") scrollTo({ top: state.y, behavior: "auto" });
       else if (!location.hash) scrollTo({ top: 0, behavior: "auto" });
+      const origin = typeof state?.entry === "number" ? origins.get(state.entry) : undefined;
+      if (origin?.isConnected) origin.focus({ preventScroll: true });
     });
   });
   $$<HTMLAnchorElement>(

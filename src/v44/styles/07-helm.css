@@ -82,9 +82,9 @@
     order: 6;
     margin-top: 4px;
   }
-  .helm-result > .steps {
+  .helm-grid > .helm-result > .steps {
     order: 7;
-    margin-bottom: 22px;
+    margin: 10px clamp(20px, 3vw, 36px) 22px;
   }
 }
 fieldset {

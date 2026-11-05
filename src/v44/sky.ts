@@ -114,8 +114,10 @@ export class Sky {
     this.canvas.addEventListener("webglcontextrestored", () => {
       if (!this.build()) return;
       this.hold("lost", false);
+      // A device already judged too slow keeps its poster; otherwise the scene returns once it has drawn.
+      if (this.holds.has("slow")) return;
       this.redraw();
-      this.onLive(true);
+      if (this.canvas.width > 0) this.onLive(true);
     });
     window.addEventListener(
       "pointermove",

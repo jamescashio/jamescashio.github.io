@@ -19,29 +19,6 @@ await mkdir(out, { recursive: true });
 
 let server;
 let url = process.env.V44_URL;
-if (!url) {
-  const probe = net.createServer().listen(0, "127.0.0.1");
-  await once(probe, "listening");
-  const port = probe.address().port;
-  await new Promise((resolve) => probe.close(resolve));
-  url = `http://127.0.0.1:${port}/`;
-  server = spawn(process.execPath, ["scripts/serve-helios-preview.mjs", "dist", String(port), "--indexable"], {
-    stdio: ["ignore", "pipe", "inherit"],
-  });
-  await once(server.stdout, "data");
-}
-
-// Measure only the build of this commit: the page names the commit it was built from.
-const page = await (await fetch(url)).text();
-const built = page.match(/<meta name="cashio-build" content="([^"]+)"/)?.[1];
-const title = page.match(/<title>([^<]*)<\/title>/)?.[1] || "";
-if (!/V44/.test(title) || built !== commit) {
-  if (server && server.exitCode === null) server.kill();
-  throw new Error(
-    `The page at ${url} is ${title || "untitled"}, built from ${built || "an unknown commit"}, not V44 at ${commit}. Build first.`,
-  );
-}
-
 const BAR = { performance: 90, accessibility: 100, "best-practices": 100, seo: 100 };
 const runs = [
   ["mobile", 1, undefined],
@@ -51,17 +28,41 @@ const runs = [
 ];
 const failures = [];
 const summary = [];
+let built;
+let title;
 try {
+  if (!url) {
+    const probe = net.createServer().listen(0, "127.0.0.1");
+    await once(probe, "listening");
+    const port = probe.address().port;
+    await new Promise((resolve) => probe.close(resolve));
+    url = `http://127.0.0.1:${port}/`;
+    server = spawn(process.execPath, ["scripts/serve-helios-preview.mjs", "dist", String(port), "--indexable"], {
+      stdio: ["ignore", "pipe", "inherit"],
+    });
+    await once(server.stdout, "data");
+  }
+
+  // Measure only the build of this commit: the page names the commit it was built from.
+  const page = await (await fetch(url)).text();
+  built = page.match(/<meta name="cashio-build" content="([^"]+)"/)?.[1];
+  title = page.match(/<title>([^<]*)<\/title>/)?.[1] || "";
+  if (!/V44/.test(title) || built !== commit)
+    throw new Error(
+      `The page at ${url} is ${title || "untitled"}, built from ${built || "an unknown commit"}, not V44 at ${commit}. Build first.`,
+    );
+
   for (const [form, run, config] of runs) {
     // A fresh profile per run, outside the reports, so no run inherits another's cache or lock.
     const profile = await mkdtemp(path.join(tmpdir(), "v44-audit-"));
-    const chrome = await launch({
-      ...(process.env.CHROME_PATH ? { chromePath: process.env.CHROME_PATH } : {}),
-      userDataDir: profile,
-      chromeFlags: ["--headless=new", "--no-sandbox", "--disable-gpu"],
-      logLevel: "silent",
-    });
+    let chrome;
     try {
+      chrome = await launch({
+        ...(process.env.CHROME_PATH ? { chromePath: process.env.CHROME_PATH } : {}),
+        userDataDir: profile,
+        chromeFlags: ["--headless=new", "--no-sandbox", "--disable-gpu"],
+        logLevel: "silent",
+      });
       const result = await lighthouse(
         url,
         {
@@ -83,7 +84,7 @@ try {
       for (const [key, floor] of Object.entries(BAR))
         if (scores[key] < floor) failures.push(`${form} run ${run}: ${key} ${scores[key]} is under ${floor}`);
     } finally {
-      await chrome.kill();
+      await chrome?.kill();
       await rm(profile, { recursive: true, force: true });
     }
   }

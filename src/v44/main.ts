@@ -106,6 +106,7 @@ const onScroll = () => {
     root.dataset.stage = stage;
     hud.toggleAttribute("data-scrolled", y > 8);
     trackDirection(y);
+    if (skyWaiting && transit <= 0.001) startSky();
     skyEngine?.wake();
     skyEngine?.redraw();
   });
@@ -116,7 +117,15 @@ let skyEngine: Sky | null = null;
 let flareOff = 0;
 let filmPlaying = false;
 const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (el.textContent = text));
+// The live scene takes over from its painting only at the gate, where both show the same frame; a visitor
+// who has already set off keeps the poster until they come back to the top.
+let skyWaiting = false;
 const startSky = () => {
+  if (transit > 0.001) {
+    skyWaiting = true;
+    return;
+  }
+  skyWaiting = false;
   const canvas = $<HTMLCanvasElement>(".sky-canvas")!;
   const force = params.get("gl") === "force";
   let seen = false;

@@ -164,33 +164,6 @@
       <nav class="station-sheet" id="station-sheet" aria-label="Stations menu" hidden></nav>
     </header>
 
-    <button
-      disabled
-      data-needs-js
-      type="button"
-      class="bit"
-      data-bit-open
-      aria-haspopup="dialog"
-      aria-label="Talk to Bit, your copilot"
-    >
-      <canvas class="bit-face" width="96" height="96" aria-hidden="true"></canvas>
-      <span class="bit-name">Bit</span>
-    </button>
-    <dialog class="bit-dialog" data-bit-dialog aria-labelledby="bit-title">
-      <div class="bit-head">
-        <p id="bit-title"><strong>Bit</strong> <span>your copilot</span></p>
-        <button type="button" class="chip" data-bit-close>Close</button>
-      </div>
-      <p class="bit-line" data-bit-line aria-live="polite">
-        Welcome aboard. The gate is open and the coffee is mostly harmless.
-      </p>
-      <div class="bit-actions">
-        <button type="button" class="chip" data-bit-joke>Tell me a joke</button>
-        <button type="button" class="chip" data-bit-go="helm" data-bit-station="helm">Take me to the helm</button>
-        <button type="button" class="chip" data-bit-go="eve" data-bit-station="evidence">Open E.V.E.</button>
-      </div>
-    </dialog>
-
     <main id="main">
       <section class="station arrival" id="arrival" aria-labelledby="arrival-title" data-station="arrival">
         <div class="frame arrival-frame">
@@ -274,7 +247,7 @@
                 </figcaption>
               </figure>
               <p class="fine film-note" data-film-words="trailer">
-                Its figures date from when it was filmed; the dated record is at Evidence.
+                The trailer's numbers are from when it was filmed. Today's numbers are at Evidence.
               </p>
               <details class="transcript" data-transcript data-film-words="trailer">
                 <summary>Read the trailer’s words</summary>
@@ -621,7 +594,7 @@
                 </div>
                 <div>
                   <dt>Source</dt>
-                  <dd>status.json · {{status.verifiedDay}}</dd>
+                  <dd>The published record · {{status.verifiedDay}}</dd>
                 </div>
                 <div>
                   <dt>Unknown</dt>
@@ -769,7 +742,7 @@
             <div class="readings hull">
               <p class="observed">
                 <span class="label">Observed</span> <time datetime="{{status.verified}}">{{status.verifiedDay}}</time>
-                <span class="label">Read only probe</span>
+                <span class="label">Checked without changing anything</span>
               </p>
               <dl class="figures">
                 <div>
@@ -802,7 +775,7 @@
               </details>
               <p class="evidence-links">
                 <a href="/status.json">Read the latest export&nbsp;→</a>
-                <a href="/evidence/console-snapshot-2026-10-03.json">Preserved console recovery receipt&nbsp;→</a>
+                <a href="/evidence/console-snapshot-2026-10-03.json">Recovery receipt, Sat Oct 3, 2026&nbsp;→</a>
               </p>
               <details class="withheld">
                 <summary>Earlier dated records</summary>
@@ -811,7 +784,14 @@
                 </ul>
               </details>
             </div>
-            <div class="eve hull" id="eve" data-arrive-focus="#eve-cmd" data-eve data-record="{{status.record}}">
+            <div
+              class="eve hull"
+              id="eve"
+              data-arrive-focus="#eve-cmd"
+              data-arrive-focus-touch="[data-eve-log]"
+              data-eve
+              data-record="{{status.record}}"
+            >
               <div class="eve-top">
                 <p><strong>E.V.E.</strong> <span>Evaluation Verification Engine</span></p>
                 <span class="eve-led" aria-hidden="true"></span>
@@ -920,6 +900,33 @@
         </div>
       </section>
     </main>
+
+    <button
+      disabled
+      data-needs-js
+      type="button"
+      class="bit"
+      data-bit-open
+      aria-haspopup="dialog"
+      aria-label="Talk to Bit, your copilot"
+    >
+      <canvas class="bit-face" width="96" height="96" aria-hidden="true"></canvas>
+      <span class="bit-name">Bit</span>
+    </button>
+    <dialog class="bit-dialog" data-bit-dialog aria-labelledby="bit-title">
+      <div class="bit-head">
+        <p id="bit-title"><strong>Bit</strong> <span>your copilot</span></p>
+        <button type="button" class="chip" data-bit-close>Close</button>
+      </div>
+      <p class="bit-line" data-bit-line aria-live="polite">
+        Welcome aboard. The gate is open and the coffee is mostly harmless.
+      </p>
+      <div class="bit-actions">
+        <button type="button" class="chip" data-bit-joke>Tell me a joke</button>
+        <button type="button" class="chip" data-bit-go="helm" data-bit-station="helm">Take me to the helm</button>
+        <button type="button" class="chip" data-bit-go="eve" data-bit-station="evidence">Open E.V.E.</button>
+      </div>
+    </dialog>
 
     <footer class="footer">
       <div class="frame footer-grid">

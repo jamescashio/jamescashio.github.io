@@ -118,6 +118,15 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     );
     if (!animate) return;
     if (say) say.textContent = `${r.lane}. ${CODE_LABEL[r.code]}.`;
+    // On a phone the drawing sits under the inputs; if it is below the screen, bring it up so the change is seen.
+    if (map && matchMedia("(max-width: 759px)").matches) {
+      const box = map.getBoundingClientRect();
+      if (box.bottom > innerHeight)
+        map.scrollIntoView({
+          block: "nearest",
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+    }
     steps.classList.remove("run");
     requestAnimationFrame(() => steps.classList.add("run"));
     document.dispatchEvent(new CustomEvent("v44:route", { detail: r }));
