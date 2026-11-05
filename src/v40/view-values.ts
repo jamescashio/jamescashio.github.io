@@ -224,7 +224,7 @@ export function renderVals(this: PageHost) {
       e.preventDefault();
       this.eve(s.eveInput);
     },
-    sigState: energized ? "ENERGIZED · ORBIT LIVE" : "DORMANT · GOLD INTENT",
+    sigState: energized ? "ENERGIZED · ORBIT LIVE" : "DORMANT · PLATINUM INTENT",
     sigStateColor: energized ? "var(--green)" : "var(--text-dim)",
     sigImg: `position:relative;width:100%;height:auto;display:block;transition:filter 1.2s cubic-bezier(.23,1,.32,1);filter:${energized ? "brightness(1.2) saturate(1.15)" : "brightness(.85)"}`,
     sigVid: `position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:opacity 1.2s cubic-bezier(.23,1,.32,1);opacity:${energized ? 1 : 0}`,

@@ -1,4 +1,5 @@
 @import "./tokens.css";
+@import "../platinum-brand.css";
 @import "../fonts.css";
 /* Shared LCARS primitives. Section classes can override their defaults. */
 .za-btn {
@@ -1577,29 +1578,29 @@ html[data-background="true"] *::after {
   white-space: normal;
 }
 #v40-root {
-  /* Warm brass for invitations, cool starlight for instruments and navigation. */
-  --accent: #ddbd87;
-  --accent-light: #f3dfb6;
-  --accent-2: #91d8df;
-  --gold-rgb: 221 189 135;
-  --signal-rgb: 109 210 221;
-  --void-rgb: 8 13 19;
+  /* Platinum structure, electric blue instruments, and a restrained red counterpoint. */
+  --accent: #e2e6ee;
+  --accent-light: #f5f5f7;
+  --accent-2: #b8c3d5;
+  --gold-rgb: 226 230 238;
+  --signal-rgb: 53 120 255;
+  --void-rgb: 13 16 23;
   --accent-glow: rgb(var(--gold-rgb) / 0.12);
-  --signal: #6dd2dd;
-  --cyan: #91d8df;
+  --signal: #3578ff;
+  --cyan: #9abeff;
   --cyan-glow: rgb(var(--signal-rgb) / 0.14);
-  --purple: #b5dde0;
+  --purple: #c9d7ff;
   --purple-glow: rgb(var(--signal-rgb) / 0.1);
-  --text: #edf0e9;
-  --text-dim: #bac8cd;
-  --glass: #0d1721ed;
-  --glass-border: #8bb8c235;
-  --void: #080d13;
-  --surface: #0e1822;
-  --surface-2: #15212c;
-  --continuum-line: #8bb8c235;
-  --primary-fill: linear-gradient(115deg, #f1dfb9, #ddbd87);
-  --title-metal: linear-gradient(100deg, #f5e9cb, #e2c693 62%, #cda96b);
+  --text: #f5f5f7;
+  --text-dim: #b8c1d0;
+  --glass: #111217ed;
+  --glass-border: #91acdd35;
+  --void: #0d1017;
+  --surface: #111217;
+  --surface-2: #1b202b;
+  --continuum-line: #91acdd35;
+  --primary-fill: linear-gradient(115deg, #f5f5f7, #c3cbd8);
+  --title-metal: linear-gradient(100deg, #f5f5f7, #e2e6ee 62%, #aab6ca);
   --radius: 3px;
   --radius-lg: 6px;
   background: var(--void);
@@ -1781,7 +1782,7 @@ html[data-background="true"] *::after {
   letter-spacing: 0.11em;
 }
 .continuum-arrival > span:first-child {
-  color: #f2ce88;
+  color: var(--accent);
 }
 .continuum-arrival-end {
   margin-left: auto;
@@ -1794,7 +1795,7 @@ html[data-background="true"] *::after {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #53ebce;
+  background: var(--signal);
   box-shadow: 0 0 15px #53ebce88;
 }
 .continuum-hero #hero-content.continuum-composition {
@@ -1851,7 +1852,7 @@ html[data-background="true"] *::after {
   -webkit-text-fill-color: transparent;
 }
 .aurum-manifesto {
-  color: #9de6ef;
+  color: var(--cyan);
   font: 12px/1.5 var(--font-mono);
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -2618,5 +2619,40 @@ html[data-motion="off"] .hero-flight-camera {
     white-space: normal;
     font-size: 11px;
     line-height: 1.3;
+  }
+}
+
+/* Approved everyday identity: blue A, red I, and platinum surroundings. */
+#v40-root .v41-097ae647c2 {
+  color: #9abeff;
+}
+#v40-root .v41-aab9b2719f {
+  color: #ff8a9d;
+}
+#v40-root header .za-btn {
+  color: #111217;
+}
+#v40-root .v41-514cfd682d {
+  background: linear-gradient(90deg, #e2e6ee, #3578ff, #ff3d55);
+}
+#v40-root .hud-control,
+#v40-root .bit-header {
+  background: #111217;
+  border-color: #3578ff55;
+  color: #d4e1ff;
+}
+#v40-root .cashio-everyday-wordmark {
+  max-width: none;
+}
+@media (max-width: 360px) {
+  #v40-root .cashio-everyday-lockup {
+    gap: 5px;
+  }
+  #v40-root .cashio-everyday-icon {
+    width: 24px;
+    height: 24px;
+  }
+  #v40-root .cashio-everyday-wordmark {
+    width: 78px;
   }
 }

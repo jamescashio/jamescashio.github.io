@@ -1,0 +1,6 @@
+/* cAshIo platinum identity. Approved by Doug, November 4, 2026. */
+:root{--cashio-platinum:#e2e6ee;--cashio-pearl:#f5f5f7;--cashio-graphite:#111217;--cashio-deep:#0d1017;--cashio-blue:#3578ff;--cashio-blue-text:#9abeff;--cashio-red:#ff3d55;--cashio-red-text:#ff8a9d;--cashio-muted:#aab2c3;--cashio-line:#313849}
+.cashio-everyday-lockup{display:inline-flex;align-items:center;gap:10px;max-width:100%;text-decoration:none}
+.cashio-everyday-icon{display:block;width:32px;height:32px;flex:none}
+.cashio-everyday-wordmark{display:block;width:132px;height:auto;max-width:100%}
+@media(max-width:390px){.cashio-everyday-lockup{gap:7px}.cashio-everyday-icon{width:27px;height:27px}.cashio-everyday-wordmark{width:112px}}

@@ -37,7 +37,7 @@ function ContinuumStill() {
         cy="370"
         rx="300"
         ry="210"
-        stroke="#edbd6c"
+        stroke="#e2e6ee"
         strokeOpacity=".38"
         transform="rotate(-30 1170 370)"
       />
@@ -46,11 +46,11 @@ function ContinuumStill() {
         cy="370"
         rx="335"
         ry="190"
-        stroke="#72e5f4"
+        stroke="#3578ff"
         strokeOpacity=".48"
         transform="rotate(23 1170 370)"
       />
-      <circle cx="1170" cy="370" r="320" stroke="#edbd6c" strokeOpacity=".2" strokeDasharray="2 14" />
+      <circle cx="1170" cy="370" r="320" stroke="#e2e6ee" strokeOpacity=".2" strokeDasharray="2 14" />
     </svg>
   );
 }
@@ -65,12 +65,12 @@ function HeroHud() {
             <stop offset="1" stopColor="var(--cyan)" stopOpacity=".5" />
           </linearGradient>
         </defs>
-        <circle cx="1508" cy="508" r="360" stroke="#72e5f4" strokeOpacity=".38" strokeWidth="1.5" />
+        <circle cx="1508" cy="508" r="360" stroke="#3578ff" strokeOpacity=".38" strokeWidth="1.5" />
         <circle
           cx="1508"
           cy="508"
           r="372"
-          stroke="#edbd6c"
+          stroke="#e2e6ee"
           strokeOpacity=".55"
           strokeWidth="8"
           strokeDasharray="1.5 21.87"
@@ -79,7 +79,7 @@ function HeroHud() {
           cx="1508"
           cy="508"
           r="381"
-          stroke="#ffd98f"
+          stroke="#ff3d55"
           strokeOpacity=".82"
           strokeWidth="18"
           strokeDasharray="3 236.39"
@@ -88,7 +88,7 @@ function HeroHud() {
           cx="1508"
           cy="508"
           r="402"
-          stroke="#72e5f4"
+          stroke="#3578ff"
           strokeOpacity=".2"
           strokeWidth="2"
           strokeDasharray="118 39.86"
@@ -96,7 +96,7 @@ function HeroHud() {
         <path
           className="hud-lock"
           d="M1273 380V368H1285M1309 368H1321V380M1321 404V416H1309M1285 416H1273V404"
-          stroke="#ffe0a1"
+          stroke="#e2e6ee"
           strokeWidth="2.5"
         />
         <circle cx="1508" cy="508" r="342" stroke="var(--cyan)" strokeOpacity=".12" />
@@ -158,11 +158,11 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
             <ContinuumStill />
             <img
               className="flight-signature"
-              src="/brand/celestial-840.webp"
-              srcSet="/brand/celestial-420.webp 420w, /brand/celestial-840.webp 840w"
+              src="/brand/platinum/signature-840.webp"
+              srcSet="/brand/platinum/signature-420.webp 420w, /brand/platinum/signature-840.webp 840w"
               sizes="(max-width: 600px) 200px, 340px"
               width="840"
-              height="315"
+              height="387"
               alt=""
               aria-hidden="true"
             />
