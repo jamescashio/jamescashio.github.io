@@ -3,8 +3,7 @@
  * arrives, keyboard focus never waits on a fade, and fine pointers get a light and a small tilt.
  */
 import { motionEnabled } from "./motion.ts";
-
-const $$ = <T extends Element = HTMLElement>(sel: string) => [...document.querySelectorAll<T>(sel)];
+import { $$ } from "./dom.ts";
 
 export function mountPlates() {
   const reveal = new IntersectionObserver(

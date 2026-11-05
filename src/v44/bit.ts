@@ -1,6 +1,7 @@
 import { bitJokes } from "../shared/ship-humor.ts";
 import { motionEnabled, onMotionChange } from "./motion.ts";
-import type { LaneId, Route } from "./route.ts";
+import type { LaneId } from "./route.ts";
+import "./events.ts";
 
 /** Bit, the copilot: an icosahedron in platinum with a blue core, a line for every station, and a memory for what you just did. */
 const LINES: Record<string, string> = {
@@ -154,11 +155,11 @@ export function mountBit(
   button.addEventListener("blur", () => (hovered = false));
 
   document.addEventListener("v44:route", (e) => {
-    remark = ROUTE_LINES[(e as CustomEvent<Route>).detail.id] || remark;
+    remark = ROUTE_LINES[e.detail.id] || remark;
     wake(900);
   });
   document.addEventListener("v44:film", (e) => {
-    const f = (e as CustomEvent<{ id: string; title: string }>).detail;
+    const f = e.detail;
     remark =
       f.id === "trailer"
         ? "You put the trailer on. The cat has notes. The cat always has notes."
@@ -166,7 +167,7 @@ export function mountBit(
     wake(900);
   });
   document.addEventListener("v44:eve", (e) => {
-    const { cmd } = (e as CustomEvent<{ cmd: string }>).detail;
+    const { cmd } = e.detail;
     if (cmd === "clear") return;
     remark = `You asked E.V.E. about ${cmd}. She keeps the receipts. I keep the jokes.`;
     wake(900);

@@ -229,9 +229,10 @@ export class Sky {
     if (this.holds.has("idle")) this.hold("idle", false);
   }
 
-  /** Draw one frame now, used for resize, scroll and every still. */
+  /** Draw one frame now, used for resize, scroll and every still; not while the poster stands in for the scene. */
   redraw() {
-    if (!this.running) this.draw(performance.now());
+    if (this.running || this.holds.has("slow") || this.holds.has("lost") || this.holds.has("hidden")) return;
+    this.draw(performance.now());
   }
 
   private run() {

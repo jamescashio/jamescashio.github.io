@@ -86,14 +86,13 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
   // The route map draws the same decision: a packet rides the chosen lane, or stops at the gate when held.
   const map = (form.closest(".helm-grid") || result).querySelector<SVGSVGElement>("[data-route-map]");
   const example = result.querySelector<HTMLElement>("[data-helm-example]");
-  const read = (): RouteInput => {
-    const data = new FormData(form);
-    return {
-      intent: (data.get("intent") as Intent) || "draft",
-      privateData: data.has("privateData"),
-      sources: data.has("sources"),
-    };
-  };
+  // Read the controls themselves, which hold their state even before script switches them on.
+  const checked = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]`)?.checked ?? false;
+  const read = (): RouteInput => ({
+    intent: (form.querySelector<HTMLInputElement>('input[name="intent"]:checked')?.value as Intent) || "draft",
+    privateData: checked("privateData"),
+    sources: checked("sources"),
+  });
   const render = (animate: boolean) => {
     const r = route(read());
     lane.textContent = r.lane;
@@ -124,6 +123,8 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     document.dispatchEvent(new CustomEvent("v44:route", { detail: r }));
   };
   form.addEventListener("change", () => render(true));
+  // A page restored from history keeps the visitor's inputs; the result follows them.
+  addEventListener("pageshow", () => render(false));
   form.addEventListener("submit", (e) => e.preventDefault());
   render(false);
 }

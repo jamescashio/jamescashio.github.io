@@ -149,7 +149,7 @@ test("the front door source keeps a strict policy and makes no network calls of 
     "main.ts",
     "stations.ts",
     "plates.ts",
-    "eggs.ts",
+    "toast.ts",
     "sky.ts",
     "eve.ts",
     "bit.ts",
@@ -158,6 +158,9 @@ test("the front door source keeps a strict policy and makes no network calls of 
     "motion.ts",
     "layout.ts",
     "legacy.ts",
+    "dom.ts",
+    "events.ts",
+    "nebula.ts",
   ])
     assert.doesNotMatch(await read(`src/v44/${file}`), /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon/, file);
 });

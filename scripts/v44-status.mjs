@@ -1,21 +1,23 @@
 // Fills the V44 front door's evidence placeholders from status.json at build and dev time,
 // so the published page and the published record can never disagree.
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { houseDate } from "../src/shared/dates.ts";
 
+// Each withheld field in plain words; the reason beside it comes from the record itself.
 const LABELS = {
-  "lanes.public": "Public capability lanes",
-  "lanes.privateCatalog": "Private model catalog",
-  routingVerified: "End to end routing",
-  "cluster.version": "Hypervisor version",
-  "cluster.quorate": "Cluster quorum",
-  "containers.zeus": "Guests per host",
+  "lanes.public": "Which public AI services are used",
+  "lanes.privateCatalog": "Which models run privately",
+  routingVerified: "Whether routing works end to end",
+  "cluster.version": "Server software versions",
+  "cluster.quorate": "Whether the servers agree they are healthy",
+  "containers.zeus": "What runs on each server",
   "containers.apollo": null,
-  "scheduler.enabled": "Scheduler",
-  "scheduler.definitions": "Scheduled job inventory",
-  "modelConfiguration.contextWindow": "Local model configuration",
-  "backup.restoredFiles": "Restore rehearsal",
+  "scheduler.enabled": "Whether the job scheduler is on",
+  "scheduler.definitions": "The list of scheduled jobs",
+  "modelConfiguration.contextWindow": "Local model settings",
+  "backup.restoredFiles": "A practice restore",
   "backup.fullSystemRecovery": "Full recovery",
 };
 
@@ -143,10 +145,28 @@ export function statusTokens(root) {
   return tokens;
 }
 
+/**
+ * The commit this build was made from, with "-dirty" when the tree had uncommitted changes, so an
+ * audit can prove which code it measured. Builds outside a git checkout say "unknown".
+ */
+export function buildCommit(root) {
+  try {
+    const sha = execFileSync("git", ["rev-parse", "--short=12", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+    const dirty = execFileSync("git", ["status", "--porcelain", "--untracked-files=no"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    return dirty.trim() ? `${sha}-dirty` : sha;
+  } catch {
+    return "unknown";
+  }
+}
+
 export function fillStatus(html, root) {
   let out = html;
   for (const [token, value] of statusTokens(root)) out = out.split(token).join(value);
-  const left = out.match(/\{\{(?:status|film|release)\.[^}]+\}\}/);
+  out = out.split("{{build.commit}}").join(escapeHtml(buildCommit(root)));
+  const left = out.match(/\{\{(?:status|film|release|build)\.[^}]+\}\}/);
   if (left) throw new Error(`Unfilled evidence placeholder ${left[0]}`);
   return out;
 }

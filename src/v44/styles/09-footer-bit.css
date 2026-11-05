@@ -76,6 +76,10 @@
     transform 300ms ease,
     visibility 300ms;
 }
+/* Without script Bit has nothing to say, so it does not stand over the page. */
+html:not(.js) .bit {
+  display: none;
+}
 /* Phones keep the arrival clear for the call to action; Bit joins once the transit begins. */
 @media (max-width: 760px) {
   html.js[data-stage="gate"] .bit {

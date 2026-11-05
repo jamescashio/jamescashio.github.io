@@ -41,6 +41,52 @@
 .helm-hint {
   margin: 0;
 }
+/*
+ * Phones read the decision in the order it happens: the inputs, the lane, the map that draws it, then
+ * the detail and the steps, so the packet's ride is on screen the moment an input changes.
+ */
+@media (max-width: 759px) {
+  .helm-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .helm-grid > .helm-result {
+    display: contents;
+  }
+  .helm-result > * {
+    margin-inline: clamp(20px, 3vw, 36px);
+  }
+  .helm-result > .helm-example {
+    order: 1;
+    margin-top: 20px;
+  }
+  .helm-result > .kicker {
+    order: 2;
+    margin-top: 10px;
+  }
+  .helm-result > .lane {
+    order: 3;
+    margin-top: 8px;
+  }
+  .helm-result > .code {
+    order: 4;
+    margin-top: 10px;
+  }
+  .helm-map {
+    order: 5;
+    border-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .helm-result > .detail {
+    order: 6;
+    margin-top: 4px;
+  }
+  .helm-result > .steps {
+    order: 7;
+    margin-bottom: 22px;
+  }
+}
 fieldset {
   border: 0;
   margin: 0;

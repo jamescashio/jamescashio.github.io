@@ -55,6 +55,17 @@
 }
 .arrival-copy {
   max-width: 860px;
+  position: relative;
+}
+/* As the camera flies through, the ring grows behind the words; a soft shade rises with it so they stay crisp. */
+.arrival-copy::before {
+  content: "";
+  position: absolute;
+  inset: -14% -12% -10% -16%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(5, 7, 12, 0.8), rgba(5, 7, 12, 0));
+  opacity: calc(var(--transit, 0) * 1.8);
 }
 .headline {
   margin-top: 22px;

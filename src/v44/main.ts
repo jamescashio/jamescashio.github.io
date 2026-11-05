@@ -5,19 +5,19 @@ import { Sky, type SkyState } from "./sky.ts";
 import { POSTERS, posterFor, projectPoster } from "./layout.ts";
 import { mountStations } from "./stations.ts";
 import { mountPlates } from "./plates.ts";
-import { mountEggs } from "./eggs.ts";
+import { mountCopyEmail } from "./toast.ts";
 import { mountHelm } from "./route.ts";
 import { mountEve } from "./eve.ts";
 import { mountBit } from "./bit.ts";
 import { mountCinema } from "./cinema.ts";
+import "./events.ts";
+import { $, $$ } from "./dom.ts";
 
 // An old alias such as #rooms is rewritten to its station; the page then travels there once it is ready.
 const arrivedAlias = applyLegacyRoute();
 
 const root = document.documentElement;
 root.classList.add("js");
-const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);
-const $$ = <T extends Element = HTMLElement>(sel: string) => [...document.querySelectorAll<T>(sel)];
 const params = new URLSearchParams(location.search);
 
 /* Layout values are read once per resize, never inside a frame. */
@@ -99,6 +99,8 @@ const onScroll = () => {
     fill.style.setProperty("--progress", String(Math.min(1, y / docSpan)));
     // The painted poster flies toward the ring too, so every visitor gets the approach.
     sky.style.setProperty("--transit", motionEnabled() ? transit.toFixed(3) : "0");
+    // The arrival's words gather a shade behind them while the ring flies past.
+    root.style.setProperty("--transit", motionEnabled() ? transit.toFixed(3) : "0");
     const stage = transit >= 1 ? "deep" : "gate";
     sky.dataset.stage = stage;
     root.dataset.stage = stage;
@@ -162,8 +164,10 @@ const syncMotion = () => {
   motionButton.querySelector("[data-motion-long]")!.textContent = on ? "Pause motion" : "Resume motion";
   motionButton.querySelector("[data-motion-short]")!.textContent = on ? "Pause" : "Resume";
   motionButton.toggleAttribute("data-paused", !on);
-  if (!on) sky.style.setProperty("--transit", "0");
-  else onScroll();
+  if (!on) {
+    sky.style.setProperty("--transit", "0");
+    root.style.setProperty("--transit", "0");
+  } else onScroll();
 };
 motionButton.addEventListener("click", () => setMotion(!motionEnabled()));
 onMotionChange(syncMotion);
@@ -179,11 +183,11 @@ const stations = mountStations({
   },
 });
 mountPlates();
-mountEggs(surge);
+mountCopyEmail();
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
 // A decision at the helm reaches the sky: the far gate flares on the live scene, the painted gate on the poster.
 document.addEventListener("v44:route", (e) => {
-  const held = (e as CustomEvent<{ id: string }>).detail.id === "hold";
+  const held = e.detail.id === "hold";
   if (skyEngine) skyEngine.pulse(held);
   else if (motionEnabled()) {
     sky.toggleAttribute("data-held", held);
@@ -202,7 +206,7 @@ const eveWatch = new IntersectionObserver(
     eveWatch.disconnect();
     void eve.run("opening", false);
   },
-  { threshold: 0.5 },
+  { threshold: 0.2 },
 );
 eveWatch.observe($("[data-eve]")!);
 mountBit(

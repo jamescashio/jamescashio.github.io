@@ -44,6 +44,8 @@
   --cut: 16px;
   --hud-h: 68px;
   --frame-max: 1320px;
+  /* Bit's badge and its margin from the edge; the column keeps clear of it where it cannot stand outside. */
+  --bit-reserve: 74px;
   --edge: var(--line);
   color-scheme: dark;
 }
@@ -157,4 +159,10 @@ cite {
 .frame {
   width: min(100% - 2 * var(--gutter), var(--frame-max));
   margin-inline: auto;
+}
+/* Between phones and wide screens the column leaves Bit its own corner, so Bit never sits on a plate. */
+@media (min-width: 761px) and (max-width: 1599px) {
+  .frame {
+    width: min(100% - 2 * var(--gutter), var(--frame-max), 100% - 2 * (var(--bit-reserve) + 16px));
+  }
 }

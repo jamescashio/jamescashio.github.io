@@ -39,7 +39,7 @@ The V44 page prints these figures at build time from `public/status.json`, the e
 | Page wiring: scroll, sky state, motion button  | `src/v44/main.ts`                                           |
 | Stations, phone sheet, travel and Back         | `src/v44/stations.ts`                                       |
 | Plate reveals, focus and pointer light         | `src/v44/plates.ts`                                         |
-| Toasts, copying the address, typed eggs        | `src/v44/eggs.ts`                                           |
+| Toasts and copying the address                 | `src/v44/toast.ts`                                          |
 | Motion preference and Pause                    | `src/v44/motion.ts`                                         |
 | Screening room                                 | `src/v44/cinema.ts`                                         |
 | Helm routing model                             | `src/v44/route.ts`                                          |

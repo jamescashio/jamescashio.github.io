@@ -6,11 +6,22 @@ export type SkyLayout = {
   planet: [number, number, number];
 };
 type Column = { left: number; right: number };
+/** Bit's badge and margin in pixels, as --bit-reserve in the stylesheet. */
+const BIT_RESERVE = 74;
+/** The gate's centre sits this far across the content column, and its radius scales with the column's span. */
+const GATE_ACROSS_COLUMN = 0.775;
+const GATE_RADIUS_PER_SPAN = 0.235;
+/** Free sky beyond the column pulls the gate outward by this share of it. */
+const GATE_OUTWARD = 0.3;
 
-/** The content column the stylesheet draws at a width: a gutter of 4vw between 18 and 56 px, at most 1320 px wide (1680 from 2400). */
+/**
+ * The content column the stylesheet draws at a width: a gutter of 4vw between 18 and 56 px, at most
+ * 1320 px wide (1680 from 2400), and from 761 to 1599 px clear of Bit's corner on both sides.
+ */
 export function columnFor(width: number): Column {
   const gutter = Math.min(56, Math.max(18, width * 0.04));
-  const span = Math.min(width - 2 * gutter, width >= 2400 ? 1680 : 1320);
+  const bitClear = width >= 761 && width <= 1599 ? width - 2 * (BIT_RESERVE + 16) : Infinity;
+  const span = Math.min(width - 2 * gutter, width >= 2400 ? 1680 : 1320, bitClear);
   return { left: (width - span) / 2, right: (width + span) / 2 };
 }
 
@@ -31,8 +42,8 @@ export function layoutFor(width: number, height: number, column: Column = column
   }
   const span = column.right - column.left;
   // Free sky beside the column on wide screens moves the gate outward instead of shrinking it.
-  const cx = toX(column.left + span * 0.775 + Math.max(0, width - column.right) * 0.3);
-  const R = Math.min(0.36, Math.max((span / height) * 0.235, 0.3));
+  const cx = toX(column.left + span * GATE_ACROSS_COLUMN + Math.max(0, width - column.right) * GATE_OUTWARD);
+  const R = Math.min(0.36, Math.max((span / height) * GATE_RADIUS_PER_SPAN, 0.3));
   const cy = 0.02;
   return {
     ring: [cx, cy, R, 0.6],

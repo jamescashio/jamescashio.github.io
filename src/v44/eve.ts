@@ -39,7 +39,7 @@ const EGGS = new Map<string, string>(
 
 export function mountEve(root: HTMLElement, hooks: EveHooks) {
   // The record is printed into the page at build time from status.json; E.V.E. never calls the network.
-  const load = async (): Promise<Status> => JSON.parse(root.dataset.record || "{}") as Status;
+  const load = (): Status => JSON.parse(root.dataset.record || "{}") as Status;
   const log = root.querySelector<HTMLElement>("[data-eve-log]")!;
   const form = root.querySelector<HTMLFormElement>("[data-eve-form]")!;
   const input = form.querySelector<HTMLInputElement>("input")!;
@@ -132,14 +132,14 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
     }
     let s: Status;
     try {
-      s = await load();
+      s = load();
     } catch {
       say("The printed record is missing from this page. The raw export lives at /status.json.");
       return;
     }
     if (cmd === "opening") {
       say(
-        `Record of ${s.verifiedDay} loaded, with ${(s.withheld || []).length} items withheld and why. Ask me for status, backups or limits.`,
+        `Record of ${s.verifiedDay} loaded. ${(s.withheld || []).length} items are withheld, each with its reason. Ask me for status, backups or limits.`,
       );
     } else if (cmd === "version") {
       const r = s.release;

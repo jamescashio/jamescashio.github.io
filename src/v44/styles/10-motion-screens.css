@@ -313,10 +313,10 @@ html[data-motion="off"] *::after {
 /* The helm map is drawn about 0.76 of its size at 320 pixels; its labels grow so they still read at 12 px. */
 @media (max-width: 380px) {
   .rm-node text {
-    font-size: 17px;
+    font-size: 17.5px;
   }
   .rm-held {
-    font-size: 16px;
+    font-size: 17px;
   }
 }
 .screen-status:empty {

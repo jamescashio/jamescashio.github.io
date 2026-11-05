@@ -56,6 +56,31 @@
   color: var(--pearl);
   margin-right: 4px;
 }
+/* Disclosures keep a visible open and closed mark of their own. */
+.withheld summary,
+.transcript summary {
+  list-style: none;
+}
+.withheld summary::-webkit-details-marker,
+.transcript summary::-webkit-details-marker {
+  display: none;
+}
+.withheld summary::before,
+.transcript summary::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: 12px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  rotate: -45deg;
+  transition: rotate 200ms ease;
+}
+.withheld[open] > summary::before,
+.transcript[open] > summary::before {
+  rotate: 45deg;
+}
 .withheld summary {
   cursor: pointer;
   min-height: 44px;
@@ -91,7 +116,9 @@
   align-items: center;
   font-weight: 700;
 }
+/* E.V.E. keeps her own height when the record beside her opens its lists. */
 .eve {
+  align-self: start;
   display: grid;
   grid-template-rows: auto 1fr auto auto;
   min-height: 360px;

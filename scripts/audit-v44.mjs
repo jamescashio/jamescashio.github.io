@@ -31,6 +31,17 @@ if (!url) {
   await once(server.stdout, "data");
 }
 
+// Measure only the build of this commit: the page names the commit it was built from.
+const page = await (await fetch(url)).text();
+const built = page.match(/<meta name="cashio-build" content="([^"]+)"/)?.[1];
+const title = page.match(/<title>([^<]*)<\/title>/)?.[1] || "";
+if (!/V44/.test(title) || built !== commit) {
+  if (server && server.exitCode === null) server.kill();
+  throw new Error(
+    `The page at ${url} is ${title || "untitled"}, built from ${built || "an unknown commit"}, not V44 at ${commit}. Build first.`,
+  );
+}
+
 const BAR = { performance: 90, accessibility: 100, "best-practices": 100, seo: 100 };
 const runs = [
   ["mobile", 1, undefined],
@@ -79,7 +90,10 @@ try {
 } finally {
   if (server && server.exitCode === null) server.kill();
 }
-await writeFile(new URL("summary.json", out), JSON.stringify({ commit, url, bar: BAR, summary, failures }, null, 2));
+await writeFile(
+  new URL("summary.json", out),
+  JSON.stringify({ commit, built, title, url, bar: BAR, summary, failures }, null, 2),
+);
 if (failures.length) {
   console.error(failures.join("\n"));
   process.exitCode = 1;

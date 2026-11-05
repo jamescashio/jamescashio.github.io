@@ -4,12 +4,10 @@
  */
 import { applyLegacyRoute } from "./legacy.ts";
 import { motionEnabled } from "./motion.ts";
+import { $, $$ } from "./dom.ts";
 
 export type Stations = { go: (id: string, animate?: boolean) => void; current: () => string };
 type Hooks = { surge: (ms: number) => void; onStation: (id: string) => void };
-
-const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);
-const $$ = <T extends Element = HTMLElement>(sel: string) => [...document.querySelectorAll<T>(sel)];
 
 export function mountStations({ surge, onStation }: Hooks): Stations {
   /* The sheet for narrow screens is built from the one station list in the header. */
@@ -96,7 +94,9 @@ export function mountStations({ surge, onStation }: Hooks): Stations {
       else if (!location.hash) scrollTo({ top: 0, behavior: "auto" });
     });
   });
-  $$<HTMLAnchorElement>("[data-transit-go], [data-station-link], [data-station-next], .brand").forEach((a) =>
+  $$<HTMLAnchorElement>(
+    "[data-transit-go], [data-station-link], [data-station-next], .brand, a[href='#contact']",
+  ).forEach((a) =>
     a.addEventListener("click", (e) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
