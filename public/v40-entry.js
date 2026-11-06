@@ -1,4 +1,6 @@
-// Preserve explicit archives while keeping ordinary experiences in the current edition.
+// Preserve explicit archives while keeping ordinary experiences in this edition.
+// Since V44 the V40 app lives at /v43/; its own URLs stay under that path.
+const editionBase = "/v43/";
 function routeVersionedBookmark() {
   const url = new URL(location.href);
   if (url.hash.startsWith("#deck=")) {
@@ -34,14 +36,14 @@ function routeVersionedBookmark() {
   ]);
   if (aliases.has(url.hash)) {
     url.hash = aliases.get(url.hash);
-    history.replaceState(history.state, "", "/" + url.search + url.hash);
+    history.replaceState(history.state, "", editionBase + url.search + url.hash);
   }
   if (/^\/v40(?:\/|\/index.html)?$/.test(url.pathname)) {
-    location.replace("/" + url.search + url.hash);
+    location.replace(editionBase + url.search + url.hash);
     return;
   }
-  if (url.pathname === "/index.html" || location.search !== url.search) {
-    history.replaceState(history.state, "", "/" + url.search + url.hash);
+  if (url.pathname === "/v43/index.html" || location.search !== url.search) {
+    history.replaceState(history.state, "", editionBase + url.search + url.hash);
   }
 }
 routeVersionedBookmark();

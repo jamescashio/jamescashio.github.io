@@ -1,0 +1,385 @@
+/* Station 05: the helm, its controls, result and route map. */
+/* Helm */
+/* Phones read the result straight after the inputs that change it, with the map below; wider screens set the result beside both. */
+.helm-grid {
+  display: grid;
+  gap: 0;
+  grid-template-areas: "controls" "result" "map";
+}
+.helm-controls {
+  grid-area: controls;
+  padding: clamp(20px, 3vw, 36px);
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  border-bottom: 1px solid var(--line);
+}
+.helm-result {
+  grid-area: result;
+}
+.helm-map {
+  grid-area: map;
+  padding: 4px clamp(20px, 3vw, 36px) clamp(20px, 3vw, 36px);
+  border-top: 1px solid var(--line);
+}
+@media (min-width: 760px) {
+  .helm-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "controls result" "map result";
+  }
+  .helm-controls,
+  .helm-map {
+    border-bottom: 0;
+    border-top: 0;
+    border-right: 1px solid var(--line);
+  }
+  .helm-controls {
+    padding-bottom: 8px;
+  }
+}
+.helm-hint {
+  margin: 0;
+}
+/*
+ * Phones read the decision in the order it happens: the inputs, the lane, the map that draws it, then
+ * the detail and the steps, so the packet's ride is on screen the moment an input changes.
+ */
+@media (max-width: 759px) {
+  .helm-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .helm-grid > .helm-result {
+    display: contents;
+  }
+  .helm-result > * {
+    margin-inline: clamp(20px, 3vw, 36px);
+  }
+  .helm-result > .helm-example {
+    order: 1;
+    margin-top: 20px;
+  }
+  .helm-result > .kicker {
+    order: 2;
+    margin-top: 10px;
+  }
+  .helm-result > .lane {
+    order: 3;
+    margin-top: 8px;
+  }
+  .helm-result > .code {
+    order: 4;
+    margin-top: 10px;
+  }
+  .helm-map {
+    order: 5;
+    border-top: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .helm-result > .detail {
+    order: 6;
+    margin-top: 4px;
+  }
+  .helm-grid > .helm-result > .steps {
+    order: 7;
+    margin: 10px clamp(20px, 3vw, 36px) 22px;
+  }
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+legend {
+  font: 400 13px/1.3 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-text);
+  margin-bottom: 10px;
+  padding: 0;
+}
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+}
+.segmented label {
+  position: relative;
+  display: grid;
+}
+.segmented input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.segmented span {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  font-weight: 700;
+  color: var(--muted);
+  border-right: 1px solid var(--line);
+}
+.segmented label:last-child span {
+  border-right: 0;
+}
+.segmented input:checked + span {
+  background: rgba(53, 120, 255, 0.24);
+  color: var(--pearl);
+  box-shadow: inset 0 -2px 0 var(--blue);
+}
+.segmented input:focus-visible + span {
+  outline: 2px solid var(--blue-text);
+  outline-offset: -4px;
+}
+.switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  cursor: pointer;
+  font-size: 17px;
+}
+.switch input {
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  width: 52px;
+  height: 30px;
+  margin: 0;
+  cursor: pointer;
+}
+.switch-track {
+  width: 52px;
+  height: 30px;
+  border-radius: 15px;
+  background: rgba(226, 230, 238, 0.16);
+  border: 1px solid var(--line-strong);
+  position: relative;
+  flex: none;
+  transition: background 200ms ease;
+}
+.switch-track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--platinum);
+  transition: transform 200ms ease;
+}
+.switch input:checked + .switch-track {
+  background: var(--blue);
+}
+.switch input:checked + .switch-track::after {
+  transform: translateX(22px);
+}
+.switch input:focus-visible + .switch-track {
+  outline: 2px solid var(--blue-text);
+  outline-offset: 3px;
+}
+.helm-result {
+  padding: clamp(20px, 3vw, 36px);
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+.lane {
+  font: 700 clamp(40px, 5vw, 64px) / 1 var(--display);
+  color: var(--pearl);
+  letter-spacing: -0.02em;
+}
+.helm-result[data-code="HOLD"] .lane {
+  color: var(--red-text);
+}
+.code span {
+  display: inline-block;
+  font: 400 13px/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 10px;
+  border: 1px solid var(--blue);
+  color: var(--blue-text);
+}
+.helm-result[data-code="HOLD"] .code span {
+  border-color: var(--red);
+  color: var(--red-text);
+}
+.detail {
+  font-size: 18px;
+  max-width: 40ch;
+}
+.steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: 16.5px;
+  color: var(--platinum);
+}
+.steps li::before {
+  content: counter(step, decimal-leading-zero);
+  font: 400 12.5px/1 var(--mono);
+  color: var(--blue-text);
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+}
+html[data-motion="on"] .steps.run li {
+  animation: step-in 520ms ease both;
+}
+.steps.run li:nth-child(2) {
+  animation-delay: 90ms;
+}
+.steps.run li:nth-child(3) {
+  animation-delay: 180ms;
+}
+.steps.run li:nth-child(4) {
+  animation-delay: 270ms;
+}
+.steps.run li:nth-child(5) {
+  animation-delay: 360ms;
+}
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+/* The helm's route map: the chosen lane lights, a packet rides it, and a held request stops at the gate. */
+.route-map {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  height: auto;
+  margin: 8px auto 0;
+}
+.rm-wire {
+  fill: none;
+  stroke: var(--line-strong);
+  stroke-width: 2;
+  transition: stroke 300ms ease;
+}
+.rm-in {
+  stroke: url(#lane-glow);
+}
+.rm-node circle,
+.rm-node rect {
+  fill: rgba(9, 11, 17, 0.96);
+  stroke: var(--line-strong);
+  stroke-width: 1.5;
+  transition: stroke 300ms ease;
+}
+.rm-you circle {
+  stroke: var(--red-text);
+}
+.rm-hermes rect {
+  stroke: var(--blue);
+}
+.rm-node text {
+  fill: var(--muted);
+  font: 600 16px var(--display);
+  text-anchor: middle;
+  transition: fill 300ms ease;
+}
+.rm-you text,
+.rm-hermes text {
+  fill: var(--pearl);
+}
+.route-map[data-route="workhorse"] path.rm-workhorse,
+.route-map[data-route="synthesis"] path.rm-synthesis,
+.route-map[data-route="research"] path.rm-research {
+  stroke: url(#lane-glow);
+  stroke-width: 3;
+}
+.route-map[data-route="workhorse"] g.rm-workhorse rect,
+.route-map[data-route="synthesis"] g.rm-synthesis rect,
+.route-map[data-route="research"] g.rm-research rect {
+  stroke: var(--blue-text);
+}
+.route-map[data-route="workhorse"] g.rm-workhorse text,
+.route-map[data-route="synthesis"] g.rm-synthesis text,
+.route-map[data-route="research"] g.rm-research text {
+  fill: var(--pearl);
+}
+.rm-gate,
+.rm-held {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.rm-gate {
+  fill: var(--red);
+  filter: drop-shadow(0 0 6px var(--red));
+}
+.rm-held {
+  fill: var(--red-text);
+  font: 400 15px var(--mono);
+  text-anchor: middle;
+}
+.route-map[data-route="hold"] .rm-gate,
+.route-map[data-route="hold"] .rm-held {
+  opacity: 1;
+}
+.route-map[data-route="hold"] .rm-lane {
+  opacity: 0.45;
+}
+.route-packet {
+  fill: var(--pearl);
+  filter: drop-shadow(0 0 6px var(--blue));
+  offset-rotate: 0deg;
+  offset-distance: 100%;
+  offset-path: path("M46 100 H148 C182 100 186 38 214 38");
+}
+.route-map[data-route="synthesis"] .route-packet {
+  offset-path: path("M46 100 H214");
+}
+.route-map[data-route="research"] .route-packet {
+  offset-path: path("M46 100 H148 C182 100 186 162 214 162");
+}
+.route-map[data-route="hold"] .route-packet {
+  offset-path: path("M46 100 H150");
+  fill: var(--red-text);
+  filter: drop-shadow(0 0 6px var(--red));
+}
+html[data-motion="on"] .route-map.ride .route-packet {
+  animation: ride 1300ms cubic-bezier(0.45, 0, 0.25, 1) both;
+}
+@keyframes ride {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+.after-note {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.helm-example {
+  font-size: 16.5px;
+  color: var(--pearl);
+  padding-left: 12px;
+  border-left: 2px solid var(--blue);
+}

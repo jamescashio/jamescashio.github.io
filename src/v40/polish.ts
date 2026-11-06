@@ -42,6 +42,20 @@ import { missionDeskMarkup, bindMissionDesk } from "./mission-desk.ts";
     document.dispatchEvent(new Event("cashio-motion"));
   }
   mq.addEventListener("change", (e) => motion(e.matches ? "off" : preference || "on", false));
+  // A Pause chosen on another open page of the site (the V44 front door, a room) reaches this edition too.
+  const follow = (value: string | null) => {
+    preference = value;
+    motion(value === "off" || mq.matches ? "off" : "on", false);
+  };
+  addEventListener("storage", (e) => e.key === "cashio-v40-motion" && follow(e.newValue));
+  addEventListener("pageshow", (e) => {
+    if (!e.persisted) return;
+    try {
+      follow(localStorage.getItem("cashio-v40-motion") ?? preference ?? null);
+    } catch {
+      follow(preference ?? null);
+    }
+  });
   document.addEventListener("visibilitychange", () => (root.dataset.background = String(document.hidden)));
   const readyVideos = new WeakSet<Element>();
   const videoObserver =

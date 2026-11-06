@@ -1,0 +1,186 @@
+/* Station 02, the screening room. */
+/* Cinema */
+.cinema-grid {
+  display: grid;
+  gap: 24px;
+}
+/* Grid items default to their content width; the phone carousel inside would otherwise widen the page. */
+.cinema-grid > * {
+  min-width: 0;
+}
+@media (min-width: 1000px) {
+  .cinema-grid {
+    grid-template-columns: minmax(0, 2.1fr) minmax(300px, 1fr);
+  }
+}
+.screen {
+  margin: 0;
+}
+/* The poster shows its art without letterbox bars; the control row sits under it, never over it. */
+.screen-media {
+  background: #000;
+}
+.screen-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.screen[data-frame="scope"] .screen-poster {
+  aspect-ratio: 2.39 / 1;
+}
+.screen-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #000;
+}
+/* The trailer is letterboxed inside a 16:9 file. Its scope frame crops the black bars away, so poster and film share one shape. */
+.screen[data-frame="scope"] .screen-video {
+  aspect-ratio: 2.39 / 1;
+  object-fit: cover;
+}
+/* Captions sit low and compact, clear of the title cards in the middle of the frame. */
+.screen-video::cue {
+  font: 500 clamp(13px, 1.6vw, 19px) / 1.3 var(--body);
+  color: #f4f6fa;
+  background: rgba(5, 7, 12, 0.72);
+}
+.play {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 18px 12px 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(90deg, rgba(53, 120, 255, 0.16), rgba(13, 16, 23, 0.6) 60%);
+  color: var(--pearl);
+  cursor: pointer;
+  text-align: left;
+}
+.play:hover {
+  background: linear-gradient(90deg, rgba(53, 120, 255, 0.28), rgba(13, 16, 23, 0.6) 70%);
+}
+.play-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pearl);
+  position: relative;
+  flex: none;
+  box-shadow: 0 0 18px rgba(154, 190, 255, 0.45);
+}
+.play-icon::after {
+  content: "";
+  position: absolute;
+  left: 17px;
+  top: 13px;
+  border-left: 14px solid var(--deep);
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+}
+.play-text {
+  display: grid;
+  font: 700 17px/1.2 var(--body);
+}
+.play-text small {
+  font: 500 14px/1.4 var(--body);
+  color: var(--muted);
+}
+.screen[data-playing] .play,
+.screen[data-playing] .screen-poster {
+  display: none;
+}
+.screen-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 14px 18px;
+  font-size: 15.5px;
+  color: var(--muted);
+}
+/* The bar under the screen appears only to say something, such as a film that did not load. */
+.screen-caption:has(.screen-status:empty) {
+  padding: 0;
+}
+.screen-caption a {
+  min-height: 24px;
+}
+.reel h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.reel-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: grid;
+  gap: 8px;
+}
+.reel-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 8px;
+  background: rgba(13, 16, 23, 0.72);
+  border: 1px solid var(--line);
+  color: var(--platinum);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.reel-item img {
+  width: 112px;
+  height: 63px;
+  object-fit: cover;
+}
+.reel-item span {
+  display: grid;
+  gap: 2px;
+}
+.reel-item strong {
+  font: 600 16px/1.25 var(--display);
+  color: var(--pearl);
+}
+.reel-item small {
+  font-size: 14px;
+  color: var(--muted);
+}
+.reel-item:hover,
+.reel-item[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: rgba(53, 120, 255, 0.14);
+}
+.sovereign {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  color: var(--platinum);
+  margin-bottom: 4px;
+}
+.sovereign img {
+  width: 112px;
+  height: 63px;
+  object-fit: cover;
+}
+.sovereign strong {
+  display: block;
+  font: 600 16px/1.25 var(--display);
+  color: var(--pearl);
+}
+.sovereign small {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+}

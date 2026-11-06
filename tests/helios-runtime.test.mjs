@@ -1297,23 +1297,23 @@ test("Helios flight waits for its visitor, offers an optional tour and pauses th
   await expect(page.locator("h1")).toBeFocused();
 });
 
-test("The V39 archive stays available; old world bookmarks and the V40 front door route correctly", async (t) => {
+test("The V39 archive stays available; old world bookmarks and the V44 front door route correctly", async (t) => {
   const page = await visit(t);
   assert.equal(new URL(page.url()).pathname, "/v39/");
   assert.equal(new URL(page.url()).search, "");
   const navigation = await page.evaluate(() => performance.getEntriesByType("navigation")[0].name);
   assert.equal(new URL(navigation).pathname, "/v39/", "the archive responds with its document directly");
-  for (const suffix of [
-    "/v38/?release=38.4#studios",
-    "/v38/index.html?release=38.4#operator",
-    "/?release=38.4#studies",
+  // Room bookmarks open the room, V44 station aliases stay on the front door and V43 deep links open the preserved edition.
+  for (const [suffix, target, pathname, hash] of [
+    ["/v38/?release=38.4#studios", "#studios", "/rooms/studios/interactive/", "#studios"],
+    ["/v38/index.html?release=38.4#operator", '[data-station="doug"]', "/", "#doug"],
+    ["/?release=38.4#studies", "#v40-root", "/v43/", "#studies"],
   ]) {
     await page.goto(new URL(suffix, url).href);
-    const world = suffix.includes("#studios");
-    await expect(page.locator(world ? "#studios" : "#v40-root")).toBeAttached();
-    assert.equal(new URL(page.url()).pathname, world ? "/rooms/studios/interactive/" : "/");
+    await expect(page.locator(target)).toBeAttached();
+    await expect.poll(() => new URL(page.url()).pathname).toBe(pathname);
     assert.equal(new URL(page.url()).search, "");
-    assert.equal(new URL(page.url()).hash, new URL(suffix, url).hash);
+    assert.equal(new URL(page.url()).hash, hash);
   }
   await page.goto(new URL("/?v=37.17#build=hermes", url).href);
   await expect(page.locator("#odyssey-root")).toBeAttached();
@@ -2125,7 +2125,7 @@ test("All four reading editions remain reachable and readable without JavaScript
           link.href,
         );
       await page.locator(".room-end a").first().click();
-      await expect(page.locator("#v40-root #rooms")).toBeVisible();
+      await expect(page.locator("#worlds")).toBeVisible();
     }
   }
 });
@@ -2181,7 +2181,7 @@ test("The V35 archive returns to the current site without adding a cinema tab st
     assert.equal(await back.evaluate((link) => Boolean(link.closest("[inert]"))), false);
     await page.goto(new URL("/command-deck.html", url).href);
     await back.click();
-    await expect(page.locator("#v40-root h1")).toBeVisible();
+    await expect(page.locator("#arrival h1")).toBeVisible();
     assert.equal(new URL(page.url()).pathname, "/");
 
     const staticContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width, height: 844 } });
@@ -2189,7 +2189,7 @@ test("The V35 archive returns to the current site without adding a cinema tab st
     const staticPage = await staticContext.newPage();
     await staticPage.goto(new URL("/command-deck.html", url).href);
     await staticPage.getByRole("link", { name: "Back to current site", exact: false }).click();
-    await expect(staticPage.locator("#v40-root h1")).toBeVisible();
+    await expect(staticPage.locator("#arrival h1")).toBeVisible();
     assert.equal(new URL(staticPage.url()).pathname, "/");
   }
 });

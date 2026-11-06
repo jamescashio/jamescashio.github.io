@@ -1,0 +1,215 @@
+import { bitJokes } from "../shared/ship-humor.ts";
+import { motionEnabled, onMotionChange } from "./motion.ts";
+import type { LaneId } from "./route.ts";
+import "./events.ts";
+
+/** Bit, the copilot: an icosahedron in platinum with a blue core, a line for every station, and a memory for what you just did. */
+const LINES: Record<string, string> = {
+  arrival: "Welcome aboard. The gate is open and the coffee is mostly harmless.",
+  cinema: "The trailer runs sixty one seconds. The cat’s review is still pending.",
+  worlds: "Four worlds. I recommend the starship. I am biased; I live there.",
+  workshop: "Everything here can be taken apart. Please put it back the way you found it.",
+  helm: "Flip the private toggle and watch me refuse to phone the cloud.",
+  evidence: "Numbers come with dates. Dates come with limits. Limits come with me.",
+  doug: "The address is real. So is the human behind it.",
+};
+
+const PHI = (1 + Math.sqrt(5)) / 2;
+const V = [
+  [-1, PHI, 0],
+  [1, PHI, 0],
+  [-1, -PHI, 0],
+  [1, -PHI, 0],
+  [0, -1, PHI],
+  [0, 1, PHI],
+  [0, -1, -PHI],
+  [0, 1, -PHI],
+  [PHI, 0, -1],
+  [PHI, 0, 1],
+  [-PHI, 0, -1],
+  [-PHI, 0, 1],
+].map((v) => {
+  const l = Math.hypot(v[0], v[1], v[2]);
+  return [v[0] / l, v[1] / l, v[2] / l];
+});
+const F = [
+  [0, 11, 5],
+  [0, 5, 1],
+  [0, 1, 7],
+  [0, 7, 10],
+  [0, 10, 11],
+  [1, 5, 9],
+  [5, 11, 4],
+  [11, 10, 2],
+  [10, 7, 6],
+  [7, 1, 8],
+  [3, 9, 4],
+  [3, 4, 2],
+  [3, 2, 6],
+  [3, 6, 8],
+  [3, 8, 9],
+  [4, 9, 5],
+  [2, 4, 11],
+  [6, 2, 10],
+  [8, 6, 7],
+  [9, 8, 1],
+];
+
+function drawFace(ctx: CanvasRenderingContext2D, size: number, t: number, glow: number) {
+  ctx.clearRect(0, 0, size, size);
+  const c = size / 2;
+  const r = size * 0.36;
+  const ay = t * 0.7;
+  const ax = 0.5 + Math.sin(t * 0.4) * 0.2;
+  const rot = (v: number[]) => {
+    const x1 = v[0] * Math.cos(ay) + v[2] * Math.sin(ay);
+    const z1 = -v[0] * Math.sin(ay) + v[2] * Math.cos(ay);
+    const y2 = v[1] * Math.cos(ax) - z1 * Math.sin(ax);
+    const z2 = v[1] * Math.sin(ax) + z1 * Math.cos(ax);
+    return [x1, y2, z2];
+  };
+  const P = V.map(rot);
+  const g = ctx.createRadialGradient(c, c, 0, c, c, r * 1.3);
+  g.addColorStop(0, `rgba(53,120,255,${0.35 + glow * 0.3})`);
+  g.addColorStop(1, "rgba(53,120,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const faces = F.map((f) => {
+    const a = P[f[0]],
+      b = P[f[1]],
+      d = P[f[2]];
+    const nz = (b[0] - a[0]) * (d[1] - a[1]) - (b[1] - a[1]) * (d[0] - a[0]);
+    return { f, z: (a[2] + b[2] + d[2]) / 3, nz };
+  }).sort((x, y) => x.z - y.z);
+  for (const { f, nz } of faces) {
+    if (nz < 0) continue;
+    const shade = Math.min(1, 0.35 + nz * 0.55);
+    ctx.beginPath();
+    f.forEach((i, k) => {
+      const p = P[i];
+      const x = c + p[0] * r;
+      const y = c - p[1] * r;
+      if (k) ctx.lineTo(x, y);
+      else ctx.moveTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = `rgba(${Math.round(180 + 60 * shade)},${Math.round(188 + 58 * shade)},${Math.round(205 + 45 * shade)},${0.55 + shade * 0.35})`;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(154,190,255,0.85)";
+    ctx.lineWidth = size / 96;
+    ctx.stroke();
+  }
+}
+
+const ROUTE_LINES: Record<LaneId, string> = {
+  hold: "You held it for a person. Correct. I would have done the same and then taken the credit.",
+  research: "Research lane. Sources first, opinions second. E.V.E. approves.",
+  workhorse: "Workhorse lane. Unglamorous, reliable, my favorite kind of hero.",
+  synthesis: "Synthesis lane. Connected reasoning, with the assumptions kept for your review.",
+};
+
+export function mountBit(
+  button: HTMLButtonElement,
+  dialog: HTMLDialogElement,
+  go: (id: string) => void,
+  current: () => string,
+) {
+  const canvas = button.querySelector("canvas")!;
+  const ctx = canvas.getContext("2d");
+  const line = dialog.querySelector<HTMLElement>("[data-bit-line]")!;
+  const goButtons = [...dialog.querySelectorAll<HTMLButtonElement>("[data-bit-go]")];
+  let joke = 0;
+  let raf = 0;
+  let glow = 0;
+  let spinUntil = 0;
+  let hovered = false;
+  // The last thing the visitor did, said once the next time Bit is opened.
+  let remark = "";
+
+  // Bit turns while someone is looking at it: hover, focus, an open dialog, or a short spin on arrival.
+  const active = () => motionEnabled() && !document.hidden && (hovered || dialog.open || performance.now() < spinUntil);
+  const loop = (now: number) => {
+    if (!ctx) return;
+    glow *= 0.96;
+    drawFace(ctx, canvas.width, now / 1000, glow);
+    raf = active() ? requestAnimationFrame(loop) : 0;
+    button.toggleAttribute("data-spinning", raf !== 0);
+  };
+  const wake = (ms = 0) => {
+    spinUntil = Math.max(spinUntil, performance.now() + ms);
+    if (!raf && active()) {
+      raf = requestAnimationFrame(loop);
+      button.setAttribute("data-spinning", "");
+    }
+  };
+  if (ctx) drawFace(ctx, canvas.width, 1.2, 0);
+  // The arrival spin waits until the page has loaded, so it never competes with the first paint.
+  const intro = () => setTimeout(() => wake(2400), 600);
+  if (document.readyState === "complete") intro();
+  else addEventListener("load", intro, { once: true });
+  onMotionChange(() => wake());
+  document.addEventListener("visibilitychange", () => wake());
+  button.addEventListener("pointerenter", () => ((hovered = true), wake()));
+  button.addEventListener("pointerleave", () => (hovered = false));
+  button.addEventListener("focus", () => ((hovered = true), wake()));
+  button.addEventListener("blur", () => (hovered = false));
+
+  document.addEventListener("v44:route", (e) => {
+    remark = ROUTE_LINES[e.detail.id] || remark;
+    wake(900);
+  });
+  document.addEventListener("v44:film", (e) => {
+    const f = e.detail;
+    remark =
+      f.id === "trailer"
+        ? "You put the trailer on. The cat has notes. The cat always has notes."
+        : `You put on the ${f.title.toLowerCase()}. Fifteen quiet seconds, beautifully lit. I counted.`;
+    wake(900);
+  });
+  document.addEventListener("v44:eve", (e) => {
+    const { cmd } = e.detail;
+    if (cmd === "clear") return;
+    remark = `You asked E.V.E. about ${cmd}. She keeps the receipts. I keep the jokes.`;
+    wake(900);
+  });
+
+  const close = () => {
+    dialog.close();
+    button.focus();
+  };
+  button.addEventListener("click", () => {
+    line.textContent = remark || LINES[current()] || LINES.arrival;
+    remark = "";
+    // Offer only the places the visitor is not already at: each button names the station it belongs to.
+    goButtons.forEach((b) => (b.hidden = (b.dataset.bitStation || b.dataset.bitGo) === current()));
+    glow = 1;
+    dialog.show();
+    wake();
+    dialog.querySelector<HTMLButtonElement>("[data-bit-close]")?.focus();
+  });
+  dialog.querySelector("[data-bit-close]")?.addEventListener("click", close);
+  // The card is not modal, so it closes the way the station sheet does: Escape from anywhere returns
+  // to Bit, and a tap or a Tab that leaves the card and its button simply closes it.
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && dialog.open) close();
+  });
+  document.addEventListener("pointerdown", (e) => {
+    const t = e.target as Node;
+    if (dialog.open && !dialog.contains(t) && !button.contains(t)) dialog.close();
+  });
+  dialog.addEventListener("focusout", (e) => {
+    const next = e.relatedTarget as Node | null;
+    if (dialog.open && next && !dialog.contains(next) && !button.contains(next)) dialog.close();
+  });
+  dialog.querySelector("[data-bit-joke]")?.addEventListener("click", () => {
+    line.textContent = bitJokes[joke++ % bitJokes.length];
+    glow = 1;
+    wake(600);
+  });
+  goButtons.forEach((b) =>
+    b.addEventListener("click", () => {
+      dialog.close();
+      go(b.dataset.bitGo || "arrival");
+    }),
+  );
+}

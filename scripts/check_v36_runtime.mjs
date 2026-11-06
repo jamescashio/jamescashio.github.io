@@ -131,8 +131,10 @@ async function run() {
       resources.server = await serveDist();
       const base = `http://127.0.0.1:${resources.server.address().port}`;
       const rootHtml = await fetch(`${base}/`).then((response) => response.text());
-      assert.match(rootHtml, /id="v40-root"/, "root must serve the V40 reading edition");
-      assert.match(rootHtml, /You still decide\./, "the V40 story must be readable before JavaScript");
+      assert.match(rootHtml, /data-station="arrival"/, "root must serve the V44 front door");
+      assert.match(rootHtml, /You still decide\./, "the story must be readable before JavaScript");
+      const centauriHtml = await fetch(`${base}/v43/index.html`).then((response) => response.text());
+      assert.match(centauriHtml, /id="v40-root"/, "/v43/ must serve the preserved V40 reading edition");
       const heliosHtml = await fetch(`${base}/v39/index.html`).then((response) => response.text());
       assert.match(heliosHtml, /data-helios-styles=/, "V39 must retain its original document");
       assert.match(
@@ -148,8 +150,8 @@ async function run() {
       );
       for (const hash of ["#lensing", "#signature", "#film=sanctuary"])
         assert.ok(
-          studios.includes(`class="studio-card" href="/${hash}"`),
-          "each original studio remains available from V40",
+          studios.includes(`class="studio-card" href="/v43/${hash}"`),
+          "each original studio remains available from the preserved V43 edition",
         );
       assert.match(studios, /class="studio-library"/, "the static film library is available");
       const archiveHtml = await fetch(`${base}/odyssey.html`).then((response) => response.text());
@@ -299,7 +301,12 @@ async function run() {
       const waitFor = async (expression, description, timeout = 15_000) => {
         const end = Date.now() + timeout;
         while (Date.now() < end) {
-          if (await (typeof expression === "function" ? expression() : evaluate(expression))) return;
+          try {
+            if (await (typeof expression === "function" ? expression() : evaluate(expression))) return;
+          } catch (error) {
+            // A redirect can replace the document mid evaluation; keep waiting for the next one.
+            if (!/navigated or closed|context|destroyed/i.test(String(error?.message))) throw error;
+          }
           await delay(80);
         }
         throw new Error(`timed out waiting for ${description}`);

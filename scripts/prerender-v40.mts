@@ -39,7 +39,7 @@ for (const element of dom.window.document.querySelectorAll("[style]")) {
 const fallbackCss = [...rules].map(([name, declarations]) => `.${name}{${declarations}}`).join("\n");
 const filename = "v40-reading-" + createHash("sha256").update(fallbackCss).digest("hex").slice(0, 12) + ".css";
 if (fallbackCss) await writeFile("dist/assets/" + filename, fallbackCss);
-let html = await readFile("dist/index.html", "utf8");
+let html = await readFile("dist/v43/index.html", "utf8");
 // The complete opening is already rendered; its artwork and fonts take network priority.
 html = html.replace(/<script\b(?=[^>]*type="module")/g, '<script fetchpriority="low"');
 html = html.replace(/<link\b(?=[^>]*rel="modulepreload")/g, '<link fetchpriority="low"');
@@ -76,6 +76,6 @@ html = html.replace(
   "The reading edition is being prepared.",
   "The page above remains readable without JavaScript. Interactive demonstrations need JavaScript.",
 );
-await writeFile("dist/index.html", html);
+await writeFile("dist/v43/index.html", html);
 await writeFile("dist/artifacts/decision-brief-example.txt", exampleBriefText);
 console.log("V40 reading edition created with hash-authorized opening CSS and the strict security policy.");

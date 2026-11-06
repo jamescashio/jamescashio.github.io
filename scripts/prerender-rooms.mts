@@ -5,6 +5,7 @@ import { computeWorldOutcome } from "../src/odyssey/sovereign-model";
 import { PILOTS } from "../src/helios/heritage-data.js";
 import { PRINCIPLES } from "../src/helios/principles-data.js";
 import { versionLabel } from "../src/v40/evidence.ts";
+import { frontDoorHref } from "../src/v44/legacy.ts";
 
 /** Static reading pages share the exact authored content used by the deferred interactive rooms. */
 const root = new JSDOM(await readFile("dist/v39/index.html", "utf8")).window.document;
@@ -44,7 +45,7 @@ for (const id of roomIds) {
   const notice = doc.createElement("header");
   notice.className = "room-bar";
   // The same header language as the homepage: wordmark, world number, title, a quiet mode link and motion control.
-  notice.innerHTML = `<div class="room-bar-inner"><div class="room-bar-lead"><a class="room-wordmark" href="/" aria-label="cAshIo home">c<span class="room-wordmark-a">A</span>sh<span class="room-wordmark-i">I</span>o</a><a class="room-back" href="/#rooms">← Back to the four rooms</a></div><div class="room-bar-title"><span class="room-world">World ${String(roomIds.indexOf(id) + 1).padStart(2, "0")} of 04</span><h1 class="display room-title">${title}</h1><p id="reading-mode" class="room-status">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p></div><div class="room-bar-actions"><a class="room-mode-link room-mode-primary" href="/rooms/${id}/interactive/">Open the interactive room →</a></div></div>`;
+  notice.innerHTML = `<div class="room-bar-inner"><div class="room-bar-lead"><a class="room-wordmark" href="/" aria-label="cAshIo home">c<span class="room-wordmark-a">A</span>sh<span class="room-wordmark-i">I</span>o</a><a class="room-back" href="${frontDoorHref("#rooms")}">← Back to the four rooms</a></div><div class="room-bar-title"><span class="room-world">World ${String(roomIds.indexOf(id) + 1).padStart(2, "0")} of 04</span><h1 class="display room-title">${title}</h1><p id="reading-mode" class="room-status">Controls are inactive in this reading edition. It shows the artwork, one example state and all of the text. Open the interactive room to change the inputs and explore the results.</p></div><div class="room-bar-actions"><a class="room-mode-link room-mode-primary" href="/rooms/${id}/interactive/">Open the interactive room →</a></div></div>`;
   const main = doc.createElement("main");
   main.innerHTML = source;
   for (const image of main.querySelectorAll("img")) {
@@ -54,7 +55,7 @@ for (const id of roomIds) {
   const localAnchors = new Set([...main.querySelectorAll("[id]")].map((node) => node.id));
   for (const link of main.querySelectorAll("a[href^='#']")) {
     const href = link.getAttribute("href")!;
-    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", frontDoorHref(href));
   }
   for (const control of main.querySelectorAll("button,input,select,textarea")) {
     if (!control.hasAttribute("disabled")) control.setAttribute("data-reading-disabled", "");
@@ -126,7 +127,7 @@ for (const id of roomIds) {
   interactiveMain.innerHTML = source;
   for (const link of interactiveMain.querySelectorAll("a[href^='#']")) {
     const href = link.getAttribute("href")!;
-    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", "/" + href);
+    if (!localAnchors.has(href.slice(1))) link.setAttribute("href", frontDoorHref(href));
   }
   for (const image of interactiveMain.querySelectorAll("img")) {
     const version = versions[image.getAttribute("src") || ""];

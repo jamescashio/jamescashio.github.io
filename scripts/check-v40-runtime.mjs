@@ -11,7 +11,8 @@ try {
     await once(probe, "listening");
     const port = probe.address().port;
     await new Promise((resolve) => probe.close(resolve));
-    url = `http://127.0.0.1:${port}/`;
+    // Since V44 the V40 app is preserved at /v43/; the root is the Drummer front door.
+    url = `http://127.0.0.1:${port}/v43/`;
     server = spawn(process.execPath, ["scripts/serve-helios-preview.mjs", "dist", String(port)], {
       stdio: ["ignore", "pipe", "inherit"],
     });

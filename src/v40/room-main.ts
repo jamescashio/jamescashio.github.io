@@ -15,11 +15,16 @@ const room = document.getElementById(id)!;
 const status = document.getElementById("reading-mode")!;
 const mq = matchMedia("(prefers-reduced-motion: reduce)");
 let preference: string | null | undefined;
-try {
-  preference = localStorage.getItem("cashio-v40-motion");
-} catch {
-  /* Storage is optional. */
-}
+const readSaved = () => {
+  try {
+    return localStorage.getItem("cashio-v40-motion");
+  } catch {
+    return null;
+  }
+};
+preference = readSaved();
+// What this room last read or wrote, so a return from another page adopts only a newer choice.
+let seen = preference;
 const motion = () => preference !== "off" && !mq.matches;
 const motionButton = document.createElement("button");
 motionButton.type = "button";
@@ -37,12 +42,26 @@ motionButton.addEventListener("click", () => {
   preference = motion() ? "off" : "on";
   try {
     localStorage.setItem("cashio-v40-motion", preference);
+    seen = preference;
   } catch {
     /* Storage is optional. */
   }
   syncMotion();
 });
 mq.addEventListener("change", syncMotion);
+// A Pause chosen on another open page of the site reaches this room too.
+addEventListener("storage", (e) => {
+  if (e.key !== "cashio-v40-motion") return;
+  preference = seen = e.newValue;
+  syncMotion();
+});
+// Back to a cached room: the setting may have changed on another page while this one slept.
+addEventListener("pageshow", (e) => {
+  if (!e.persisted) return;
+  const saved = readSaved();
+  if (saved !== seen) preference = seen = saved;
+  syncMotion();
+});
 syncMotion();
 
 async function mount() {

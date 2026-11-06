@@ -125,11 +125,13 @@ test("current brand assets decode at their advertised sizes while the archived e
     );
     assert.deepEqual(accents, ["#FF3D55", "#3578FF"], `${file} keeps the red A before the blue capital I`);
   }
+  // The preserved V43 edition sets its text wordmarks in live type; V44 uses the vector wordmark checked above.
+  const { page: edition } = await visit(t, "/v43/", 1440, 900);
   for (const [glyph, color] of [
     ["a", "rgb(255, 61, 85)"],
     ["i", "rgb(53, 120, 255)"],
   ]) {
-    const letters = page.locator(`#v40-root .cashio-brand-${glyph}`);
+    const letters = edition.locator(`#v40-root .cashio-brand-${glyph}`);
     assert.ok(await letters.count(), "current text wordmarks carry explicit letter colors");
     assert.ok(
       (await letters.evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).color))).every(
@@ -206,7 +208,15 @@ test("current brand assets decode at their advertised sizes while the archived e
   );
 });
 
-for (const path of ["/", "/cashio.html"]) {
+// Each page names its first call to action, whether its icon yields to the wordmark on the narrowest phones,
+// and the motion indicator that must stay still under reduced motion.
+const pages = {
+  "/": { action: ".cta[data-transit-go]", narrowIcon: false, orbiter: null, motion: true },
+  "/v43/": { action: ".tour-launch", narrowIcon: false, orbiter: ".hud-orbiter", motion: true },
+  "/cashio.html": { action: ".hero .button", narrowIcon: true, orbiter: null, motion: false },
+};
+
+for (const [path, shape] of Object.entries(pages)) {
   test(`${path} keeps its platinum identity readable, keyboard accessible and quiet on desktop and phones`, async (t) => {
     for (const [width, height] of [
       [1440, 900],
@@ -220,11 +230,12 @@ for (const path of ["/", "/cashio.html"]) {
         const image = page
           .locator(`header img[src="${brand}${file}${file === "icon.svg" ? iconVersion : ""}"]`)
           .first();
-        if (file === "icon.svg" && path === "/" && width === 320) await expect(image).toBeHidden();
+        if (file === "icon.svg" && !shape.narrowIcon && width === 320) await expect(image).toBeHidden();
         else await expect(image).toBeVisible();
         await expect.poll(() => image.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
       }
       const signature = page.locator(`img[src^="${brand}signature-"]`).first();
+      await signature.scrollIntoViewIfNeeded();
       await expect.poll(() => signature.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
       assert.match(
         await signature.evaluate((node) => node.currentSrc),
@@ -244,7 +255,7 @@ for (const path of ["/", "/cashio.html"]) {
       }));
       assert.deepEqual(media, { attempts: 0, activeContexts: 0, audible: 0 }, "sound needs an explicit visitor choice");
 
-      const orbiter = path === "/" ? page.locator(".hud-orbiter") : null;
+      const orbiter = shape.orbiter ? page.locator(shape.orbiter) : null;
       const orbitBefore = orbiter ? await orbiter.getAttribute("style") : null;
       const { violations } = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"])
@@ -261,10 +272,10 @@ for (const path of ["/", "/cashio.html"]) {
 
       await page.keyboard.press("Tab");
       await assertKeyboardFocus(page, page.locator(`header a:has(img[src="${brand}wordmark.svg"])`).first());
-      await assertKeyboardFocus(page, page.locator(path === "/" ? ".tour-launch" : ".hero .button"));
-      if (path === "/") {
+      await assertKeyboardFocus(page, page.locator(shape.action));
+      if (shape.motion) {
         const assertHeaderFits = async () => {
-          const clipped = await page.locator("header").evaluate((header) =>
+          const clipped = await page.getByRole("banner").evaluate((header) =>
             [...header.querySelectorAll("a,button")]
               .map((node) => ({
                 label: node.getAttribute("aria-label") || node.textContent,

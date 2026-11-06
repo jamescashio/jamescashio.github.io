@@ -1,3 +1,4 @@
+/** Shared by the V44 front door and the preserved V43 edition, so neither owns the other. */
 const foldReplies = [
   "Space folded. The fitted sheet remains undefeated.",
   "Shortcut found. The scenic route has filed an appeal.",

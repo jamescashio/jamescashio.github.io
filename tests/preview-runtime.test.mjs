@@ -236,7 +236,11 @@ test("the completed brief preview, download and editable starting point agree wi
   const response = await page.request.get(new URL(await download.getAttribute("href"), url).href);
   assert.equal(response.status(), 200);
   const text = await response.text();
-  assert.ok(text.includes(record.verifiedLong));
+  // The download prints the observation in the house date style, for example "Wed Nov 4, 2026".
+  const [y, m, d] = record.verified.split("-").map(Number);
+  const day = new Date(Date.UTC(y, m - 1, d));
+  const house = `${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day.getUTCDay()]} ${day.toLocaleString("en-US", { month: "short", timeZone: "UTC" })} ${d}, ${y}`;
+  assert.ok(text.includes(house), `the brief shows ${house}`);
   assert.ok(text.includes("https://cashio.us/status.json"));
   assert.ok(text.includes("Full system recovery and current AI routing were not tested."));
   await page.getByRole("link", { name: "Make your brief →", exact: true }).click();
