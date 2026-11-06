@@ -2,7 +2,7 @@
 
 Drummer rebuilds the cashio.us front door from the ground up. A live transit gate in the platinum cAshIo identity ignites once per visit, and scrolling flies the camera through the ring into seven stations: Arrival, Cinema, Worlds, Workshop, Helm, Evidence and Doug. The sky carries on behind every station, with shooting stars and a warp streak when you move fast. Ask E.V.E. to zoom.
 
-The headline stays: the machines can think, you still decide. The helm lets a visitor steer the routing rule and watch a private input hold the route for a person. E.V.E. reads the dated record and answers to a few other words. Bit still lives in the corner, and the Doug station now lists the Claude 101 completion badge from Claude Academy beside LinkedIn, GitHub and Credly.
+The headline stays: the machines can think, you still decide. The helm lets a visitor steer the routing rule and watch a private input hold the route for a person. E.V.E. reads the dated record and answers to a few other words. Bit still lives in the corner, and the Doug station now folds Doug’s 20 completed Anthropic courses under his LinkedIn, GitHub and Credly links, with the public Claude 101 badge linked.
 
 Prepared 11-05-2026. The page prints the observation of November 5, 2026 from `status.json` at build time: 20 running containers out of 21, 2 running virtual machines out of 3, 2 hosts reporting running guests, and 23 of 23 latest reported guest snapshots passing their integrity check. The observation retains its V41 source identity and the November 4, 2026 record is archived unchanged. This release adds no operational measurement of its own and does not establish application health, new backup creation, a restore or independent offsite recovery.
 
