@@ -20,6 +20,8 @@ Release · 11-05-2026: Doug approved publication. The branch carries main's plat
 
 Academy badges · 11-05-2026: all 21 Claude Academy course badges are verified live and each name in the Doug station opens its public verification page, Claude Platform 101 included.
 
+Deploy fix · 11-05-2026: the Pages run caught E.V.E.'s opening readout arriving after a visitor's first answer when that command brought her into view. She now keeps the opening once a visitor has spoken, and a runtime test reproduces the old order.
+
 ## V43.0.0 · Centauri · 11-05-2026
 
 Observation refresh · November 5, 2026: new read only checks report 20 running containers out of 21, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 181 snapshots and reported successful integrity verification for 23 of 23 latest reported guest snapshots. Preserve the November 4, 2026 observation unchanged and update the current record, evidence pointer, supporting documentation and displayed date. The homepage sitemap and current release update date already identify November 5, 2026. No application health, new backup creation, restore or offsite recovery result is claimed. The V43 presentation, release dates and historical records remain unchanged.

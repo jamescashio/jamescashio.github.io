@@ -89,11 +89,15 @@ export function mountEve(root: HTMLElement, hooks: EveHooks) {
    * A visitor's command is echoed in their prompt and announced. E.V.E.'s own opening readout is
    * printed as her line, with no prompt, and the log stays quiet until the visitor speaks first.
    */
+  // Once a visitor has spoken, the opening readout would arrive out of turn, so E.V.E. keeps it.
+  let visitorSpoke = false;
   const run = async (raw: string, byVisitor = true) => {
     const cmd = raw.trim().toLowerCase().slice(0, 40);
     if (!cmd) return;
+    if (!byVisitor && visitorSpoke) return;
     finishTyping();
     if (byVisitor) {
+      visitorSpoke = true;
       log.setAttribute("aria-live", "polite");
       say(cmd, "you");
       document.dispatchEvent(new CustomEvent("v44:eve", { detail: { cmd } }));

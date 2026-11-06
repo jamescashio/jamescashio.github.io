@@ -182,6 +182,20 @@ test("E.V.E. counts the same withheld list the page prints and ignores inherited
   await expect(page.locator("#eve-cmd")).toHaveAccessibleName("E.V.E. command");
 });
 
+test("E.V.E.'s opening readout never arrives after a visitor has already spoken", async (t) => {
+  const page = await visit(t);
+  // The visitor speaks while E.V.E. is still off screen, then she comes into view.
+  await page.evaluate(() => {
+    const input = document.querySelector("#eve-cmd");
+    input.value = "constructor";
+    input.form.requestSubmit();
+  });
+  await page.locator("[data-eve]").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(800);
+  await expect(page.locator("[data-eve-log] p").last()).toContainText("Unknown command");
+  await expect(page.locator("[data-eve-log]")).not.toContainText("loaded.");
+});
+
 test("the helm map draws the route the rule chose", async (t) => {
   const page = await visit(t);
   const map = page.locator("[data-route-map]");
