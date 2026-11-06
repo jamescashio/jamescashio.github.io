@@ -22,20 +22,20 @@ test("Drummer identity advances the current release and preserves the exact V43 
   assert.equal(currentRelease.releaseId, "drummer-44.0.0-20261105");
   assert.equal(currentRelease.updatedDate, "2026-11-05");
   assert.equal(currentRelease.presentation.preparedDate, "2026-11-05");
-  // A preview stays unpublished until Doug approves it; approval sets the release date and published flag together.
+  // Doug approved publication; approval sets the release date and published flag together.
   assert.equal(currentRelease.published, currentRelease.status === "released");
   assert.equal(currentRelease.releaseDate === null, !currentRelease.published);
   assert.deepEqual(currentRelease.previousRelease, {
     version: "43.0.0",
     name: "Centauri",
     receipt: "/v43/site-release.json",
-    commit: "e75c774b285c1cca75c1e878c758af0a94731579",
+    commit: "b21725755cab03412fd77fe85493580d5342d105",
   });
   assert.equal(currentRelease.rollbackCommit, currentRelease.previousRelease.commit);
   const centauri = await readFile(asset("public/v43/site-release.json"));
   assert.equal(
     createHash("sha256").update(centauri).digest("hex"),
-    "a9bf7cbcfcefb648315d7092cd918baecfcd691a22489fc88dae76ba3268cc8e",
+    "307fa1443cecc84503f68795e8607771d8473039a787ad0de69b9deaeccb7000",
   );
   assert.deepEqual(await readFile(asset("dist/v43/site-release.json")), centauri);
   const previous = await readFile(asset("public/v42/site-release.json"));
@@ -162,7 +162,7 @@ test("V43 Centauri keeps its real reading edition at /v43/ under the strict prod
   assert.equal(receipt.experienceVersion, "43.0.0");
   assert.equal(receipt.previousExperience.entry, "/v39/");
   assert.equal(receipt.published, receipt.status === "released");
-  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-04");
+  assert.equal(receipt.evidenceSnapshot.fleetObserved, "2026-11-05");
   assert.equal(receipt.evidenceSnapshot.routingObserved, null);
   const files = await readdir(asset("public/v40/assets"));
   const assets = JSON.parse(await read("public/v40/asset-manifest.json"));
@@ -379,7 +379,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-11-04");
+  assert.equal(status.verified, "2026-11-05");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));

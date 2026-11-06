@@ -10,6 +10,8 @@ The exact wordmark is **cAshIo**: lowercase c, uppercase A, lowercase s, lowerca
 
 The capital **A is laser red `#FF3D55`** and the capital **I is electric blue `#3578FF`**. Keep the other letters platinum. This letter assignment applies to the current signature, everyday marks and text fallbacks; blue remains the principal luminous accent across the wider interface.
 
+The simplified **C icon has a red upper terminal `#FF3D55` and a blue lower terminal `#3578FF`**, approved November 5, 2026. Preserve its platinum silhouette and geometry. This icon order does not change the wordmark: A remains red and I remains blue.
+
 ## Palette
 
 | Role                   | Color     |
@@ -36,6 +38,8 @@ Canonical published kit: `https://cashio.us/brand/platinum/`.
 - Current browser and home-screen placements: `favicon-16.png`, `favicon-32.png`, `favicon-48.png`, `favicon-64.png` and `apple-touch-icon.png`. `site.webmanifest` references `icon-192.png` and `icon-512.png`; the canonical `icon-16.png` through `icon-180.png` exports remain in the kit.
 - Social images: the current site's `share-card.jpg` and the kit's `social-preview.jpg`, both 1200 by 630 pixels.
 - Tokens and provenance: `tokens.css`, `provenance.json` and `brand-manifest.json` with SHA-256 hashes and a current-site placement map.
+
+Browser, header and phone icon URLs use `?v=c-red-top-20261105`, including the web manifest and its icon entries, so existing browser caches request the corrected assets. The root `favicon.ico` fallback contains the approved 16/32/48/64 pixel PNGs.
 
 `node scripts/build-platinum-assets.mjs` refreshes the generated mobile icons and current share card, then synchronizes all listed asset hashes and byte counts. Use `node scripts/build-platinum-assets.mjs --manifest-only` to refresh the inventory without rendering or changing artwork.
 

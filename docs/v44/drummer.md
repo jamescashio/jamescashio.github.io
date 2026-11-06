@@ -1,6 +1,6 @@
 # V44 Drummer release contract
 
-Prepared Thu Nov 5, 2026 as a preview. Not published until Doug approves it.
+Prepared Thu Nov 5, 2026. Doug approved it for publication the same day.
 
 ## Scope
 

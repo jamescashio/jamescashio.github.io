@@ -1,6 +1,6 @@
 # cAshIo V44 · Drummer
 
-**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for Camina Drummer of _The Expanse_, who keeps a cool head when it counts. It is a preview until Doug approves publication.
+**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for Camina Drummer of _The Expanse_, who keeps a cool head when it counts. Doug approved it for publication on Thu Nov 5, 2026.
 
 One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: the gate arrives lit and a light front races around it once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
@@ -22,9 +22,9 @@ The six further experiments, the 30 second tour, mission cards, the Omnius heari
 
 ## Current evidence
 
-The verified record was refreshed on **November 4, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 19 running containers out of 20, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 161 snapshots and reported successful integrity verification for 22 of 22 latest reported guest snapshots.
+The verified record was refreshed on **November 5, 2026** from new read only checks. `status.json`, `public/status.json` and `public/evidence/status.json` are identical public aggregates. They report 20 running containers out of 21, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 181 snapshots and reported successful integrity verification for 23 of 23 latest reported guest snapshots.
 
-The V44 page prints these figures at build time from `public/status.json`, the export it ships beside, through `scripts/v44-status.mjs`, so the page and the record cannot disagree, and the build fails if a figure is missing, is not a whole count, or exceeds the inventory it belongs to. The page makes no network requests of its own. These readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing.
+The V44 page prints these figures at build time from `public/status.json`, the export it ships beside, through `scripts/v44-status.mjs`, so the page and the record cannot disagree, and the build fails if a figure is missing, is not a whole count, or exceeds the inventory it belongs to. The page makes no network requests of its own. These inventory and integrity readings do not establish application health, a restore rehearsal, offsite recovery or current AI routing. Unmeasured fields remain null with their reasons. The observation schema retains its V41 source identity. Fresh collection provenance is recorded in UTC and America/Chicago. The November 4, 2026 record is preserved unchanged at `/evidence/status-2026-11-04.json`.
 
 ## Source ownership
 
