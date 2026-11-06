@@ -4,7 +4,7 @@
 
 One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: the gate arrives lit and a light front races around it once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
-The previous front door is preserved unchanged as [V43 Centauri at /v43/](https://cashio.us/v43/), with its receipt at `public/v43/site-release.json`. Its rollback commit is `e75c774b285c1cca75c1e878c758af0a94731579`. The current receipt is `public/v40/site-release.json`; the `v40` path is a compatibility path, not the version label. See [the Drummer release contract](docs/v44/drummer.md).
+The previous front door is preserved unchanged as [V43 Centauri at /v43/](https://cashio.us/v43/), with its receipt at `public/v43/site-release.json`. Rollback to it is the previous production commit `b21725755cab03412fd77fe85493580d5342d105`. The current receipt is `public/v40/site-release.json`; the `v40` path is a compatibility path, not the version label. See [the Drummer release contract](docs/v44/drummer.md).
 
 ## The seven stations
 
