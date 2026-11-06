@@ -18,6 +18,8 @@ Review round eight · 11-05-2026: the live scene takes over from its poster only
 
 Release · 11-05-2026: Doug approved publication. The branch carries main's platinum icon correction (red above blue, cache version `c-red-top-20261105`) onto the front door and the preserved V43 edition, and the November 5, 2026 observation. Under the LinkedIn, GitHub and Credly links, the Doug station folds the 20 Anthropic courses Doug completed in Sep and Oct 2026 into one disclosure, grouped as Claude, Claude Code, Building with Claude and AI Fluency; the Claude 101 badge links to its public verify page. V43's last production receipt is preserved at `/v43/site-release.json`, and rollback is commit `b21725755cab03412fd77fe85493580d5342d105`.
 
+Academy badges · 11-05-2026: all 21 Claude Academy course badges are verified live and each name in the Doug station opens its public verification page, Claude Platform 101 included.
+
 ## V43.0.0 · Centauri · 11-05-2026
 
 Observation refresh · November 5, 2026: new read only checks report 20 running containers out of 21, 2 running virtual machines out of 3, and 2 hosts reporting running guests. The backup source listed 181 snapshots and reported successful integrity verification for 23 of 23 latest reported guest snapshots. Preserve the November 4, 2026 observation unchanged and update the current record, evidence pointer, supporting documentation and displayed date. The homepage sitemap and current release update date already identify November 5, 2026. No application health, new backup creation, restore or offsite recovery result is claimed. The V43 presentation, release dates and historical records remain unchanged.
