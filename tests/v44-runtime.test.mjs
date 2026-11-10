@@ -606,16 +606,19 @@ test("the live gate takes over from its poster only at the gate, never mid fligh
   t.after(() => gl.close());
   const context = await gl.newContext({ viewport: { width: 640, height: 400 }, reducedMotion: "reduce" });
   // Note whether the live scene ever took over, even if a slow software renderer hands back to the poster later.
+  // The visitor sets off from inside the page, before it has finished loading. A scroll sent from this test can
+  // arrive after a quick page has already gone live at the gate, which is the page working as designed.
   await context.addInitScript(() => {
     window.__wentLive = false;
     new MutationObserver(() => {
       if (document.querySelector(".sky")?.hasAttribute("data-live")) window.__wentLive = true;
     }).observe(document, { attributes: true, subtree: true, attributeFilter: ["data-live"] });
+    addEventListener("DOMContentLoaded", () => scrollTo({ top: 300, behavior: "instant" }), { once: true });
   });
   const page = await context.newPage();
   await page.goto(new URL("/?gl=force", url).href, { waitUntil: "domcontentloaded" });
-  await page.evaluate(() => scrollTo(0, 300));
   await page.waitForLoadState("networkidle");
+  assert.equal(await page.evaluate(() => scrollY), 300, "the visitor has set off");
   await page.waitForTimeout(1500);
   assert.equal(await page.evaluate(() => window.__wentLive), false, "the poster keeps the scene while away");
   await page.evaluate(() => scrollTo(0, 0));
