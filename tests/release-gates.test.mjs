@@ -20,7 +20,7 @@ test("Drummer identity advances the current release and preserves the exact V43 
   assert.equal(currentRelease.visualEdition, "Drummer");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
   assert.equal(currentRelease.releaseId, "drummer-44.0.0-20261105");
-  assert.equal(currentRelease.updatedDate, "2026-11-09");
+  assert.equal(currentRelease.updatedDate, "2026-11-10");
   assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-06");
   assert.equal(currentRelease.presentation.preparedDate, "2026-11-05");
   // Doug approved publication; approval sets the release date and published flag together.
