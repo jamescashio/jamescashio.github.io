@@ -86,6 +86,17 @@
     order: 7;
     margin: 10px clamp(20px, 3vw, 36px) 22px;
   }
+  .helm-grid > .helm-result > .helm-share {
+    order: 8;
+    margin-bottom: 22px;
+  }
+}
+/* The decision on screen, as a link to hand to someone else. */
+.helm-share {
+  margin-top: 6px;
+}
+.helm-share .chip {
+  min-height: 44px;
 }
 fieldset {
   border: 0;
