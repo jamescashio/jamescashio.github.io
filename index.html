@@ -679,6 +679,9 @@
                 <li>Decision recorded</li>
                 <li>Operator reviews the draft</li>
               </ol>
+              <p class="helm-share">
+                <button disabled data-needs-js type="button" class="chip" data-helm-share>Share this route</button>
+              </p>
             </div>
             <div class="helm-map">
               <svg class="route-map" viewBox="0 0 320 200" aria-hidden="true" data-route-map data-route="workhorse">
@@ -847,23 +850,35 @@
             </div>
           </header>
           <div class="doug-grid">
-            <div class="bio">
+            <div class="bio" itemscope itemtype="https://schema.org/Person">
+              <meta itemprop="name" content="Doug Cashio" />
+              <meta itemprop="url" content="https://cashio.us/" />
               <p>
                 I started in IT in 1996, the year Quake went truly 3D after the brilliant 2.5D worlds of Wolfenstein and
                 Doom. I still like systems I can take apart, explain and put back together.
               </p>
               <p>
-                By day, I’m a Principal Solutions Consultant helping managed service providers deliver security and
-                cloud services, with more than twenty years in cybersecurity. After hours, that curiosity meets
-                aviation, science fiction and the pleasure of making something work.
+                By day, I’m a <span itemprop="jobTitle">Principal Solutions Consultant</span> helping managed service
+                providers deliver security and cloud services, with more than twenty years in cybersecurity. After
+                hours, that curiosity meets aviation, science fiction and the pleasure of making something work.
               </p>
               <ul class="profile-links">
-                <li><a class="chip" href="https://www.linkedin.com/in/dougcashio/" rel="me noopener">LinkedIn</a></li>
                 <li>
-                  <a class="chip" href="https://github.com/jamescashio" rel="me noopener">GitHub · @jamescashio</a>
+                  <a class="chip" itemprop="sameAs" href="https://www.linkedin.com/in/dougcashio/" rel="me noopener"
+                    >LinkedIn</a
+                  >
                 </li>
                 <li>
-                  <a class="chip" href="https://www.credly.com/users/james-cashio/badges/credly" rel="me noopener"
+                  <a class="chip" itemprop="sameAs" href="https://github.com/jamescashio" rel="me noopener"
+                    >GitHub · @jamescashio</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="chip"
+                    itemprop="sameAs"
+                    href="https://www.credly.com/users/james-cashio/badges/credly"
+                    rel="me noopener"
                     >Credly · @james-cashio</a
                   >
                 </li>

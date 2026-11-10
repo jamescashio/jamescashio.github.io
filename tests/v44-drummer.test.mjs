@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { routeExample } from "../src/odyssey/data.ts";
-import { route } from "../src/v44/route.ts";
+import { decodeRoute, encodeRoute, route, shareHref } from "../src/v44/route.ts";
 import { POSTERS, columnFor, posterFor, projectPoster } from "../src/v44/layout.ts";
 import { checkStatus, fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
@@ -22,6 +22,23 @@ test("the helm keeps the Odyssey routing rule for every input", () => {
         assert.deepEqual(rule(route(input)), rule(routeExample(input)), JSON.stringify(input));
       }
   assert.equal(route({ intent: "research", privateData: true, sources: true }).code, "HOLD", "privacy wins");
+});
+
+test("a shared route reads back as the input that wrote it, and ignores anything else", () => {
+  for (const intent of ["draft", "research", "analyze"])
+    for (const privateData of [false, true])
+      for (const sources of [false, true]) {
+        const input = { intent, privateData, sources };
+        assert.deepEqual(decodeRoute(encodeRoute(input)), input, JSON.stringify(input));
+      }
+  assert.equal(encodeRoute({ intent: "research", privateData: true, sources: false }), "research.private");
+  for (const junk of [null, "", "banana", "draft.banana", "private", "draft.private.private", "DRAFT", "draft."])
+    assert.equal(decodeRoute(junk), null, String(junk));
+  // The link is the page's own address with only the route added: an earlier query or hash does not ride along.
+  assert.equal(
+    shareHref({ intent: "analyze", privateData: false, sources: true }, "https://cashio.us/?gl=force#doug"),
+    "https://cashio.us/?route=analyze.sources#helm",
+  );
 });
 
 test("the gate stays on screen and clear of the headline at every size, where the poster puts it", async () => {

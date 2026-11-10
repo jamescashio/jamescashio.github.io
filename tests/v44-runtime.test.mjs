@@ -621,3 +621,54 @@ test("the live gate takes over from its poster only at the gate, never mid fligh
   await page.evaluate(() => scrollTo(0, 0));
   await expect.poll(() => page.evaluate(() => window.__wentLive), { timeout: 10000 }).toBe(true);
 });
+
+test("a shared route opens the helm on the same decision", async (t) => {
+  const page = await visit(t, { hash: "?route=research.private#helm" });
+  await expect(page.locator('input[value="research"]')).toBeChecked();
+  await expect(page.locator('input[name="privateData"]')).toBeChecked();
+  await expect(page.locator('input[name="sources"]')).not.toBeChecked();
+  await expect(page.locator("[data-helm-lane]")).toHaveText("Human review");
+  await expect(page.locator("[data-route-map]")).toHaveAttribute("data-route", "hold");
+  assert.equal(new URL(page.url()).pathname, "/", "a shared route stays on the front door");
+  // A link the helm did not write opens the helm as it ships.
+  await page.goto(new URL("/?route=banana#helm", url).href, { waitUntil: "networkidle" });
+  await expect(page.locator("[data-helm-lane]")).toHaveText("Workhorse");
+});
+
+test("sharing a route hands over a link to the decision on screen", async (t) => {
+  for (const [width, height, mobile] of [
+    [1440, 900, false],
+    [320, 568, true],
+  ]) {
+    const page = await visit(t, { width, height, mobile });
+    // Take the clipboard's place, and leave no share sheet, so the test reads exactly what the page would copy.
+    await page.evaluate(() => {
+      window.__copied = null;
+      Object.defineProperty(navigator, "share", { value: undefined, configurable: true });
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: async (text) => void (window.__copied = text) },
+        configurable: true,
+      });
+    });
+    await page.locator('input[value="analyze"]').check({ force: true });
+    await page.locator('input[name="sources"]').check({ force: true });
+    const share = page.locator("[data-helm-share]");
+    await share.scrollIntoViewIfNeeded();
+    const box = await share.boundingBox();
+    assert.ok(box.height >= 44, `${width}: the share control is ${box.height}px tall`);
+    assert.ok(box.x >= 0 && box.x + box.width <= width, `${width}: the share control fits the screen`);
+    await share.click();
+    await expect(page.locator(".toast")).toContainText("Link copied");
+    assert.equal(await page.evaluate(() => window.__copied), new URL("/?route=analyze.sources#helm", url).href);
+    // When copying is refused, the address bar carries the link instead.
+    await page.evaluate(() => {
+      navigator.clipboard.writeText = async () => {
+        throw new Error("refused");
+      };
+    });
+    await page.locator('input[name="privateData"]').check({ force: true });
+    await share.click();
+    await expect.poll(() => new URL(page.url()).search).toBe("?route=analyze.private.sources");
+    assert.equal(new URL(page.url()).hash, "#helm");
+  }
+});
