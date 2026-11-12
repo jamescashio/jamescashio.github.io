@@ -66,7 +66,7 @@
       media="(orientation: landscape) and (max-aspect-ratio: 1999/1000)"
       fetchpriority="high"
     />
-    <title>Doug Cashio · cAshIo · V44 Drummer</title>
+    <title>Doug Cashio · cAshIo · Local AI workshop · V44 Mentat</title>
     <script type="module" src="/src/v44/main.ts"></script>
   </head>
   <body>
@@ -178,6 +178,11 @@
               I’m Doug Cashio. This is my after hours workshop for local AI experiments, original films and worlds you
               can explore.
             </p>
+            <ul class="creds" aria-label="Doug at a glance">
+              <li>In IT since 1996</li>
+              <li>Over twenty years in cybersecurity</li>
+              <li>21 Claude Academy badges</li>
+            </ul>
             <div class="arrival-actions">
               <a class="cta" href="#cinema" data-transit-go>
                 <span class="cta-label">Begin the transit</span>
@@ -745,6 +750,7 @@
             <div class="readings hull">
               <p class="observed">
                 <span class="label">Observed</span> <time datetime="{{status.verified}}">{{status.verifiedDay}}</time>
+                <span class="age" data-age="{{status.verified}}" hidden></span>
                 <span class="label">Checked without changing anything</span>
               </p>
               <dl class="figures">
@@ -1099,8 +1105,9 @@
             panic. Capable tools. Human judgment in command.
           </p>
           <p class="fine">
-            V44 · Drummer, named for Camina Drummer of <cite>The Expanse</cite>, who keeps a cool head when it counts.
-            Directed by Doug Cashio. Updated {{release.updated}}.
+            V44 · Mentat, named for the human computers of <cite>Dune</cite>: after the Butlerian Jihad, people trained
+            to do the thinking themselves. Built on the Drummer front door. Directed by Doug Cashio. Updated
+            {{release.updated}}.
           </p>
           <p class="fine">A personal site. The builds and views here are my own and do not speak for my employer.</p>
         </div>

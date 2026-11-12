@@ -14,15 +14,15 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 
-test("Drummer identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
-  assert.equal(currentRelease.experienceVersion, "44.0.0");
-  assert.equal(currentRelease.releaseName, "DRUMMER");
-  assert.equal(currentRelease.visualEdition, "Drummer");
+test("Mentat identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
+  assert.equal(currentRelease.experienceVersion, "44.1.0");
+  assert.equal(currentRelease.releaseName, "MENTAT");
+  assert.equal(currentRelease.visualEdition, "Mentat");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseId, "drummer-44.0.0-20261105");
-  assert.equal(currentRelease.updatedDate, "2026-11-10");
+  assert.equal(currentRelease.releaseId, "mentat-44.1.0-20261112");
+  assert.equal(currentRelease.updatedDate, "2026-11-12");
   assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-06");
-  assert.equal(currentRelease.presentation.preparedDate, "2026-11-05");
+  assert.equal(currentRelease.presentation.preparedDate, "2026-11-12");
   // Doug approved publication; approval sets the release date and published flag together.
   assert.equal(currentRelease.published, currentRelease.status === "released");
   assert.equal(currentRelease.releaseDate === null, !currentRelease.published);

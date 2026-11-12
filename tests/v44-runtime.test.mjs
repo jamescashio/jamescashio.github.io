@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Drummer");
+  await expect(log).toContainText("Mentat");
 });
 
 test("each station lights the sky in its own color", async (t) => {
@@ -674,4 +674,77 @@ test("sharing a route hands over a link to the decision on screen", async (t) =>
     await expect.poll(() => new URL(page.url()).search).toBe("?route=analyze.private.sources");
     assert.equal(new URL(page.url()).hash, "#helm");
   }
+});
+
+test("the arrival says who is speaking where there is room, and the record says how old it is", async (t) => {
+  for (const [width, height, mobile, shown] of [
+    [1440, 900, false, true],
+    [1366, 768, false, true],
+    [834, 1194, true, true],
+    [1024, 600, false, false],
+    [390, 844, true, false],
+  ]) {
+    const page = await visit(t, { width, height, mobile });
+    const creds = page.locator(".arrival .creds");
+    if (shown) {
+      await expect(creds).toBeVisible();
+      await expect(creds.locator("li")).toHaveCount(3);
+      const m = await page.evaluate(() => ({
+        creds: document.querySelector(".creds").getBoundingClientRect().bottom,
+        cta: document.querySelector(".cta[data-transit-go]").getBoundingClientRect().top,
+      }));
+      assert.ok(m.creds <= m.cta, `${width}×${height}: the facts sit above the call to action`);
+    } else await expect(creds).toBeHidden();
+  }
+  const page = await visit(t);
+  const age = page.locator(".observed .age");
+  const day = await page.locator(".observed time").getAttribute("datetime");
+  const expected = await page.evaluate((iso) => {
+    const [y, m, d] = iso.split("-").map(Number);
+    const now = new Date();
+    const days = Math.round(
+      (Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(y, m - 1, d)) / 864e5,
+    );
+    return days === 0 ? "today" : days === 1 ? "yesterday" : `${days} days ago`;
+  }, day);
+  await expect(age).toHaveText(expected);
+});
+
+test("a forced color palette still shows what is chosen, what is on and where the visitor is", async (t) => {
+  // Reduced motion, so a painted state is read after it has landed and not part way through a fade.
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 800 },
+    forcedColors: "active",
+    reducedMotion: "reduce",
+  });
+  t.after(() => context.close());
+  const page = await context.newPage();
+  await page.goto(url, { waitUntil: "networkidle" });
+  const paint = (selector, pseudo) =>
+    page.evaluate(
+      ([s, p]) => getComputedStyle(document.querySelector(s), p || undefined).backgroundColor,
+      [selector, pseudo],
+    );
+  const track = '[data-helm] input[name="privateData"] + .switch-track';
+  const off = await paint(track);
+  await page.locator('[data-helm] input[name="privateData"]').check({ force: true });
+  assert.notEqual(await paint(track), off, "a switch that is on is painted differently from one that is off");
+  assert.notEqual(
+    await paint('[data-helm] input[name="intent"]:checked + span'),
+    await paint('[data-helm] input[name="intent"]:not(:checked) + span'),
+    "the chosen work stands out from the others",
+  );
+  const edge = (selector) =>
+    page.evaluate((s) => getComputedStyle(document.querySelector(s)).borderBottomColor, selector);
+  assert.notEqual(
+    await edge('.stations a[aria-current="true"]'),
+    await edge('.stations a:not([aria-current="true"])'),
+    "only the current station is underlined",
+  );
+  const cta = await page.evaluate(() => {
+    const style = getComputedStyle(document.querySelector(".cta[data-transit-go]"));
+    return { clip: style.clipPath, border: parseFloat(style.borderTopWidth) };
+  });
+  assert.equal(cta.clip, "none", "the call to action keeps a whole border");
+  assert.ok(cta.border >= 2, "the call to action is drawn as a button");
 });

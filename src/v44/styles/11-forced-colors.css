@@ -1,0 +1,53 @@
+/* Windows high contrast and other forced color modes. */
+/*
+ * A forced palette repaints every background and drops every shadow, so anything this page says with
+ * a fill alone would go silent: which work is chosen, whether a switch is on, where the visitor is,
+ * and that the call to action is a button at all. Here each of those gets a border or a system color.
+ */
+@media (forced-colors: active) {
+  /* Cut corners are stroked by a background the mode removes; the plain rectangle keeps a whole border. */
+  .chip,
+  .hull,
+  .cta {
+    clip-path: none;
+  }
+  .cta {
+    border: 2px solid LinkText;
+  }
+  .cta-arrow {
+    border: 1px solid LinkText;
+  }
+  /* A transparent border turns solid under a forced palette, which would underline every station. */
+  .stations a,
+  .station-sheet a {
+    border-bottom-color: Canvas;
+  }
+  .stations a[aria-current="true"],
+  .station-sheet a[aria-current="true"] {
+    border-bottom-color: Highlight;
+  }
+  .segmented input:checked + span {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+    box-shadow: none;
+  }
+  .switch-track {
+    forced-color-adjust: none;
+    background: Canvas;
+    border-color: ButtonText;
+  }
+  .switch-track::after {
+    background: ButtonText;
+  }
+  .switch input:checked + .switch-track {
+    background: Highlight;
+    border-color: Highlight;
+  }
+  .switch input:checked + .switch-track::after {
+    background: HighlightText;
+  }
+  .creds li {
+    border-color: CanvasText;
+  }
+}

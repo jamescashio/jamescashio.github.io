@@ -6,7 +6,8 @@ Prepared Thu Nov 5, 2026. Doug approved it for publication the same day.
 
 - The front door at `/` is rebuilt: new composition, a generative transit gate, station navigation and seven stations.
 - V43 Centauri stays reachable, unchanged in content, at `/v43/` (noindex, canonical to itself). Its receipt is preserved byte for byte at `/v43/site-release.json`.
-- The page title keeps the repository's release convention, `Doug Cashio · cAshIo · V44 Drummer`, which `scripts/check_release_consistency.py` enforces; share cards use `Doug Cashio · cAshIo · Local AI workshop`.
+- The page title says what the site is and then names the release, `Doug Cashio · cAshIo · Local AI workshop · V44 Mentat`, which `scripts/check_release_consistency.py` enforces; share cards use `Doug Cashio · cAshIo · Local AI workshop`. Until V44.1 the title carried the release name alone.
+- V44.1 Mentat (Thu Nov 12, 2026) is the scorecard round on this front door. The composition, stations and this contract are unchanged; Doug approved it the same day.
 - The helm keeps the Odyssey rule (the same input reaches the same lane and code) and words it in this edition's voice.
 - Rooms, films, evidence archives and older editions keep their URLs. V43 deep links on `/` open the matching place in `/v43/`; room bookmarks open the room; the reading editions point straight at the V44 stations or the preserved player, so they work without JavaScript.
 

@@ -25,6 +25,12 @@
   font: 650 24px/1.1 var(--display);
   color: var(--pearl);
 }
+/* How old the record is today, said beside its date. */
+.observed .age {
+  font: 400 14px/1.3 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--blue-text);
+}
 .figures {
   margin: 0;
   display: grid;
