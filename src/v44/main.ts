@@ -10,6 +10,7 @@ import { mountHelm } from "./route.ts";
 import { mountEve } from "./eve.ts";
 import { mountBit } from "./bit.ts";
 import { mountCinema } from "./cinema.ts";
+import { mountAge } from "./age.ts";
 import "./events.ts";
 import { $, $$ } from "./dom.ts";
 
@@ -193,6 +194,7 @@ const stations = mountStations({
 });
 mountPlates();
 mountCopyEmail();
+mountAge();
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
 // A decision at the helm reaches the sky: the far gate flares on the live scene, the painted gate on the poster.
 document.addEventListener("v44:route", (e) => {

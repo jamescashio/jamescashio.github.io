@@ -7,6 +7,7 @@ import test from "node:test";
 import { routeExample } from "../src/odyssey/data.ts";
 import { decodeRoute, encodeRoute, route, shareHref } from "../src/v44/route.ts";
 import { POSTERS, columnFor, posterFor, projectPoster } from "../src/v44/layout.ts";
+import { ageInWords } from "../src/v44/age.ts";
 import { checkStatus, fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -180,4 +181,17 @@ test("the front door source keeps a strict policy and makes no network calls of 
     "nebula.ts",
   ])
     assert.doesNotMatch(await read(`src/v44/${file}`), /\bfetch\(|XMLHttpRequest|WebSocket|sendBeacon/, file);
+});
+
+test("the record says how old it is in plain words, and says nothing it cannot know", () => {
+  const noon = (y, m, d) => new Date(y, m - 1, d, 12);
+  assert.equal(ageInWords("2026-11-06", noon(2026, 11, 6)), "today");
+  assert.equal(ageInWords("2026-11-06", noon(2026, 11, 7)), "yesterday");
+  assert.equal(ageInWords("2026-11-06", noon(2026, 11, 12)), "6 days ago");
+  // Late on the visitor's own evening is still the same calendar day.
+  assert.equal(ageInWords("2026-11-06", new Date(2026, 10, 6, 23, 59)), "today");
+  assert.equal(ageInWords("2026-10-31", noon(2026, 11, 2)), "2 days ago", "across a month and a clock change");
+  assert.equal(ageInWords("2026-11-06", noon(2026, 11, 5)), null, "a record dated ahead of the visitor's clock");
+  for (const bad of ["", "Fri Nov 6, 2026", "2026-13-01", "2026-02-30", "2026-11-6"])
+    assert.equal(ageInWords(bad, noon(2026, 11, 12)), null, bad);
 });
