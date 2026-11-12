@@ -160,27 +160,89 @@ html[data-motion="on"] .world:focus-within img {
 .system-map .map-tag {
   margin: 2px 4px 0;
 }
+/* A drafting grid lies under each map and fades toward its edges; Hermes stands in its own light. */
+.grid-line {
+  fill: none;
+  stroke: rgba(154, 190, 255, 0.17);
+  stroke-width: 1;
+}
 .wire {
   fill: none;
   stroke: url(#wire);
   stroke-width: 2;
 }
+/* Small bright marks run along each wire the way the work does: out from the person, back for review. */
+.wire-flow {
+  fill: none;
+  stroke: var(--pearl);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 2 16;
+  opacity: 0.7;
+}
 .wire-back {
   stroke: rgba(255, 138, 157, 0.55);
   stroke-dasharray: 4 6;
 }
-.node circle,
-.node rect {
-  fill: rgba(13, 16, 23, 0.95);
+/* Every node is a hull plate with one cut corner pair, like the cards around it. */
+.plate {
+  fill: url(#plate);
   stroke: rgba(154, 190, 255, 0.7);
   stroke-width: 1.5;
 }
-.node-human circle {
+.map-tall .plate {
+  fill: url(#plate-tall);
+}
+.plate-inner {
+  fill: none;
+  stroke: rgba(154, 190, 255, 0.2);
+  stroke-width: 1;
+}
+.node-human .plate,
+.rm-you .plate {
+  fill: rgba(13, 16, 23, 0.95);
   stroke: var(--red-text);
 }
-.node-hermes rect {
+.node-hermes .plate {
   stroke: var(--blue);
   stroke-width: 2;
+}
+/* A dashed ring turns slowly round the person and round the scheduler; the scheduler's carries one mark, like a clock hand. */
+.orbit {
+  fill: none;
+  stroke: rgba(154, 190, 255, 0.42);
+  stroke-width: 1;
+  stroke-dasharray: 2 8;
+}
+.node-human .orbit,
+.rm-you .orbit {
+  stroke: rgba(255, 138, 157, 0.55);
+}
+.sweep circle {
+  fill: var(--pearl);
+}
+/* Each host shows it is alive: a small meter and two lamps. They are drawn, not measured. */
+.bar {
+  fill: var(--blue-text);
+  opacity: 0.85;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+.led {
+  fill: var(--blue-text);
+}
+.led-2 {
+  fill: var(--pearl);
+  opacity: 0.55;
+}
+.glyph {
+  fill: var(--blue-text);
+}
+.glyph-sun path {
+  fill: none;
+  stroke: var(--blue-text);
+  stroke-width: 1.4;
+  stroke-linecap: round;
 }
 .node text {
   fill: var(--pearl);
@@ -202,6 +264,18 @@ html[data-motion="on"] .world:focus-within img {
   offset-rotate: 0deg;
   opacity: 0;
 }
+/* Two fainter marks follow each packet, so it reads as moving light and not a dot. */
+.packet.tail-1,
+.packet.tail-2 {
+  filter: none;
+  fill: var(--blue-text);
+}
+.packet.tail-1 {
+  fill-opacity: 0.6;
+}
+.packet.tail-2 {
+  fill-opacity: 0.32;
+}
 .packet-a {
   offset-path: path("M70 150 C150 150 160 150 230 150 L290 150 C350 150 360 80 420 80");
 }
@@ -214,12 +288,42 @@ html[data-motion="on"] .world:focus-within img {
 .packet-d {
   offset-path: path("M150 68 L150 188 C150 230 225 230 225 265");
 }
+/* The answer comes home: one warmer mark rides the return line back to the person. */
+.packet-back,
+.packet-back-tall {
+  fill: var(--red-text);
+  filter: drop-shadow(0 0 6px var(--red));
+}
+.packet-back {
+  offset-path: path("M450 246 C450 296 96 296 46 180");
+}
+.packet-back-tall {
+  offset-path: path("M262 280 C300 200 296 80 180 44");
+}
 html[data-motion="on"] .system-map.in[data-visible] .packet {
   animation: packet 5.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .packet.tail-1 {
+  animation-delay: 0.08s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .packet.tail-2 {
+  animation-delay: 0.16s;
 }
 html[data-motion="on"] .system-map.in[data-visible] .packet-b,
 html[data-motion="on"] .system-map.in[data-visible] .packet-d {
   animation-delay: 2.6s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .packet-b.tail-1,
+html[data-motion="on"] .system-map.in[data-visible] .packet-d.tail-1 {
+  animation-delay: 2.68s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .packet-b.tail-2,
+html[data-motion="on"] .system-map.in[data-visible] .packet-d.tail-2 {
+  animation-delay: 2.76s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .packet-back,
+html[data-motion="on"] .system-map.in[data-visible] .packet-back-tall {
+  animation-delay: 3.9s;
 }
 @keyframes packet {
   0% {
@@ -235,6 +339,65 @@ html[data-motion="on"] .system-map.in[data-visible] .packet-d {
   100% {
     offset-distance: 100%;
     opacity: 0;
+  }
+}
+/* The maps move only on screen and only with motion on; paused, they are a finished drawing. */
+html[data-motion="on"] :is(.system-map.in, .helm-map)[data-visible] .wire-flow {
+  animation: wire-flow 1.5s linear infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .wire-back {
+  animation: wire-back 1.2s linear infinite;
+}
+html[data-motion="on"] :is(.system-map.in, .helm-map)[data-visible] .orbit {
+  animation: map-turn 46s linear infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .sweep {
+  animation: map-turn 12s linear infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .bar {
+  animation: map-meter 1.7s ease-in-out infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .bar-2 {
+  animation-duration: 1.2s;
+  animation-delay: -0.4s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .bar-3 {
+  animation-duration: 2.1s;
+  animation-delay: -0.9s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .bar-4 {
+  animation-duration: 1.4s;
+  animation-delay: -0.2s;
+}
+html[data-motion="on"] .system-map.in[data-visible] .led {
+  animation: map-lamp 2.4s ease-in-out infinite;
+}
+html[data-motion="on"] .system-map.in[data-visible] .led-2 {
+  animation-duration: 0.9s;
+}
+@keyframes wire-flow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+@keyframes wire-back {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+@keyframes map-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes map-meter {
+  50% {
+    transform: scaleY(0.4);
+  }
+}
+@keyframes map-lamp {
+  50% {
+    opacity: 0.25;
   }
 }
 /* The brief keeps its own height beside the taller map, so no empty band opens above its link. */

@@ -135,8 +135,8 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
       if (animate) {
         // A fresh packet starts its ride from the beginning; the old one would keep its finished state.
         map.classList.add("ride");
-        const packet = map.querySelector(".route-packet");
-        packet?.replaceWith(packet.cloneNode(true));
+        const packets = map.querySelector(".route-packets");
+        packets?.replaceWith(packets.cloneNode(true));
       }
     }
     steps.replaceChildren(

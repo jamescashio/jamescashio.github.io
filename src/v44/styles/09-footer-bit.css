@@ -70,11 +70,84 @@
 .bit:hover {
   border-color: var(--blue-text);
 }
+/* While Bit is awake a thin band of its own light, blue running to red, traces the badge. */
+.bit::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 210deg,
+    rgba(53, 120, 255, 0),
+    rgba(154, 190, 255, 0.95) 28%,
+    rgba(255, 61, 85, 0.75) 46%,
+    rgba(53, 120, 255, 0) 70%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+.bit[data-spinning]::before {
+  opacity: 1;
+}
+/* A small light says Bit has a remark about what the visitor just did. */
+.bit::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid #090b11;
+  box-shadow: 0 0 10px var(--red);
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+}
+.bit[data-remark]::after {
+  opacity: 1;
+  transform: none;
+}
+html[data-motion="on"] .bit[data-remark]::after {
+  animation: bit-remark 900ms ease 3;
+}
+@keyframes bit-remark {
+  50% {
+    transform: scale(1.45);
+  }
+}
+html[data-motion="on"] .bit:hover .bit-face,
+html[data-motion="on"] .bit:focus-visible .bit-face {
+  transform: scale(1.1);
+}
 .bit {
   transition:
     opacity 300ms ease,
     transform 300ms ease,
     visibility 300ms;
+}
+/* With motion on, Bit drops into its corner a moment after the page arrives. */
+html.js[data-motion="on"] .bit {
+  animation: bit-arrive 700ms cubic-bezier(0.2, 0.9, 0.3, 1.25) 900ms backwards;
+}
+@keyframes bit-arrive {
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
 }
 /* Without script Bit has nothing to say, so it does not stand over the page. */
 html:not(.js) .bit {
@@ -100,6 +173,14 @@ html:not(.js) .bit {
 .bit-face {
   width: 44px;
   height: 44px;
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+/* In the card Bit is drawn large enough to watch: the same model, turning while it talks. */
+.bit-portrait {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  margin: -8px 0 -8px -8px;
 }
 .bit-dialog {
   position: fixed;
@@ -120,10 +201,12 @@ html:not(.js) .bit {
 }
 .bit-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 12px;
   margin-bottom: 10px;
+}
+.bit-head p {
+  margin-right: auto;
 }
 .bit-head strong {
   font: 700 18px var(--display);

@@ -748,3 +748,68 @@ test("a forced color palette still shows what is chosen, what is on and where th
   assert.equal(cta.clip, "none", "the call to action keeps a whole border");
   assert.ok(cta.border >= 2, "the call to action is drawn as a button");
 });
+
+test("Bit keeps a light on for a remark, shows itself in its card, and rests when motion pauses", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  const bit = page.locator("[data-bit-open]");
+  await expect(bit).not.toHaveAttribute("data-remark", "");
+  await page.locator('input[name="privateData"]').check({ force: true });
+  await expect(bit).toHaveAttribute("data-remark", "");
+  await bit.click();
+  await expect(bit).not.toHaveAttribute("data-remark", "");
+  await expect(page.locator("[data-bit-line]")).toContainText("held it for a person");
+  // The portrait in the card is the same model, drawn large: it has to have been painted.
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const canvas = document.querySelector("[data-bit-portrait]");
+        const { data } = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
+        let lit = 0;
+        for (let i = 3; i < data.length; i += 4) if (data[i] > 40) lit++;
+        return lit / (data.length / 4);
+      }),
+    )
+    .toBeGreaterThan(0.12);
+  await expect(bit).toHaveAttribute("data-spinning", "");
+  await page.keyboard.press("Escape");
+  await page.locator("[data-motion-toggle]").click();
+  await expect(bit).not.toHaveAttribute("data-spinning", "");
+});
+
+test("the maps are whole drawings that move only on screen, and the figures land on the printed values", async (t) => {
+  const still = await visit(t);
+  const printed = await still.locator(".figures dd strong").allTextContents();
+  for (const [selector, names] of [
+    [".map-wide", ["You", "Hermes", "scheduler", "Zeus", "Apollo"]],
+    [".route-map", ["You", "Hermes", "Workhorse", "Synthesis", "Research"]],
+  ]) {
+    const words = await still.locator(`${selector} text`).allTextContents();
+    for (const name of names) assert.ok(words.includes(name), `${selector} names ${name}`);
+  }
+  const page = await visit(t, { motion: "no-preference" });
+  const moving = (selector) =>
+    page.evaluate(
+      (s) =>
+        document
+          .getAnimations()
+          .filter(
+            (a) =>
+              a.playState === "running" &&
+              a.effect?.target?.closest?.(s) &&
+              !Number.isFinite(a.effect.getTiming().iterations),
+          ).length,
+      selector,
+    );
+  assert.equal(await moving(".system-map"), 0, "the workshop map is still while it is off screen");
+  await page.locator(".system-map").scrollIntoViewIfNeeded();
+  await expect(page.locator(".system-map")).toHaveAttribute("data-visible", "");
+  await expect.poll(() => moving(".system-map")).toBeGreaterThan(0);
+  await page.locator(".helm-map").scrollIntoViewIfNeeded();
+  await expect(page.locator(".helm-map")).toHaveAttribute("data-visible", "");
+  await expect.poll(() => moving(".helm-map")).toBeGreaterThan(0);
+  await page.locator(".figures").scrollIntoViewIfNeeded();
+  await expect.poll(() => page.locator(".figures dd strong").allTextContents(), { timeout: 4000 }).toEqual(printed);
+  await page.locator("[data-motion-toggle]").click();
+  await page.waitForTimeout(200);
+  assert.equal(await moving("main"), 0, "nothing in the maps keeps moving once motion pauses");
+});

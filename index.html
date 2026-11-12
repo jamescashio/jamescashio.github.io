@@ -525,29 +525,84 @@
                     <stop offset="0" stop-color="#3578ff" stop-opacity="0.2" />
                     <stop offset="1" stop-color="#9abeff" stop-opacity="0.9" />
                   </linearGradient>
+                  <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path class="grid-line" d="M20 0H0V20" />
+                  </pattern>
+                  <radialGradient id="map-fade" cx="0.5" cy="0.47" r="0.6">
+                    <stop offset="0.2" stop-color="#fff" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                  </radialGradient>
+                  <mask id="map-vignette">
+                    <rect width="520" height="320" fill="url(#map-fade)" />
+                  </mask>
+                  <radialGradient id="hermes-halo">
+                    <stop offset="0" stop-color="#3578ff" stop-opacity="0.36" />
+                    <stop offset="1" stop-color="#3578ff" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1a2340" />
+                    <stop offset="1" stop-color="#0a0d15" />
+                  </linearGradient>
                 </defs>
+                <rect class="map-grid" width="520" height="320" fill="url(#map-grid)" mask="url(#map-vignette)" />
+                <circle class="map-halo" cx="260" cy="150" r="100" fill="url(#hermes-halo)" />
                 <path class="wire" d="M70 150 C150 150 160 150 230 150" />
                 <path class="wire" d="M290 150 C350 150 360 80 420 80" />
                 <path class="wire" d="M290 150 C350 150 360 220 420 220" />
+                <path class="wire-flow" d="M70 150 C150 150 160 150 230 150" />
+                <path class="wire-flow" d="M290 150 C350 150 360 80 420 80" />
+                <path class="wire-flow" d="M290 150 C350 150 360 220 420 220" />
                 <path class="wire wire-back" d="M450 246 C450 296 96 296 46 180" />
+                <circle class="packet packet-a tail-2" r="2" />
+                <circle class="packet packet-a tail-1" r="3" />
                 <circle class="packet packet-a" r="4" />
+                <circle class="packet packet-b tail-2" r="2" />
+                <circle class="packet packet-b tail-1" r="3" />
                 <circle class="packet packet-b" r="4" />
+                <circle class="packet packet-back" r="3.5" />
                 <g class="node node-human" transform="translate(40 150)">
-                  <circle r="30" />
+                  <circle class="orbit" r="36" />
+                  <circle class="plate" r="29" />
                   <text y="5">You</text>
                 </g>
                 <g class="node node-hermes" transform="translate(260 150)">
-                  <rect x="-46" y="-30" width="92" height="60" rx="10" />
+                  <circle class="orbit" r="64" />
+                  <g class="sweep"><circle cx="64" r="3" /></g>
+                  <polygon class="plate" points="-46,-30 36,-30 46,-20 46,30 -36,30 -46,20" />
+                  <polygon class="plate-inner" points="-42,-26 34,-26 42,-18 42,26 -34,26 -42,18" />
                   <text y="-2">Hermes</text>
                   <text class="node-sub" y="16">scheduler</text>
                 </g>
-                <g class="node" transform="translate(450 80)">
-                  <rect x="-34" y="-26" width="68" height="52" rx="8" />
-                  <text y="5">Zeus</text>
+                <g class="node node-host" transform="translate(450 80)">
+                  <polygon class="plate" points="-44,-28 34,-28 44,-18 44,28 -34,28 -44,18" />
+                  <path class="glyph" d="M-27 -15l-8 12h6l-3 10 10-13h-6z" />
+                  <text x="8" y="-3">Zeus</text>
+                  <rect class="bar bar-1" x="-33" y="12" width="4" height="9" />
+                  <rect class="bar bar-2" x="-26" y="16" width="4" height="5" />
+                  <rect class="bar bar-3" x="-19" y="10" width="4" height="11" />
+                  <rect class="bar bar-4" x="-12" y="14" width="4" height="7" />
+                  <rect class="bar bar-1" x="-5" y="11" width="4" height="10" />
+                  <rect class="bar bar-2" x="2" y="15" width="4" height="6" />
+                  <circle class="led" cx="24" cy="15" r="2.3" />
+                  <circle class="led led-2" cx="32" cy="15" r="2.3" />
                 </g>
-                <g class="node" transform="translate(450 220)">
-                  <rect x="-34" y="-26" width="68" height="52" rx="8" />
-                  <text y="5">Apollo</text>
+                <g class="node node-host" transform="translate(450 220)">
+                  <polygon class="plate" points="-44,-28 34,-28 44,-18 44,28 -34,28 -44,18" />
+                  <g class="glyph glyph-sun">
+                    <circle cx="-29" cy="-7" r="3.6" />
+                    <path
+                      d="M-29 -15v2.6M-29 -1.6v2.6M-37 -7h2.6M-23.6 -7h2.6M-34.7 -12.7l1.8 1.8M-25.1 -3.1l1.8 1.8M-34.7 -1.3l1.8 -1.8M-25.1 -10.9l1.8 -1.8"
+                    />
+                  </g>
+                  <text x="8" y="-3">Apollo</text>
+                  <rect class="bar bar-1" x="-33" y="15" width="4" height="6" />
+                  <rect class="bar bar-2" x="-26" y="11" width="4" height="10" />
+                  <rect class="bar bar-3" x="-19" y="14" width="4" height="7" />
+                  <rect class="bar bar-4" x="-12" y="10" width="4" height="11" />
+                  <rect class="bar bar-1" x="-5" y="16" width="4" height="5" />
+                  <rect class="bar bar-2" x="2" y="12" width="4" height="9" />
+                  <circle class="led" cx="24" cy="15" r="2.3" />
+                  <circle class="led led-2" cx="32" cy="15" r="2.3" />
                 </g>
                 <text class="map-note" x="260" y="312">Results come back to a person for review</text>
               </svg>
@@ -557,29 +612,83 @@
                     <stop offset="0" stop-color="#3578ff" stop-opacity="0.2" />
                     <stop offset="1" stop-color="#9abeff" stop-opacity="0.9" />
                   </linearGradient>
+                  <pattern id="map-grid-tall" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path class="grid-line" d="M20 0H0V20" />
+                  </pattern>
+                  <radialGradient id="map-fade-tall" cx="0.5" cy="0.47" r="0.6">
+                    <stop offset="0.2" stop-color="#fff" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                  </radialGradient>
+                  <mask id="map-vignette-tall">
+                    <rect width="300" height="400" fill="url(#map-fade-tall)" />
+                  </mask>
+                  <radialGradient id="hermes-halo-tall">
+                    <stop offset="0" stop-color="#3578ff" stop-opacity="0.36" />
+                    <stop offset="1" stop-color="#3578ff" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="plate-tall" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1a2340" />
+                    <stop offset="1" stop-color="#0a0d15" />
+                  </linearGradient>
                 </defs>
+                <rect
+                  class="map-grid"
+                  width="300"
+                  height="400"
+                  fill="url(#map-grid-tall)"
+                  mask="url(#map-vignette-tall)"
+                />
+                <circle class="map-halo" cx="150" cy="160" r="100" fill="url(#hermes-halo-tall)" />
                 <path class="wire" d="M150 68 L150 132" />
                 <path class="wire" d="M150 188 C150 230 75 230 75 265" />
                 <path class="wire" d="M150 188 C150 230 225 230 225 265" />
+                <path class="wire-flow" d="M150 68 L150 132" />
+                <path class="wire-flow" d="M150 188 C150 230 75 230 75 265" />
+                <path class="wire-flow" d="M150 188 C150 230 225 230 225 265" />
                 <path class="wire wire-back" d="M262 280 C300 200 296 80 180 44" />
+                <circle class="packet packet-c tail-2" r="2.5" />
+                <circle class="packet packet-c tail-1" r="3.5" />
                 <circle class="packet packet-c" r="5" />
+                <circle class="packet packet-d tail-2" r="2.5" />
+                <circle class="packet packet-d tail-1" r="3.5" />
                 <circle class="packet packet-d" r="5" />
+                <circle class="packet packet-back-tall" r="4" />
                 <g class="node node-human" transform="translate(150 40)">
-                  <circle r="28" />
+                  <circle class="orbit" r="34" />
+                  <circle class="plate" r="28" />
                   <text y="5">You</text>
                 </g>
                 <g class="node node-hermes" transform="translate(150 160)">
-                  <rect x="-62" y="-28" width="124" height="56" rx="10" />
+                  <circle class="orbit" r="76" />
+                  <g class="sweep"><circle cx="76" r="3.5" /></g>
+                  <polygon class="plate" points="-62,-28 52,-28 62,-18 62,28 -52,28 -62,18" />
+                  <polygon class="plate-inner" points="-58,-24 50,-24 58,-16 58,24 -50,24 -58,16" />
                   <text y="-1">Hermes</text>
                   <text class="node-sub" y="18">scheduler</text>
                 </g>
-                <g class="node" transform="translate(75 290)">
-                  <rect x="-50" y="-25" width="100" height="50" rx="8" />
-                  <text y="5">Zeus</text>
+                <g class="node node-host" transform="translate(75 290)">
+                  <polygon class="plate" points="-50,-27 40,-27 50,-17 50,27 -40,27 -50,17" />
+                  <text y="-2">Zeus</text>
+                  <rect class="bar bar-1" x="-34" y="13" width="4" height="8" />
+                  <rect class="bar bar-2" x="-27" y="16" width="4" height="5" />
+                  <rect class="bar bar-3" x="-20" y="12" width="4" height="9" />
+                  <rect class="bar bar-4" x="-13" y="15" width="4" height="6" />
+                  <rect class="bar bar-1" x="-6" y="12" width="4" height="9" />
+                  <rect class="bar bar-2" x="1" y="16" width="4" height="5" />
+                  <circle class="led" cx="26" cy="16" r="2.5" />
+                  <circle class="led led-2" cx="35" cy="16" r="2.5" />
                 </g>
-                <g class="node" transform="translate(225 290)">
-                  <rect x="-50" y="-25" width="100" height="50" rx="8" />
-                  <text y="5">Apollo</text>
+                <g class="node node-host" transform="translate(225 290)">
+                  <polygon class="plate" points="-50,-27 40,-27 50,-17 50,27 -40,27 -50,17" />
+                  <text y="-2">Apollo</text>
+                  <rect class="bar bar-1" x="-34" y="16" width="4" height="5" />
+                  <rect class="bar bar-2" x="-27" y="12" width="4" height="9" />
+                  <rect class="bar bar-3" x="-20" y="15" width="4" height="6" />
+                  <rect class="bar bar-4" x="-13" y="12" width="4" height="9" />
+                  <rect class="bar bar-1" x="-6" y="16" width="4" height="5" />
+                  <rect class="bar bar-2" x="1" y="13" width="4" height="8" />
+                  <circle class="led" cx="26" cy="16" r="2.5" />
+                  <circle class="led led-2" cx="35" cy="16" r="2.5" />
                 </g>
                 <text class="map-note" x="150" y="372">Results come back to a person</text>
               </svg>
@@ -695,34 +804,71 @@
                     <stop offset="0" stop-color="#3578ff" stop-opacity="0.35" />
                     <stop offset="1" stop-color="#9abeff" />
                   </linearGradient>
+                  <pattern id="route-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+                    <path class="grid-line" d="M16 0H0V16" />
+                  </pattern>
+                  <radialGradient id="route-fade" cx="0.42" cy="0.5" r="0.62">
+                    <stop offset="0.2" stop-color="#fff" />
+                    <stop offset="1" stop-color="#fff" stop-opacity="0" />
+                  </radialGradient>
+                  <mask id="route-vignette">
+                    <rect width="320" height="200" fill="url(#route-fade)" />
+                  </mask>
+                  <radialGradient id="route-halo">
+                    <stop offset="0" stop-color="#3578ff" stop-opacity="0.34" />
+                    <stop offset="1" stop-color="#3578ff" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="route-plate" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#1a2340" />
+                    <stop offset="1" stop-color="#0a0d15" />
+                  </linearGradient>
+                  <linearGradient id="route-plate-on" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#24418a" />
+                    <stop offset="1" stop-color="#101a36" />
+                  </linearGradient>
                 </defs>
+                <rect class="map-grid" width="320" height="200" fill="url(#route-grid)" mask="url(#route-vignette)" />
+                <circle class="map-halo rm-halo" cx="110" cy="100" r="74" fill="url(#route-halo)" />
                 <path class="rm-wire rm-in" d="M46 100 H72" />
                 <path class="rm-wire rm-lane rm-workhorse" d="M148 100 C182 100 186 38 214 38" />
                 <path class="rm-wire rm-lane rm-synthesis" d="M148 100 H214" />
                 <path class="rm-wire rm-lane rm-research" d="M148 100 C182 100 186 162 214 162" />
+                <path class="rm-flow rm-workhorse" d="M148 100 C182 100 186 38 214 38" />
+                <path class="rm-flow rm-synthesis" d="M148 100 H214" />
+                <path class="rm-flow rm-research" d="M148 100 C182 100 186 162 214 162" />
                 <g class="rm-node rm-you" transform="translate(26 100)">
-                  <circle r="20" />
+                  <circle class="orbit" r="24" />
+                  <circle class="plate" r="19.5" />
                   <text y="5">You</text>
                 </g>
                 <g class="rm-node rm-hermes" transform="translate(110 100)">
-                  <rect x="-38" y="-24" width="76" height="48" rx="8" />
+                  <polygon class="plate" points="-38,-24 30,-24 38,-16 38,24 -30,24 -38,16" />
+                  <polygon class="plate-inner" points="-34,-20 28,-20 34,-14 34,20 -28,20 -34,14" />
                   <text y="5">Hermes</text>
                 </g>
+                <circle class="rm-gate-ring" cx="156.5" cy="100" r="9" />
                 <rect class="rm-gate" x="154" y="60" width="5" height="80" rx="2" />
                 <text class="rm-held" x="110" y="150">Held for a person</text>
                 <g class="rm-node rm-lane rm-workhorse" transform="translate(264 38)">
-                  <rect x="-50" y="-18" width="100" height="36" rx="6" />
+                  <polygon class="plate" points="-50,-18 43,-18 50,-11 50,18 -43,18 -50,11" />
+                  <rect class="rm-pip" x="-50" y="-18" width="3.5" height="29" />
                   <text y="5">Workhorse</text>
                 </g>
                 <g class="rm-node rm-lane rm-synthesis" transform="translate(264 100)">
-                  <rect x="-50" y="-18" width="100" height="36" rx="6" />
+                  <polygon class="plate" points="-50,-18 43,-18 50,-11 50,18 -43,18 -50,11" />
+                  <rect class="rm-pip" x="-50" y="-18" width="3.5" height="29" />
                   <text y="5">Synthesis</text>
                 </g>
                 <g class="rm-node rm-lane rm-research" transform="translate(264 162)">
-                  <rect x="-50" y="-18" width="100" height="36" rx="6" />
+                  <polygon class="plate" points="-50,-18 43,-18 50,-11 50,18 -43,18 -50,11" />
+                  <rect class="rm-pip" x="-50" y="-18" width="3.5" height="29" />
                   <text y="5">Research</text>
                 </g>
-                <circle class="route-packet" r="5" />
+                <g class="route-packets">
+                  <circle class="route-packet tail-2" r="2.5" />
+                  <circle class="route-packet tail-1" r="3.5" />
+                  <circle class="route-packet" r="5" />
+                </g>
               </svg>
             </div>
           </div>
@@ -1078,11 +1224,12 @@
       aria-haspopup="dialog"
       aria-label="Talk to Bit, your copilot"
     >
-      <canvas class="bit-face" width="96" height="96" aria-hidden="true"></canvas>
+      <canvas class="bit-face" width="176" height="176" aria-hidden="true"></canvas>
       <span class="bit-name">Bit</span>
     </button>
     <dialog class="bit-dialog" data-bit-dialog aria-labelledby="bit-title">
       <div class="bit-head">
+        <canvas class="bit-portrait" width="216" height="216" data-bit-portrait aria-hidden="true"></canvas>
         <p id="bit-title"><strong>Bit</strong> <span>your copilot</span></p>
         <button type="button" class="chip" data-bit-close>Close</button>
       </div>
