@@ -148,6 +148,9 @@ export function ImmersiveHero({ v }: { v: HeroView }) {
       <div className="continuum-arrival">
         <span>cAshIo / {versionLabel}</span>
         <span>{presentation.name}</span>
+        <a className="continuum-arrival-current" href="/">
+          Archive edition · Current site&nbsp;→
+        </a>
         <span className="continuum-arrival-end">
           <i aria-hidden="true" /> Built after hours
         </span>

@@ -2,7 +2,7 @@ import { setupScenes } from "../helios/scenes.js";
 import type { RoomModule } from "../helios/room-contract";
 import "../helios/room-content.css";
 import { parseMissionHash } from "../odyssey/flight-plan";
-import { versionLabel } from "./evidence.ts";
+import { setupRoomScenes } from "./room-scenes.ts";
 
 const loaders = {
   starship: () => import("../helios/room-starship.js"),
@@ -63,6 +63,7 @@ addEventListener("pageshow", (e) => {
   syncMotion();
 });
 syncMotion();
+setupRoomScenes(motion);
 
 async function mount() {
   try {
@@ -111,9 +112,8 @@ async function mount() {
       attributes: true,
       attributeFilter: ["href"],
     });
-    status.textContent = `${versionLabel} interactive room. Change the controls to explore. Your inputs stay in this browser.`;
+    status.textContent = "Interactive room. Change the controls to explore. Your inputs stay in this browser.";
     room.dataset.roomState = "ready";
-    document.title = document.title.replace(" · cAshIo", ` · cAshIo ${versionLabel}`);
   } catch {
     status.textContent =
       "The interactive controls could not load. The artwork and reading edition remain available below.";

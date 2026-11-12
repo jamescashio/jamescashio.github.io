@@ -40,6 +40,25 @@ export function setupV40Navigation() {
     returnHash = "#top",
     generation = 0;
   const inerted: HTMLElement[] = [];
+  // A visitor sent here by a room or the front door for one film, forge or flight is a guest of this
+  // edition: closing that scene returns them where they came from, never to this edition's home page.
+  let guestOf: string | null = null;
+  try {
+    const from = new URL(document.referrer);
+    if (from.origin === location.origin && !from.pathname.startsWith("/v43/") && sceneKind(location.hash))
+      guestOf = from.pathname + from.search;
+  } catch {
+    /* No referrer: a bookmark or a typed address, which belongs to this edition. */
+  }
+  function leave(to: string) {
+    // Going back restores the room exactly as it was left; otherwise open it afresh in this entry's place.
+    const nav = (window as { navigation?: { currentEntry?: { index: number }; entries(): { url: string | null }[] } })
+      .navigation;
+    const index = nav?.currentEntry?.index ?? -1;
+    const before = index > 0 ? nav!.entries()[index - 1]?.url : null;
+    if (before && new URL(before).pathname + new URL(before).search === to) history.back();
+    else location.replace(to);
+  }
   const motion = () =>
     document.documentElement.dataset.motion !== "off" && !matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -73,6 +92,12 @@ export function setupV40Navigation() {
     });
   }
   function close(destination?: string) {
+    if (guestOf && !destination) {
+      // The scene stays up until the page changes, so this edition's home never flashes past.
+      leave(guestOf);
+      return;
+    }
+    guestOf = null;
     dispose();
     const next = destination
       ? destination.startsWith("build=")
@@ -147,7 +172,7 @@ export function setupV40Navigation() {
     const message = document.createElement("p");
     message.textContent = "Opening your experience…";
     const cancel = document.createElement("button");
-    cancel.textContent = "Return to the homepage";
+    cancel.textContent = guestOf ? "Go back" : "Return to the homepage";
     cancel.addEventListener("click", () => close());
     status.append(message, cancel);
     document.body.append(status);
@@ -210,6 +235,8 @@ export function setupV40Navigation() {
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!activeHash) {
+        // A scene opened from this edition's own pages closes back onto them.
+        guestOf = null;
         const fromDiscovery = !!link.closest(".discovery-console");
         returnHash =
           location.hash ||

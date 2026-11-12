@@ -456,15 +456,16 @@ test("The consolidated routing-law bookmark and glossary remain readable without
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
 });
 
-test("Current room and flight titles consistently identify the release", async (t) => {
+test("The flight title names this edition and a room title names none", async (t) => {
   const page = await visit(t);
   await page.locator('#hero-content a[href="#flight=board"]').click();
   await expect(page).toHaveTitle(`First flight · cAshIo ${currentVersionLabel}`);
   await expect(page.locator("#helios-flight dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page).toHaveTitle(currentTitle);
+  // A room belongs to the current site, so it names no edition.
   await page.goto(new URL("/rooms/starship/interactive/", url).href);
-  await expect(page).toHaveTitle(`Starship lab · cAshIo ${currentVersionLabel}`);
+  await expect(page).toHaveTitle("Starship lab · cAshIo");
 });
 
 test("Shared scenarios reject inherited keys while restoring valid bounded values", async (t) => {

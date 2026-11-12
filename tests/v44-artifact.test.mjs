@@ -15,7 +15,7 @@ const exists = (p) =>
 
 const page = async () => new JSDOM(await read("dist/index.html")).window.document;
 
-test("V44 Bitmaxing is the built Drummer front door with seven stations in order", async () => {
+test("V44 Heighliner is the built Drummer front door with seven stations in order", async () => {
   const document = await page();
   const receipt = JSON.parse(await read("public/v40/site-release.json"));
   assert.equal(document.title, `Doug Cashio · cAshIo · Local AI workshop · V44 ${receipt.presentation.name}`);

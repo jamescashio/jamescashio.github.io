@@ -5,8 +5,9 @@ Prepared Thu Nov 5, 2026. Doug approved it for publication the same day.
 ## Scope
 
 - The front door at `/` is rebuilt: new composition, a generative transit gate, station navigation and seven stations.
-- V43 Centauri stays reachable, unchanged in content, at `/v43/` (noindex, canonical to itself). Its receipt is preserved byte for byte at `/v43/site-release.json`.
-- The page title says what the site is and then names the release, `Doug Cashio · cAshIo · Local AI workshop · V44 Bitmaxing`, which `scripts/check_release_consistency.py` enforces; share cards use `Doug Cashio · cAshIo · Local AI workshop`. Until V44.1 the title carried the release name alone.
+- V43 Centauri stays reachable, unchanged in content, at `/v43/` (noindex, canonical to itself). Since V44.3 it says that it is an archive and links to the current site from its first line and the foot of its rail. Its receipt is preserved byte for byte at `/v43/site-release.json`.
+- The page title says what the site is and then names the release, `Doug Cashio · cAshIo · Local AI workshop · V44 Heighliner`, which `scripts/check_release_consistency.py` enforces; share cards use `Doug Cashio · cAshIo · Local AI workshop`. Until V44.1 the title carried the release name alone.
+- V44.3 Heighliner (Thu Nov 12, 2026) rebuilds the gate as a hoop with depth and one pixel edges, lets the live gate climb to the screen's own resolution on a GPU that can carry it (`src/v44/sharpness.ts`), and keeps room visitors in their room: films, the observatory, the forge and the first flight open over the room, and the preserved edition returns a guest to the room they came from.
 - V44.2 Bitmaxing (Thu Nov 12, 2026) redraws Bit and the maps and gives Bit a fuller set of behaviours. Doug named and ordered it the same day.
 - V44.1 Mentat (Thu Nov 12, 2026) is the scorecard round on this front door. The composition, stations and this contract are unchanged; Doug approved it the same day.
 - The helm keeps the Odyssey rule (the same input reaches the same lane and code) and words it in this edition's voice.
@@ -27,5 +28,5 @@ Prepared Thu Nov 5, 2026. Doug approved it for publication the same day.
 
 ## Known limits
 
-- The sandbox renders WebGL in software, so the live gate's frame cost must be confirmed on a real GPU before publication.
-- The gate posters are painted from the same shader (`node --import tsx scripts/render-gate-posters.mjs`), and the live gate projects the poster's layout, so a change to the shader or a composition means painting the posters again. The live frame and its poster differ only in fine shading where a poster is shown larger than its own size (tablets in portrait), never in where the gate sits.
+- The sandbox renders WebGL in software, so the live gate's frame cost must be confirmed on a real GPU before publication. The climb to native resolution is decided by a timed frame (one pixel read back, which makes the browser wait for the GPU); the rules are unit tested, and the climb itself was exercised in software with the budget lifted, reaching 3440 by 1440 on a 3822 by 1600 window at 90 percent zoom.
+- The gate posters are painted from the same shader (`node --import tsx scripts/render-gate-posters.mjs`), and the live gate projects the poster's layout, so a change to the shader or a composition means painting the posters again. Posters are drawn at twice their size and averaged down. The live frame and its poster differ only in fine shading where a poster is shown larger than its own size (tablets in portrait), never in where the gate sits.
