@@ -306,7 +306,14 @@ export function mountBit(
   document.addEventListener("v44:route", (e) => {
     setRemark(ROUTE_LINES[e.detail.id] || remark);
     // A held request turns Bit red and nearly still; any lane gets a quick turn of approval.
-    if (e.detail.id === "hold") {
+    const held = e.detail.id === "hold";
+    if (!motionEnabled()) {
+      // Without motion Bit still shows the decision: one still frame, red while the request is held.
+      look.held = held ? 1 : 0;
+      paint(performance.now() / 1000);
+      return;
+    }
+    if (held) {
       heldUntil = performance.now() + 2400;
       look.glow = 1;
       wake(3200);
@@ -341,8 +348,10 @@ export function mountBit(
     setRemark("");
     // Offer only the places the visitor is not already at: each button names the station it belongs to.
     goButtons.forEach((b) => (b.hidden = (b.dataset.bitStation || b.dataset.bitGo) === current()));
-    look.glow = 1;
+    look.glow = motionEnabled() ? 1 : 0.35;
     dialog.show();
+    // The card's portrait is painted as the card opens, so it is there with motion paused too; the loop then turns it.
+    paint(performance.now() / 1000);
     wake();
     dialog.querySelector<HTMLButtonElement>("[data-bit-close]")?.focus();
   });

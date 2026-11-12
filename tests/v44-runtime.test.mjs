@@ -774,6 +774,18 @@ test("Bit keeps a light on for a remark, shows itself in its card, and rests whe
   await page.keyboard.press("Escape");
   await page.locator("[data-motion-toggle]").click();
   await expect(bit).not.toHaveAttribute("data-spinning", "");
+  // A visitor who never had motion on still gets the portrait: it is painted when the card opens.
+  const still = await visit(t);
+  await still.locator("[data-bit-open]").click();
+  const painted = await still.evaluate(() => {
+    const canvas = document.querySelector("[data-bit-portrait]");
+    const { data } = canvas.getContext("2d").getImageData(0, 0, canvas.width, canvas.height);
+    let lit = 0;
+    for (let i = 3; i < data.length; i += 4) if (data[i] > 40) lit++;
+    return lit / (data.length / 4);
+  });
+  assert.ok(painted > 0.12, "the portrait is drawn with motion reduced");
+  await expect(still.locator("[data-bit-open]")).not.toHaveAttribute("data-spinning", "");
 });
 
 test("the maps are whole drawings that move only on screen, and the figures land on the printed values", async (t) => {
