@@ -915,3 +915,23 @@ test("the preserved edition returns a guest to the room they came from and point
   await expect(page.locator("#helios-studio")).toHaveCount(0);
   assert.equal(new URL(page.url()).pathname, "/v43/");
 });
+
+test("Back while a room's film is still loading cancels it, so the room never ends up under a late overlay", async (t) => {
+  const page = await visit(t, { hash: "rooms/studios/interactive/" });
+  await expect(page.locator('#studios[data-room-state="ready"]')).toBeAttached({ timeout: 15000 });
+  // Hold the cinema's code back long enough to press Back first.
+  await page.route(/\/assets\/studio-island-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await route.continue();
+  });
+  const film = page.locator('a[href="/v43/#film=sanctuary"]').first();
+  await film.scrollIntoViewIfNeeded();
+  await film.click();
+  await expect(page.locator(".room-scene-status")).toBeVisible();
+  await page.goBack();
+  await expect(page.locator(".room-scene-status")).toHaveCount(0);
+  await page.waitForTimeout(2200);
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  assert.equal(await page.evaluate(() => document.querySelector("main").inert), false);
+  assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, "/rooms/studios/interactive/");
+});

@@ -9,6 +9,8 @@ type Scene = { dispose: () => void };
  */
 export function setupRoomScenes(motion: () => boolean) {
   let scene: Scene | null = null;
+  // True from the moment a scene is asked for, so a scene still loading can be cancelled like an open one.
+  let active = false;
   let opener: HTMLElement | null = null;
   let title = document.title;
   let generation = 0;
@@ -19,6 +21,7 @@ export function setupRoomScenes(motion: () => boolean) {
 
   function dispose() {
     generation++;
+    active = false;
     scene?.dispose();
     scene = null;
     document.querySelector(".room-scene-status")?.remove();
@@ -54,6 +57,7 @@ export function setupRoomScenes(motion: () => boolean) {
 
   async function open(hash: string) {
     dispose();
+    active = true;
     title = document.title;
     const token = generation;
     const kind = sceneKind(hash);
@@ -117,7 +121,7 @@ export function setupRoomScenes(motion: () => boolean) {
       if (url.origin !== location.origin || url.pathname !== "/v43/" || !opensHere(url.hash)) return;
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (!scene) {
+      if (!active) {
         opener = link;
         // One history entry per scene, so the browser's Back closes it and stays in the room.
         history.pushState(history.state, "", room() + url.hash);
@@ -128,7 +132,7 @@ export function setupRoomScenes(motion: () => boolean) {
   );
   window.addEventListener("popstate", () => {
     if (opensHere(location.hash)) void open(location.hash);
-    else if (scene) {
+    else if (active) {
       dispose();
       if (opener?.isConnected) opener.focus({ preventScroll: true });
       opener = null;
