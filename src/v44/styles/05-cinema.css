@@ -72,6 +72,30 @@
   flex: none;
   box-shadow: 0 0 18px rgba(154, 190, 255, 0.45);
 }
+/* While the screen waits on view, a ring of light leaves the play button every few seconds. */
+.play-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--blue-text);
+  opacity: 0;
+  pointer-events: none;
+}
+html[data-motion="on"] [data-screen][data-visible] .play-icon::before {
+  animation: play-ring 2.6s ease-out infinite;
+}
+@keyframes play-ring {
+  0% {
+    opacity: 0.9;
+    scale: 1;
+  }
+  60%,
+  100% {
+    opacity: 0;
+    scale: 1.9;
+  }
+}
 .play-icon::after {
   content: "";
   position: absolute;

@@ -65,6 +65,26 @@ interface Look {
   open: number;
   /** 1 while a request is held for a person: the core and its light turn red. */
   held: number;
+  /** Where the visitor's pointer is from Bit, each from minus one to one: Bit leans and looks that way. */
+  gazeX: number;
+  gazeY: number;
+  /** 1 while E.V.E. is working out an answer: the ring wobbles, a second ring crosses it and the moon hurries. */
+  think: number;
+  /** A tap makes Bit swell and settle: 1 at the tap, easing back to 0. */
+  pop: number;
+  /** A blink: the core dims for an instant, 0 to 1 and back. */
+  blink: number;
+  /** How far round its ring the moon has travelled, in radians. */
+  moon: number;
+}
+
+/** A spark thrown off when Bit cheers: a position and speed in units of the canvas, and the life it has left. */
+interface Spark {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  life: number;
 }
 
 const LIGHT = (() => {
@@ -77,14 +97,15 @@ const mix = (a: number, b: number, k: number) => a + (b - a) * k;
 /**
  * Bit: a glass icosahedron in platinum around a lit core, with one ring and one small red moon.
  * Back facets, core, front facets, then the near half of the ring, so the body has real depth.
+ * The core sits a little toward wherever the visitor's pointer is, which reads as Bit looking at it.
  */
-function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: Look) {
+function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: Look, sparks: Spark[] = []) {
   ctx.clearRect(0, 0, size, size);
   const c = size / 2;
   const breathe = 1 + Math.sin(t * 1.7) * 0.022;
-  const r = size * 0.335 * breathe;
-  const ay = look.angle;
-  const ax = 0.46 + Math.sin(t * 0.5) * 0.16;
+  const r = size * 0.335 * breathe * (1 + look.pop * 0.13);
+  const ay = look.angle + look.gazeX * 0.45;
+  const ax = 0.46 + Math.sin(t * 0.5) * 0.16 - look.gazeY * 0.38;
   const [cy, sy, cx, sx] = [Math.cos(ay), Math.sin(ay), Math.cos(ax), Math.sin(ax)];
   const rot = (v: number[]) => {
     const x1 = v[0] * cy + v[2] * sy;
@@ -107,7 +128,7 @@ function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: L
   ctx.fillRect(0, 0, size, size);
 
   // The ring: an ellipse tipped across the body. Its far half is drawn now, its near half last.
-  const tilt = -0.42;
+  const tilt = -0.42 + look.gazeX * 0.22 + look.think * Math.sin(t * 3.1) * 0.4;
   const rx = size * 0.47;
   const ry = size * 0.135;
   const ring = (from: number, to: number, alpha: number) => {
@@ -117,13 +138,25 @@ function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: L
     ctx.lineWidth = Math.max(1, size / 80);
     ctx.stroke();
   };
-  const moonAt = t * 1.25 + look.angle * 0.35;
+  const moonAt = look.moon;
+  const onRing = (at: number) => {
+    const mx = Math.cos(at) * rx;
+    const my = Math.sin(at) * ry;
+    return [c + mx * Math.cos(tilt) - my * Math.sin(tilt), c + mx * Math.sin(tilt) + my * Math.cos(tilt)];
+  };
   const moon = (front: boolean) => {
+    // The moon draws a short fading wake behind it along the ring.
+    for (let i = 7; i >= 1; i--) {
+      const at = moonAt - i * 0.085;
+      if (Math.sin(at) > 0 !== front) continue;
+      const [wx, wy] = onRing(at);
+      ctx.beginPath();
+      ctx.arc(wx, wy, size * 0.017 * (1 - i / 9), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,138,157,${(front ? 0.55 : 0.25) * (1 - i / 8)})`;
+      ctx.fill();
+    }
     if (Math.sin(moonAt) > 0 !== front) return;
-    const mx = Math.cos(moonAt) * rx;
-    const my = Math.sin(moonAt) * ry;
-    const x = c + mx * Math.cos(tilt) - my * Math.sin(tilt);
-    const y = c + mx * Math.sin(tilt) + my * Math.cos(tilt);
+    const [x, y] = onRing(moonAt);
     const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 0.075);
     glow.addColorStop(0, `rgba(255,120,140,${front ? 0.95 : 0.45})`);
     glow.addColorStop(1, "rgba(255,61,85,0)");
@@ -134,6 +167,16 @@ function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: L
     ctx.fillStyle = front ? "#fff" : "rgba(255,200,208,0.7)";
     ctx.fill();
   };
+  // While Bit thinks, a second ring crosses the first.
+  const second = (from: number, to: number, alpha: number) => {
+    if (look.think < 0.02) return;
+    ctx.beginPath();
+    ctx.ellipse(c, c, rx * 0.92, ry * 1.15, tilt + 1.25, from, to);
+    ctx.strokeStyle = `rgba(${edge},${alpha * look.think})`;
+    ctx.lineWidth = Math.max(0.75, size / 110);
+    ctx.stroke();
+  };
+  second(Math.PI, Math.PI * 2, 0.22);
   ring(Math.PI, Math.PI * 2, 0.28);
   moon(false);
 
@@ -170,14 +213,18 @@ function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: L
   }
 
   // The core, seen through the glass.
-  const heart = r * (0.5 + pulse * 0.07 + look.glow * 0.12 + look.open * 0.1);
-  const lit = ctx.createRadialGradient(c, c, 0, c, c, heart);
-  lit.addColorStop(0, "rgba(255,255,255,0.98)");
-  lit.addColorStop(0.3, `rgba(${core},0.9)`);
+  const heart = r * (0.5 + pulse * 0.07 + look.glow * 0.12 + look.open * 0.1 + look.think * 0.06);
+  // It leans toward the pointer, and dims for an instant when Bit blinks.
+  const hx = c + look.gazeX * r * 0.16;
+  const hy = c + look.gazeY * r * 0.16;
+  const awake = 1 - look.blink * 0.8;
+  const lit = ctx.createRadialGradient(hx, hy, 0, hx, hy, heart);
+  lit.addColorStop(0, `rgba(255,255,255,${0.98 * awake})`);
+  lit.addColorStop(0.3, `rgba(${core},${0.9 * awake})`);
   lit.addColorStop(1, `rgba(${core},0)`);
   ctx.fillStyle = lit;
   ctx.beginPath();
-  ctx.arc(c, c, heart, 0, Math.PI * 2);
+  ctx.arc(hx, hy, heart, 0, Math.PI * 2);
   ctx.fill();
 
   for (const face of faces) {
@@ -206,8 +253,21 @@ function drawBit(ctx: CanvasRenderingContext2D, size: number, t: number, look: L
     ctx.fillStyle = `rgba(255,255,255,${0.35 + p[2] * 0.55})`;
     ctx.fill();
   }
+  second(0, Math.PI, 0.6);
   ring(0, Math.PI, 0.82);
   moon(true);
+  // Sparks from a cheer: short bright streaks flying out and fading.
+  for (const spark of sparks) {
+    const x = c + spark.x * size;
+    const y = c + spark.y * size;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - spark.vx * size * 0.05, y - spark.vy * size * 0.05);
+    ctx.strokeStyle = `rgba(${spark.life > 0.5 ? "255,255,255" : edge},${Math.min(1, spark.life * 1.4)})`;
+    ctx.lineWidth = Math.max(1, size / 70) * spark.life;
+    ctx.lineCap = "round";
+    ctx.stroke();
+  }
 }
 
 const ROUTE_LINES: Record<LaneId, string> = {
@@ -237,7 +297,29 @@ export function mountBit(
   let cheerUntil = 0;
   let heldUntil = 0;
   let hovered = false;
-  const look: Look = { angle: 0.9, glow: 0, open: 0, held: 0 };
+  const look: Look = {
+    angle: 0.9,
+    glow: 0,
+    open: 0,
+    held: 0,
+    gazeX: 0,
+    gazeY: 0,
+    think: 0,
+    pop: 0,
+    blink: 0,
+    moon: 1.1,
+  };
+  const sparks: Spark[] = [];
+  // Where the pointer last was, and where Bit sits; Bit is fixed in its corner, so its place is read on resize only.
+  let pointer: [number, number] | null = null;
+  let home: [number, number] = [innerWidth, innerHeight];
+  const place = () => {
+    const box = button.getBoundingClientRect();
+    home = [box.left + box.width / 2, box.top + box.height / 2];
+  };
+  let thinking = false;
+  let blinkAt = performance.now() + 4000;
+  let blinkUntil = 0;
   // The last thing the visitor did, said once the next time Bit is opened.
   let remark = "";
   // A small light on the badge says Bit has something to say about what the visitor just did.
@@ -247,19 +329,56 @@ export function mountBit(
   };
 
   const paint = (seconds: number) => {
-    if (ctx) drawBit(ctx, canvas.width, seconds, look);
-    if (portraitCtx && portrait && dialog.open) drawBit(portraitCtx, portrait.width, seconds, look);
+    if (ctx) drawBit(ctx, canvas.width, seconds, look, sparks);
+    if (portraitCtx && portrait && dialog.open) drawBit(portraitCtx, portrait.width, seconds, look, sparks);
+  };
+  const throwSparks = (count: number) => {
+    for (let i = 0; i < count; i++) {
+      const a = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+      const v = 0.5 + Math.random() * 0.45;
+      sparks.push({ x: Math.cos(a) * 0.18, y: Math.sin(a) * 0.18, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1 });
+    }
   };
   // Bit moves while someone is there: hover, focus, an open card, or a little while after the visitor last did anything.
-  const active = () => motionEnabled() && !document.hidden && (hovered || dialog.open || performance.now() < spinUntil);
+  const active = () =>
+    motionEnabled() && !document.hidden && (hovered || dialog.open || thinking || performance.now() < spinUntil);
   const loop = (now: number) => {
     const dt = Math.min(0.05, (now - (last || now)) / 1000);
     last = now;
     const cheering = now < cheerUntil;
     // Turning speed: a slow idle, quicker when watched, a burst when it cheers, nearly still while it holds.
-    const speed = now < heldUntil ? 0.15 : cheering ? 5.2 : hovered ? 1.7 : dialog.open ? 1.1 : 0.7;
+    const speed = now < heldUntil ? 0.15 : cheering ? 5.2 : hovered ? 1.7 : thinking ? 1.5 : dialog.open ? 1.1 : 0.7;
     look.angle += speed * dt;
     look.glow *= 0.955;
+    // Bit looks toward the pointer: the nearer the pointer, the more it turns to face it.
+    const ease = Math.min(1, dt * 5);
+    const reach = Math.max(innerWidth, innerHeight) * 0.6;
+    const want = pointer
+      ? [
+          Math.max(-1, Math.min(1, (pointer[0] - home[0]) / reach)),
+          Math.max(-1, Math.min(1, (pointer[1] - home[1]) / reach)),
+        ]
+      : [0, 0];
+    look.gazeX += (want[0] - look.gazeX) * ease;
+    look.gazeY += (want[1] - look.gazeY) * ease;
+    look.think += ((thinking ? 1 : 0) - look.think) * Math.min(1, dt * 4);
+    look.moon += dt * (1.25 + look.think * 3.2 + (cheering ? 4 : 0));
+    look.pop *= Math.max(0, 1 - dt * 7);
+    // Now and then Bit blinks.
+    if (now > blinkAt) {
+      blinkUntil = now + 150;
+      blinkAt = now + 3600 + Math.random() * 5200;
+    }
+    look.blink += ((now < blinkUntil ? 1 : 0) - look.blink) * Math.min(1, dt * 26);
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const spark = sparks[i];
+      spark.x += spark.vx * dt;
+      spark.y += spark.vy * dt;
+      spark.vx *= 1 - dt * 2.4;
+      spark.vy *= 1 - dt * 2.4;
+      spark.life -= dt * 1.9;
+      if (spark.life <= 0) sparks.splice(i, 1);
+    }
     look.held += ((now < heldUntil ? 1 : 0) - look.held) * Math.min(1, dt * 6);
     // Speaking opens the facets in a small rhythm; a cheer throws them wide once.
     const talking = dialog.open ? 0.3 + 0.2 * Math.sin(now / 130) : 0;
@@ -279,8 +398,11 @@ export function mountBit(
   const cheer = (ms = 700) => {
     cheerUntil = performance.now() + ms;
     look.glow = 1;
+    if (motionEnabled()) throwSparks(14);
     wake(ms + 900);
   };
+  place();
+  addEventListener("resize", place);
   paint(1.2);
   // The arrival turn waits until the page has loaded, so it never competes with the first paint.
   const intro = () => setTimeout(() => wake(2600), 600);
@@ -302,6 +424,27 @@ export function mountBit(
   };
   for (const type of ["scroll", "pointermove", "keydown", "touchstart"] as const)
     addEventListener(type, stir, { passive: true });
+  // Only a mouse or pen gives Bit something to look at; a finger lifts away, so touch leaves it facing forward.
+  addEventListener(
+    "pointermove",
+    (e) => {
+      pointer = e.pointerType === "touch" ? null : [e.clientX, e.clientY];
+    },
+    { passive: true },
+  );
+  document.documentElement.addEventListener("pointerleave", () => (pointer = null));
+  // While E.V.E. is typing an answer, Bit thinks along with her.
+  const eveLog = document.querySelector("[data-eve-log]");
+  if (eveLog)
+    new MutationObserver(() => {
+      const was = thinking;
+      thinking = eveLog.hasAttribute("data-typing");
+      if (thinking) wake(600);
+      else if (was) {
+        look.glow = 1;
+        wake(1500);
+      }
+    }).observe(eveLog, { attributes: true, attributeFilter: ["data-typing"] });
 
   document.addEventListener("v44:route", (e) => {
     setRemark(ROUTE_LINES[e.detail.id] || remark);
@@ -349,7 +492,16 @@ export function mountBit(
     // Offer only the places the visitor is not already at: each button names the station it belongs to.
     goButtons.forEach((b) => (b.hidden = (b.dataset.bitStation || b.dataset.bitGo) === current()));
     look.glow = motionEnabled() ? 1 : 0.35;
+    // A tap makes Bit swell and throw a few sparks before it speaks.
+    if (motionEnabled()) {
+      look.pop = 1;
+      throwSparks(7);
+    }
+    place();
     dialog.show();
+    line.classList.remove("say");
+    void line.offsetWidth;
+    line.classList.add("say");
     // The card's portrait is painted as the card opens, so it is there with motion paused too; the loop then turns it.
     paint(performance.now() / 1000);
     wake();
@@ -371,6 +523,9 @@ export function mountBit(
   });
   dialog.querySelector("[data-bit-joke]")?.addEventListener("click", () => {
     line.textContent = bitJokes[joke++ % bitJokes.length];
+    line.classList.remove("say");
+    void line.offsetWidth;
+    line.classList.add("say");
     cheer(480);
   });
   goButtons.forEach((b) =>

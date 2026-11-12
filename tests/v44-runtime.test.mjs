@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Mentat");
+  await expect(log).toContainText("Bitmaxing");
 });
 
 test("each station lights the sky in its own color", async (t) => {
@@ -824,4 +824,25 @@ test("the maps are whole drawings that move only on screen, and the figures land
   await page.locator("[data-motion-toggle]").click();
   await page.waitForTimeout(200);
   assert.equal(await moving("main"), 0, "nothing in the maps keeps moving once motion pauses");
+});
+
+test("Bit thinks along with E.V.E., and the helm's lane resolves to its words", async (t) => {
+  const page = await visit(t, { motion: "no-preference" });
+  const bit = page.locator("[data-bit-open]");
+  await page.locator("[data-eve]").scrollIntoViewIfNeeded();
+  await page.locator("#eve-cmd").fill("limits");
+  await page.locator("#eve-cmd").press("Enter");
+  // While she types, Bit is awake whether or not anyone is touching it.
+  await expect(page.locator("[data-eve-log]")).toHaveAttribute("data-typing", "");
+  await expect(bit).toHaveAttribute("data-spinning", "");
+  await page.locator("[data-helm]").scrollIntoViewIfNeeded();
+  const lane = page.locator("[data-helm-lane]");
+  await page.locator('input[value="research"]').check({ force: true });
+  // The words are known at once, for anyone not watching the letters settle.
+  await expect(lane).toHaveAttribute("data-lane", "Research");
+  await expect(lane).toHaveText("Research");
+  await page.locator('input[name="privateData"]').check({ force: true });
+  await page.locator("[data-motion-toggle]").click();
+  await expect(lane).toHaveText("Human review");
+  await expect(page.locator("[data-screen]")).not.toHaveAttribute("data-visible", "");
 });

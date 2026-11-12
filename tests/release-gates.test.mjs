@@ -14,12 +14,12 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 
-test("Mentat identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
-  assert.equal(currentRelease.experienceVersion, "44.1.0");
-  assert.equal(currentRelease.releaseName, "MENTAT");
-  assert.equal(currentRelease.visualEdition, "Mentat");
+test("Bitmaxing identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
+  assert.equal(currentRelease.experienceVersion, "44.2.0");
+  assert.equal(currentRelease.releaseName, "BITMAXING");
+  assert.equal(currentRelease.visualEdition, "Bitmaxing");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseId, "mentat-44.1.0-20261112");
+  assert.equal(currentRelease.releaseId, "bitmaxing-44.2.0-20261112");
   assert.equal(currentRelease.updatedDate, "2026-11-12");
   assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-06");
   assert.equal(currentRelease.presentation.preparedDate, "2026-11-12");
