@@ -192,6 +192,15 @@ html[data-motion="on"] .headline .accent {
   color: var(--pearl);
   font-size: 20px;
 }
+html[data-motion="on"] .cta:hover .cta-arrow,
+html[data-motion="on"] .cta:focus-visible .cta-arrow {
+  animation: cta-nod 900ms ease-in-out infinite;
+}
+@keyframes cta-nod {
+  50% {
+    translate: 0 5px;
+  }
+}
 .cta-small {
   display: inline-flex;
   padding: 14px 20px;

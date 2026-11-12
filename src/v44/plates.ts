@@ -30,11 +30,11 @@ export function mountPlates() {
     reveal.unobserve(plate);
   });
 
-  // The workshop map and the helm's route map move only while they are on screen.
+  // The workshop map, the helm's route map and the screen's play light move only while they are on screen.
   const mapWatch = new IntersectionObserver((entries) =>
     entries.forEach((e) => (e.target as HTMLElement).toggleAttribute("data-visible", e.isIntersecting)),
   );
-  $$(".system-map, .helm-map").forEach((el) => mapWatch.observe(el));
+  $$(".system-map, .helm-map, [data-screen]").forEach((el) => mapWatch.observe(el));
 
   if (!matchMedia("(pointer: fine)").matches) return;
   document.addEventListener(

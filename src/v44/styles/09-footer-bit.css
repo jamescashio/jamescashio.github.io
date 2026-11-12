@@ -220,6 +220,29 @@ html:not(.js) .bit {
   font-size: 17px;
   min-height: 3.2em;
 }
+/* Each new line from Bit arrives: it rises a little and clears. */
+html[data-motion="on"] .bit-line.say {
+  animation: bit-say 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes bit-say {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+    filter: blur(3px);
+  }
+}
+/* The card itself opens from Bit's corner. */
+html[data-motion="on"] .bit-dialog[open] {
+  animation: bit-card 300ms cubic-bezier(0.2, 0.8, 0.3, 1.1) both;
+  transform-origin: 100% 100%;
+}
+@keyframes bit-card {
+  from {
+    opacity: 0;
+    scale: 0.9;
+    translate: 0 10px;
+  }
+}
 .bit-actions {
   display: flex;
   flex-wrap: wrap;

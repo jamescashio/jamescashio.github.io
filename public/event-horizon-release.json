@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "44.1.0",
-    "visualEdition": "Mentat",
+    "experienceVersion": "44.2.0",
+    "visualEdition": "Bitmaxing",
     "receipt": "/v40/site-release.json"
   }
 }

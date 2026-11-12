@@ -123,9 +123,42 @@ export function mountHelm(form: HTMLFormElement, result: HTMLElement) {
     privateData: checked("privateData"),
     sources: checked("sources"),
   });
+  // The lane's name resolves out of noise, left to right, when the decision changes; its words are set at once
+  // for anyone not watching, and the spoken line below never scrambles.
+  // Motion is read from the document, so this module needs no browser when a test imports its rule.
+  const motionEnabled = () => document.documentElement.dataset.motion === "on";
+  let decoding = 0;
+  const NOISE = "ABCDEFGHKLMNPRSTVXYZ";
+  const settle = () => {
+    cancelAnimationFrame(decoding);
+    decoding = 0;
+    lane.textContent = lane.dataset.lane ?? lane.textContent;
+  };
+  const decode = (text: string) => {
+    cancelAnimationFrame(decoding);
+    lane.dataset.lane = text;
+    const start = performance.now();
+    const step = (now: number) => {
+      const shown = Math.floor(((now - start) / 360) * (text.length + 1));
+      if (shown >= text.length || !motionEnabled()) return settle();
+      lane.textContent =
+        text.slice(0, shown) +
+        [...text.slice(shown)]
+          .map((ch) => (ch === " " ? " " : NOISE[Math.floor(Math.random() * NOISE.length)]))
+          .join("");
+      decoding = requestAnimationFrame(step);
+    };
+    decoding = requestAnimationFrame(step);
+  };
   const render = (animate: boolean) => {
     const r = route(read());
-    lane.textContent = r.lane;
+    if (animate && motionEnabled() && lane.textContent !== r.lane) decode(r.lane);
+    else {
+      cancelAnimationFrame(decoding);
+      decoding = 0;
+      lane.dataset.lane = r.lane;
+      lane.textContent = r.lane;
+    }
     code.textContent = CODE_LABEL[r.code];
     detail.textContent = r.detail;
     result.dataset.code = r.code;

@@ -25,6 +25,16 @@
   object-fit: cover;
   filter: saturate(1.05) contrast(1.04);
 }
+/* The four worlds arrive one after another, left to right, and then answer the pointer without delay. */
+html.js[data-motion="on"] .world[data-reveal]:not(.in):nth-child(2) {
+  transition-delay: 90ms;
+}
+html.js[data-motion="on"] .world[data-reveal]:not(.in):nth-child(3) {
+  transition-delay: 180ms;
+}
+html.js[data-motion="on"] .world[data-reveal]:not(.in):nth-child(4) {
+  transition-delay: 270ms;
+}
 /* A world leans toward whoever chooses it: its picture pushes in from its lower edge and warms a little. */
 html[data-motion="on"] .world img {
   transform-origin: 50% 100%;
