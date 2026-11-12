@@ -1,4 +1,6 @@
-# V44 · Drummer
+# V44 · Mentat
+
+Mentat is V44.1, the scorecard round on the Drummer front door, named for the human computers of _Dune_: after the Butlerian Jihad, people trained to do the thinking themselves. A rendered nine category review of the live site found four things worth changing. On screens with room, the arrival now says who is speaking before the first scroll: in IT since 1996, over twenty years in cybersecurity, 21 Claude Academy badges. The dated record says how old it is, in the visitor's own words, beside its date. Windows high contrast and other forced color palettes now show the chosen work, a switch that is on, the current station and the call to action as a button. With motion on, a line of light crosses "You still decide." once on arrival and a world's picture pushes in when it is chosen. The page title now says what the site is before it names the release. Prepared and approved by Doug on 11-12-2026; rollback for this round is the previous production commit `9ea478929687cc32063a986903997584c035d557`.
 
 Drummer rebuilds the cashio.us front door from the ground up. A live transit gate in the platinum cAshIo identity ignites once per visit, and scrolling flies the camera through the ring into seven stations: Arrival, Cinema, Worlds, Workshop, Helm, Evidence and Doug. The sky carries on behind every station, with shooting stars and a warp streak when you move fast. Ask E.V.E. to zoom.
 

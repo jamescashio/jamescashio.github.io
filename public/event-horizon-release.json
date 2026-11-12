@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "44.0.0",
-    "visualEdition": "Drummer",
+    "experienceVersion": "44.1.0",
+    "visualEdition": "Mentat",
     "receipt": "/v40/site-release.json"
   }
 }

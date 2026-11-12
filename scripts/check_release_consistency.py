@@ -637,8 +637,9 @@ def main() -> int:
     changelog_release = re.search(r"^## (.+)$", read("CHANGELOG.md"), re.MULTILINE)
     if not changelog_release or not changelog_release.group(1).startswith(f"V{package_version} · {release_name} · "):
         failures.append("CHANGELOG.md must begin its release history with the current package version and name")
-    if f"<title>Doug Cashio · cAshIo · {version_label} {release_name}</title>" not in read("index.html"):
-        failures.append("index.html title must identify the current receipt and package version")
+    # The title says what the site is, as the share card does, and then names the release.
+    if f"<title>Doug Cashio · cAshIo · Local AI workshop · {version_label} {release_name}</title>" not in read("index.html"):
+        failures.append("index.html title must say what the site is and identify the current receipt and package version")
     prior_receipt = ROOT / "public/v42/site-release.json"
     if not prior_receipt.exists() or hashlib.sha256(prior_receipt.read_bytes()).hexdigest() != "f8e9685cc2e900c6b072aa2527cd56cf6c7359ddc5972146d268b3307a007ec8":
         failures.append("the previous production V42 receipt must remain byte-identical")

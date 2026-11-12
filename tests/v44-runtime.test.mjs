@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Drummer");
+  await expect(log).toContainText("Mentat");
 });
 
 test("each station lights the sky in its own color", async (t) => {

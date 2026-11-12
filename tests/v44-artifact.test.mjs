@@ -15,10 +15,10 @@ const exists = (p) =>
 
 const page = async () => new JSDOM(await read("dist/index.html")).window.document;
 
-test("V44 Drummer is the built front door with seven stations in order", async () => {
+test("V44 Mentat is the built Drummer front door with seven stations in order", async () => {
   const document = await page();
   const receipt = JSON.parse(await read("public/v40/site-release.json"));
-  assert.equal(document.title, `Doug Cashio · cAshIo · V44 ${receipt.presentation.name}`);
+  assert.equal(document.title, `Doug Cashio · cAshIo · Local AI workshop · V44 ${receipt.presentation.name}`);
   assert.equal(document.querySelector('meta[name="robots"]').content, "index, follow");
   assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/");
   const stations = [...document.querySelectorAll("main > section[data-station]")].map((s) => s.id);

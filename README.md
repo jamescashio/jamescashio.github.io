@@ -1,6 +1,8 @@
-# cAshIo V44 · Drummer
+# cAshIo V44 · Mentat
 
-**Drummer · Human in command** is a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for Camina Drummer of _The Expanse_, who keeps a cool head when it counts. Doug approved it for publication on Thu Nov 5, 2026.
+**Mentat · Human in command** is V44.1, the scorecard round on the Drummer front door, prepared and approved by Doug on Thu Nov 12, 2026. It is named for the human computers of _Dune_: after the Butlerian Jihad, people trained to do the thinking themselves. A rendered nine category review of the live site led to four changes: the arrival says who is speaking before the first scroll, the dated record says how old it is, forced color palettes show what is chosen and what is on, and the headline and the world cards answer with a little light and motion. The composition and the seven stations are unchanged.
+
+**Drummer** is the front door itself: a ground up rebuild of the cashio.us front door, prepared on Thu Nov 5, 2026 and named for Camina Drummer of _The Expanse_, who keeps a cool head when it counts. Doug approved it for publication on Thu Nov 5, 2026.
 
 One transit gate, seven stations, the captain decides. The page opens on a live, generative gate in the platinum cAshIo identity: the gate arrives lit and a light front races around it once per visit, scrolling flies the camera through the ring, and the same sky carries on behind every station. Films, worlds, the routing helm, the dated evidence and E.V.E. sit on that sky as hull plates. Bit is in the corner.
 
