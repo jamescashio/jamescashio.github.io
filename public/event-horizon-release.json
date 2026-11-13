@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "44.2.0",
-    "visualEdition": "Bitmaxing",
+    "experienceVersion": "44.3.0",
+    "visualEdition": "Heighliner",
     "receipt": "/v40/site-release.json"
   }
 }

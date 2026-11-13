@@ -724,16 +724,37 @@
   display: grid;
   gap: 4px;
 }
+/* The front door's own mark and wordmark, at the front door's size. */
 .room-bar .room-wordmark {
-  font: 700 22px/1 var(--display);
-  letter-spacing: -0.02em;
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
 }
-.room-wordmark-a {
-  color: var(--gold);
+.room-bar .room-wordmark img {
+  display: block;
+  width: 30px;
+  height: 30px;
 }
-.room-wordmark-i {
-  color: var(--cyan);
+.room-bar .room-wordmark .room-wordmark-word {
+  width: 104px;
+  height: 24px;
+}
+/* While a film or a flight loads over the room. */
+.room-scene-status {
+  position: fixed;
+  inset: auto 0 24px;
+  z-index: 60;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 10px 16px;
+  border: 1px solid #75bdcb4d;
+  border-radius: 10px;
+  background: #050608f2;
+  color: #cfe9ee;
+  font: 500 13px/1 var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .room-back {
   font: 13px/1.4 var(--sans);
@@ -829,8 +850,5 @@
   .room-bar .room-motion {
     padding: 0 12px;
     font-size: 12px;
-  }
-  .room-bar .room-wordmark {
-    font-size: 20px;
   }
 }

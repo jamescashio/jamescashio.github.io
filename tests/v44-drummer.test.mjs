@@ -8,6 +8,8 @@ import { routeExample } from "../src/odyssey/data.ts";
 import { decodeRoute, encodeRoute, route, shareHref } from "../src/v44/route.ts";
 import { POSTERS, columnFor, posterFor, projectPoster } from "../src/v44/layout.ts";
 import { ageInWords } from "../src/v44/age.ts";
+import { PIXELS_AT_MOST, affordsStep, beatFor, ceilingScale, startScale, stepped } from "../src/v44/sharpness.ts";
+import { FRAGMENT_SHADER } from "../src/v44/shader.ts";
 import { checkStatus, fillStatus, longDate, statusTokens, transcript, withheldList } from "../scripts/v44-status.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -194,4 +196,59 @@ test("the record says how old it is in plain words, and says nothing it cannot k
   assert.equal(ageInWords("2026-11-06", noon(2026, 11, 5)), null, "a record dated ahead of the visitor's clock");
   for (const bad of ["", "Fri Nov 6, 2026", "2026-13-01", "2026-02-30", "2026-11-6"])
     assert.equal(ageInWords(bad, noon(2026, 11, 12)), null, bad);
+});
+
+test("the live gate climbs to the screen's own pixels on a GPU that can carry them, and no further", () => {
+  // An ultrawide at 90 percent zoom: 3822 by 1600 CSS pixels over a 3440 by 1440 panel.
+  const [w, h, dpr] = [3822, 1600, 0.9];
+  const start = startScale(dpr, false, w * h);
+  assert.ok(start * start * w * h <= 2.1e6 + 1, "every device starts inside the old backing store");
+  const top = ceilingScale(dpr, false, w * h);
+  assert.equal(Math.round(w * top), 3440);
+  assert.equal(Math.round(h * top), 1440);
+  // Cheap frames climb a step at a time and stop exactly at the ceiling.
+  let scale = start;
+  let steps = 0;
+  while (scale < top && steps++ < 20) scale = stepped(scale, top, 1);
+  assert.equal(scale, top);
+  assert.ok(steps <= 4, `native in ${steps} steps`);
+  // A frame near the budget earns nothing, and a learned limit holds the ceiling down.
+  assert.equal(stepped(start, top, 4.5), start);
+  assert.equal(affordsStep(3.7), true);
+  assert.equal(affordsStep(3.8), false);
+  assert.equal(ceilingScale(dpr, false, w * h, 0.7), 0.7);
+  // A 4K screen at 150 percent is drawn pixel for pixel; a larger panel stops at the pixel ceiling.
+  assert.equal(ceilingScale(1.5, false, 2560 * 1440), 1.5);
+  const big = ceilingScale(2, false, 2560 * 1440);
+  assert.ok(Math.abs(big * big * 2560 * 1440 - PIXELS_AT_MOST) < 1);
+  // Phones keep a little in hand, as before.
+  assert.equal(ceilingScale(3, true, 390 * 844), 1.6);
+  assert.ok(Math.abs(startScale(3, true, 390 * 844) - 1.36) < 1e-9);
+});
+
+test("the gate is paced in the display's own beats, so no refresh rate reads as slow", () => {
+  const near = (a, b) => assert.ok(Math.abs(a - b) < 0.01, `${a} is about ${b}`);
+  // At the gate: sixty frames a second at most.
+  near(beatFor(1000 / 60, 1000 / 60), 16.67);
+  near(beatFor(1000 / 60, 1000 / 75), 13.33);
+  near(beatFor(1000 / 60, 1000 / 120), 16.67);
+  near(beatFor(1000 / 60, 1000 / 144), 20.83);
+  near(beatFor(1000 / 60, 1000 / 240), 16.67);
+  // Behind the reading: thirty.
+  near(beatFor(1000 / 30, 1000 / 60), 33.33);
+  near(beatFor(1000 / 30, 1000 / 144), 34.72);
+  for (const hz of [50, 60, 75, 90, 100, 120, 144, 165, 240]) {
+    const beat = beatFor(1000 / 60, 1000 / hz);
+    assert.ok(beat >= 1000 / hz - 0.001 && beat <= 23, `${hz} Hz draws every ${beat.toFixed(1)} ms`);
+  }
+});
+
+test("the gate is drawn as a hoop with depth, with every edge one pixel sharp", () => {
+  // The deck, the far side's inner wall and the near side's outer wall are all in the shader.
+  for (const part of ["float face =", "float innerWall =", "float outerWall =", "float depth ="])
+    assert.ok(FRAGMENT_SHADER.includes(part), part);
+  // Edges are measured in pixels of the backing store, not in fractions of the ring.
+  assert.match(FRAGMENT_SHADER, /float px = [\d.]+ \/ \(uRes\.y \* scale\);/);
+  // GLSL ES 1.00 leaves a falling smoothstep undefined, so the shader never writes one.
+  assert.doesNotMatch(FRAGMENT_SHADER, /smoothstep\(\s*1\.0\s*,\s*0/);
 });

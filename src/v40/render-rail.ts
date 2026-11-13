@@ -65,5 +65,13 @@ export function renderRail(v: GeneratedView) {
       " ",
     ),
     " ",
+    // This edition is an archive; the way to the current site sits at the foot of its menu.
+    h(
+      "a",
+      { key: 30, href: "/", className: "rail-current", title: "Return to the current site" },
+      h("span", { key: 31, "aria-hidden": "true" }, "↩"),
+      h("span", { key: 32 }, "Current site"),
+    ),
+    " ",
   );
 }

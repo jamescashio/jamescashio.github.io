@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Bitmaxing");
+  await expect(log).toContainText("Heighliner");
 });
 
 test("each station lights the sky in its own color", async (t) => {
@@ -845,4 +845,93 @@ test("Bit thinks along with E.V.E., and the helm's lane resolves to its words", 
   await page.locator("[data-motion-toggle]").click();
   await expect(lane).toHaveText("Human review");
   await expect(page.locator("[data-screen]")).not.toHaveAttribute("data-visible", "");
+});
+
+test("a film chosen in a room plays in that room, and closing it leaves the visitor where they were", async (t) => {
+  const page = await visit(t, { hash: "rooms/studios/interactive/" });
+  await expect(page.locator('#studios[data-room-state="ready"]')).toBeAttached({ timeout: 15000 });
+  // The room carries the front door's own mark, and says nothing of an older edition.
+  await expect(page.locator(".room-wordmark img")).toHaveCount(2);
+  await expect(page.locator("#reading-mode")).toHaveText(/^Interactive room\./);
+  assert.doesNotMatch(await page.title(), /V43/);
+  const film = page.locator('a[href="/v43/#film=sanctuary"]').first();
+  await film.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => scrollY);
+  await film.click();
+  await expect(page.locator("#helios-studio")).toBeAttached({ timeout: 15000 });
+  await expect(page.getByRole("heading", { name: "The inner light" })).toBeVisible();
+  assert.equal(new URL(page.url()).pathname, "/rooms/studios/interactive/");
+  assert.equal(new URL(page.url()).hash, "#film=sanctuary");
+  await page
+    .getByRole("button", { name: /^Close/ })
+    .first()
+    .click();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, "/rooms/studios/interactive/");
+  assert.equal(await page.evaluate(() => scrollY), before);
+  await expect(film).toBeFocused();
+  // The browser's Back closes a scene too, and the room is still the page.
+  await film.click();
+  await expect(page.locator("#helios-studio")).toBeAttached();
+  await page.goBack();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  assert.equal(new URL(page.url()).pathname, "/rooms/studios/interactive/");
+  // The first flight opens over its room in the same way.
+  await page.goto(new URL("/rooms/starship/interactive/", url).href, { waitUntil: "networkidle" });
+  await expect(page.locator('#starship[data-room-state="ready"]')).toBeAttached({ timeout: 15000 });
+  await page.locator('a[href="/v43/#flight=board"]').first().click();
+  await expect(page.locator("#helios-flight")).toBeAttached({ timeout: 15000 });
+  assert.equal(new URL(page.url()).pathname, "/rooms/starship/interactive/");
+});
+
+test("the preserved edition returns a guest to the room they came from and points to the current site", async (t) => {
+  // A reading edition runs no script, so its film links open the preserved edition's player.
+  const page = await visit(t, { hash: "rooms/studios/" });
+  const film = page.locator('a[href="/v43/#film=sanctuary"]').first();
+  await film.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => scrollY);
+  await film.click();
+  await page.waitForURL(/\/v43\/#film=sanctuary$/);
+  await expect(page.locator("#helios-studio")).toBeAttached({ timeout: 20000 });
+  await page
+    .getByRole("button", { name: /^Close/ })
+    .first()
+    .click();
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/rooms/studios/");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(before);
+  // Opened on its own, the edition is an archive with two ways to the current site.
+  await page.goto(new URL("/v43/", url).href, { waitUntil: "networkidle" });
+  await expect(page.locator(".continuum-arrival-current")).toHaveAttribute("href", "/");
+  await expect(page.locator(".continuum-arrival-current")).toBeVisible();
+  await expect(page.locator('nav[aria-label="Sections"] .rail-current')).toBeVisible();
+  await expect(page.locator('nav[aria-label="Sections"] .rail-current')).toHaveAttribute("href", "/");
+  // A film opened from the edition's own pages closes back onto them.
+  await page.goto(new URL("/v43/#film=sanctuary", url).href, { waitUntil: "networkidle" });
+  await expect(page.locator("#helios-studio")).toBeAttached({ timeout: 20000 });
+  await page
+    .getByRole("button", { name: /^Close/ })
+    .first()
+    .click();
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  assert.equal(new URL(page.url()).pathname, "/v43/");
+});
+
+test("Back while a room's film is still loading cancels it, so the room never ends up under a late overlay", async (t) => {
+  const page = await visit(t, { hash: "rooms/studios/interactive/" });
+  await expect(page.locator('#studios[data-room-state="ready"]')).toBeAttached({ timeout: 15000 });
+  // Hold the cinema's code back long enough to press Back first.
+  await page.route(/\/assets\/studio-island-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    await route.continue();
+  });
+  const film = page.locator('a[href="/v43/#film=sanctuary"]').first();
+  await film.scrollIntoViewIfNeeded();
+  await film.click();
+  await expect(page.locator(".room-scene-status")).toBeVisible();
+  await page.goBack();
+  await expect(page.locator(".room-scene-status")).toHaveCount(0);
+  await page.waitForTimeout(2200);
+  await expect(page.locator("#helios-studio")).toHaveCount(0);
+  assert.equal(await page.evaluate(() => document.querySelector("main").inert), false);
+  assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, "/rooms/studios/interactive/");
 });

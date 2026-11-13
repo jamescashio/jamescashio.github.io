@@ -98,6 +98,9 @@ export function ContinuumHero({ v }: { v: HeroView }) {
         <span>
           {presentation.name} · {presentation.subtitle}
         </span>
+        <a className="continuum-arrival-current" href="/">
+          Archive edition · Current site&nbsp;→
+        </a>
         <span className="continuum-arrival-end">Human in command</span>
       </div>
       <div id="hero-content" className="continuum-composition">
