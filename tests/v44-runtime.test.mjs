@@ -974,12 +974,37 @@ test("a world card opens into its room, the room folds back, and paused motion h
     await leave();
     assert.deepEqual(await state(), { passage: true, names: cards });
   }
-  // A reading edition carries the same name and the front door's faces, and no script.
-  await page.goto(new URL("/rooms/studios/", url).href);
-  assert.deepEqual((await state()).names, ["world-studios"]);
+  // A reading edition runs no script, so it takes no part: it carries no name and simply opens. It is set in
+  // the front door's faces all the same.
+  await page.locator('.world[data-world="studios"] a[href="/rooms/studios/"]').first().click();
+  await page.waitForURL(/\/rooms\/studios\/$/);
+  assert.deepEqual(await state(), { passage: false, names: ["none"] });
   assert.equal(await page.evaluate(() => document.scripts.length), 0);
   assert.match(await page.locator("h1").evaluate((h) => getComputedStyle(h).fontFamily), /^"Cashio Display"/);
   await expect.poll(() => page.evaluate(() => document.fonts.check('700 30px "Cashio Display"'))).toBe(true);
+  // Nor do the archives. The front door offers a passage to every page it leaves for, and ends the offer
+  // itself when the page ahead takes no part; left standing, the browser reports an error on that page.
+  // (This test fails on any console error.)
+  for (const [link, landed] of [
+    ['a[href="/command-deck.html"]', /\/command-deck\.html$/],
+    ['a[href="/v43/"]', /\/v43\/$/],
+  ]) {
+    await page.goto(new URL("/#doug", url).href, { waitUntil: "networkidle" });
+    await page.locator(link).first().click();
+    await page.waitForURL(landed);
+    assert.equal((await state()).passage, false);
+    await page.waitForLoadState("load");
+  }
+  // An old bookmark the front door forwards to the archive: the same.
+  await page.goto(new URL("/?keep=a%2Bb#deck=eve", url).href);
+  await page.waitForURL(/\/command-deck\.html\?keep=a%2Bb#deck=eve$/);
+  assert.equal((await state()).passage, false);
+  await page.waitForLoadState("load");
+  // An interactive room does the same when it leaves for its reading edition.
+  await page.goto(new URL("/rooms/studios/interactive/", url).href, { waitUntil: "networkidle" });
+  await page.locator('header a[href="/rooms/studios/"]').first().click();
+  await page.waitForURL(/\/rooms\/studios\/$/);
+  assert.equal((await state()).passage, false);
   // Paused on the front door: the passage ends before it starts, into the room and back out of it.
   await page.goto(new URL("/#worlds", url).href, { waitUntil: "networkidle" });
   await expect(page.locator("[data-motion-toggle]")).toBeEnabled();
@@ -989,11 +1014,5 @@ test("a world card opens into its room, the room folds back, and paused motion h
   assert.equal((await state()).passage, false);
   await expect(page.locator("#studios")).toHaveAttribute("data-room-state", "ready");
   await leave();
-  assert.equal((await state()).passage, false);
-  // Paused, arriving from a page that runs no script and so cannot end the passage itself: the room's own
-  // passage script ends it on arrival.
-  await page.goto(new URL("/rooms/studios/", url).href);
-  await page.locator('header a[href="/rooms/studios/interactive/"]').first().click();
-  await page.waitForURL(/\/rooms\/studios\/interactive\/$/);
   assert.equal((await state()).passage, false);
 });

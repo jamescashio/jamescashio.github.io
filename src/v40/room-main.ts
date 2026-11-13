@@ -1,6 +1,7 @@
 import { setupScenes } from "../helios/scenes.js";
 import type { RoomModule } from "../helios/room-contract";
 import "../helios/room-content.css";
+import "./room-passage.css";
 import { parseMissionHash } from "../odyssey/flight-plan";
 import { setupRoomScenes } from "./room-scenes.ts";
 
@@ -67,8 +68,12 @@ setupRoomScenes(motion);
 // The passage to and from the front door stays still while motion is paused.
 for (const moment of ["pageswap", "pagereveal"])
   addEventListener(moment, (event) => {
-    if (!motion())
-      (event as Event & { viewTransition?: { skipTransition(): void } | null }).viewTransition?.skipTransition();
+    if (motion()) return;
+    const passage = (event as Event & { viewTransition?: { ready: Promise<void>; skipTransition(): void } | null })
+      .viewTransition;
+    // An ended passage rejects its ready promise; nothing waits on it, so say so.
+    passage?.ready.catch(() => {});
+    passage?.skipTransition();
   });
 
 async function mount() {

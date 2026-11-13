@@ -1,6 +1,6 @@
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { JSDOM } from "jsdom";
@@ -163,11 +163,17 @@ test("a world card and its room share a name, and the passage script comes after
         [...page.querySelectorAll('link[rel="stylesheet"]')].map((link) => read(`dist${link.getAttribute("href")}`)),
       );
       const css = sheets.join("\n");
-      assert.match(css, optIn);
-      assert.ok(
-        css.includes(`html[data-room=${room}] main>section.room{view-transition-name:world-${room}}`),
-        `${room} ${edition || "reading"} room is named`,
-      );
+      if (edition) {
+        assert.match(css, optIn);
+        assert.ok(
+          css.includes(`html[data-room=${room}] main>section.room{view-transition-name:world-${room}}`),
+          `${room} interactive room is named`,
+        );
+      } else {
+        // A reading edition runs no script, so it could not end a passage toward a page that takes no part.
+        // It takes no part itself and simply opens.
+        assert.doesNotMatch(css, /view-transition/, `${room} reading edition takes no part in the passage`);
+      }
       // A room is set in the front door's faces and preloads those, not the older edition's.
       assert.match(css, /--display:\s*"Cashio Display"/);
       assert.match(css, /font-family:Cashio Display;src:url\(\/fonts\/oxanium-latin-variable\.woff2\)/);
@@ -194,9 +200,32 @@ test("a world card and its room share a name, and the passage script comes after
     assert.ok(head.querySelector('link[rel="stylesheet"]'));
   }
   const passage = await read("dist/passage.js");
-  assert.match(passage, /addEventListener\(\s*"pagereveal"/);
+  // It ends a passage toward any page but the front door and the interactive rooms, and any passage for a
+  // paused visitor, and it answers for the promise an ended passage rejects.
+  assert.match(passage, /addEventListener\("pageswap"/);
+  assert.ok(passage.includes(String.raw`path === "/" || /^\/rooms\/[a-z]+\/interactive\/$/.test(path)`));
   assert.match(passage, /getItem\("cashio-v40-motion"\) === "off"/);
-  assert.match(passage, /skipTransition\(\)/);
+  assert.match(passage, /ready\.catch\(function \(\) \{\}\);\s*passage\.skipTransition\(\)/);
+  // Every page that opts in loads it: a page whose stylesheets opt in without the script would hand a
+  // passage to pages that take no part.
+  const optsIn = new Map();
+  const pages = (await readdir("dist", { recursive: true })).filter((name) => name.endsWith(".html"));
+  assert.ok(pages.length > 20);
+  let takingPart = 0;
+  for (const name of pages) {
+    const page = new JSDOM(await read(`dist/${name}`)).window.document;
+    let opts = false;
+    for (const link of page.querySelectorAll('link[rel="stylesheet"][href^="/assets/"]')) {
+      const href = link.getAttribute("href");
+      if (!optsIn.has(href)) optsIn.set(href, /@view-transition/.test(await read(`dist${href}`)));
+      opts ||= optsIn.get(href);
+    }
+    for (const style of page.querySelectorAll("style")) opts ||= /@view-transition/.test(style.textContent);
+    if (!opts) continue;
+    takingPart += 1;
+    assert.ok(page.head.querySelector('script[src="/passage.js"]'), `${name} opts in without the passage script`);
+  }
+  assert.equal(takingPart, 5, "the front door and the four interactive rooms");
   // A reading edition carries no script at all.
   for (const room of rooms)
     assert.equal(new JSDOM(await read(`dist/rooms/${room}/index.html`)).window.document.scripts.length, 0);
