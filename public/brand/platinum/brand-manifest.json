@@ -35,7 +35,8 @@
       "large": "icon-512.png"
     },
     "provenance": "provenance.json",
-    "iconCacheVersion": "c-red-top-20261105"
+    "iconCacheVersion": "c-red-top-20261105",
+    "clearSignature": "signature-clear-840.webp"
   },
   "principles": [
     "Preserve detailed inlays and miniature A/I worlds",
@@ -49,8 +50,8 @@
   "files": [
     {
       "name": "BRAND_GUIDE.md",
-      "bytes": 4570,
-      "sha256": "fe28d84421f93d401552c79e4bf047df08cd2a0dde9196f3519bd3442e7e6898"
+      "bytes": 4940,
+      "sha256": "bf167d8ccffcd3dae1e778d1915d18d5f1c4904d292144233fc2866438a6f796"
     },
     {
       "name": "apple-touch-icon.png",
@@ -134,8 +135,8 @@
     },
     {
       "name": "provenance.json",
-      "bytes": 823,
-      "sha256": "4a8fd4ff07ff859bee3d0616b5f82f56342f8c6c162704508797a73584600ef3"
+      "bytes": 1164,
+      "sha256": "4289ad51db9c7abd2d0210cd75d2a49460e6e18f2a9cc787887f30a9744cf1df"
     },
     {
       "name": "share-card.jpg",
@@ -156,6 +157,16 @@
       "name": "signature-840.webp",
       "bytes": 47012,
       "sha256": "cc800bdd3ffc13870234d4ca0fd8c06e172e0bf2c3343102002296ffe4caf4bd"
+    },
+    {
+      "name": "signature-clear-420.webp",
+      "bytes": 36812,
+      "sha256": "581b3c59b3fe7b5a76320c817741fbdce40700a3bf8d26a63556df1cb91e8463"
+    },
+    {
+      "name": "signature-clear-840.webp",
+      "bytes": 105924,
+      "sha256": "8a167fef7fb6a4f97b9728fef57fdff4ed7cb44ad5ed997558405310de4d5499"
     },
     {
       "name": "signature.png",

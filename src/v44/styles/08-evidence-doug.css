@@ -344,14 +344,15 @@ kbd {
   display: grid;
   gap: 16px;
 }
-/* The signature is painted on near black; lighten keeps whichever is brighter, so the card shows through and no box edge appears. */
+/*
+ * The clear signature: the approved artwork with its painted ground made see through
+ * (scripts/build-signature-clear.py), so only the letters, the orbits and their light sit on the card.
+ */
 .signature {
-  width: min(100%, 420px);
+  width: min(100%, 440px);
   height: auto;
-  mix-blend-mode: lighten;
-  /* Its painted glow fades out before the image's edge, so no rectangle reads against the card. */
-  -webkit-mask-image: radial-gradient(ellipse 54% 60% at 50% 50%, #000 66%, transparent 100%);
-  mask-image: radial-gradient(ellipse 54% 60% at 50% 50%, #000 66%, transparent 100%);
+  /* The artwork keeps a margin for its orbit; pull it back so the letters line up with the words below. */
+  margin-left: -22px;
 }
 .contact-title {
   font-size: clamp(32px, 4vw, 52px);

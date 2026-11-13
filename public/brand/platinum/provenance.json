@@ -12,5 +12,6 @@
   "faviconAccentOrder": {
     "top": "#FF3D55",
     "bottom": "#3578FF"
-  }
+  },
+  "clear_signature": "signature-clear-420.webp and signature-clear-840.webp are derived from signature.png by scripts/build-signature-clear.py: the painted near black ground becomes transparency and every other pixel keeps its light. No repainting, recoloring or generated replacement. Laid over black they reproduce the approved artwork."
 }

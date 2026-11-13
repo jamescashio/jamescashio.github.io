@@ -108,3 +108,32 @@ test("V43 Centauri is preserved at /v43/ and stays out of the index", async () =
   assert.equal(document.querySelector('link[rel="canonical"]').href, "https://cashio.us/v43/");
   assert.ok(document.querySelector("#v40-root main"), "the V43 reading edition is prerendered");
 });
+
+test("the contact card shows the signature without its painted ground, so no box or oval reads around it", async () => {
+  const document = new JSDOM(await read("dist/index.html")).window.document;
+  const signature = document.querySelector("#contact img.signature");
+  assert.equal(signature.getAttribute("src"), "/brand/platinum/signature-clear-840.webp");
+  assert.match(
+    signature.getAttribute("srcset"),
+    /signature-clear-420\.webp 420w, \/brand\/platinum\/signature-clear-840\.webp 840w/,
+  );
+  for (const [width, height, budget] of [
+    [420, 194, 50_000],
+    [840, 387, 130_000],
+  ]) {
+    const bytes = await readFile(new URL(`../dist/brand/platinum/signature-clear-${width}.webp`, import.meta.url));
+    // An extended WebP whose header says it carries alpha, at the approved artwork's own shape.
+    assert.equal(bytes.subarray(12, 16).toString("latin1"), "VP8X");
+    assert.equal(bytes[20] & 0x10, 0x10, "the file carries transparency");
+    assert.equal(1 + bytes.readUIntLE(24, 3), width);
+    assert.equal(1 + bytes.readUIntLE(27, 3), height);
+    assert.ok(bytes.length < budget, `${width} px clear signature is ${bytes.length} bytes`);
+  }
+  // The old treatment hid the ground with a blend and an oval mask; neither is needed now.
+  const styles = await Promise.all(
+    [...document.querySelectorAll('link[rel="stylesheet"]')].map((link) => read(`dist${link.getAttribute("href")}`)),
+  );
+  const rule = styles.join("\n").match(/\.signature\{[^}]*\}/)?.[0] ?? "";
+  assert.ok(rule, "the signature has its rule");
+  assert.doesNotMatch(rule, /mask|mix-blend-mode/);
+});

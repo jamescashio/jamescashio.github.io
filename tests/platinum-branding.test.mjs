@@ -239,7 +239,7 @@ for (const [path, shape] of Object.entries(pages)) {
       await expect.poll(() => signature.evaluate((node) => node.complete && node.naturalWidth > 0)).toBe(true);
       assert.match(
         await signature.evaluate((node) => node.currentSrc),
-        /\/brand\/platinum\/signature-(?:420|840|1680)\.webp$/,
+        /\/brand\/platinum\/signature-(?:clear-)?(?:420|840|1680)\.webp$/,
       );
       assert.equal(
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),

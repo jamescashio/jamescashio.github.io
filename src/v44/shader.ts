@@ -252,7 +252,8 @@ void main() {
     vec2 outward = normalize(vec2(cos(thW), tilt * sin(thW)));
     float sunlit = pow(max(dot(outward, sunDir), 0.0), 1.5);
     float plate = 0.8 + 0.2 * hash21(vec2(iW, floor(v * 2.0) + 7.0));
-    vec3 wall = (vec3(0.085, 0.092, 0.108) + vec3(0.62, 0.66, 0.74) * sunlit * 0.9) * plate;
+    // Lit from above by the deck's own spill, darker toward the keel: a solid wall, not a pane of sky.
+    vec3 wall = (vec3(0.15, 0.158, 0.18) * (1.0 - 0.5 * v) + vec3(0.62, 0.66, 0.74) * sunlit * 0.9) * plate;
     wall *= mix(0.4, 1.0, seam) * (1.0 - 0.4 * fall(0.05, 0.0, abs(v - 0.5)));
     wall *= 1.0 - 0.35 * fall(0.16, 0.0, v);
     // Two rows of ports; most are dark, as on any ship at rest.
