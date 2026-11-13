@@ -1,7 +1,7 @@
 {
   "name": "cashio-us",
   "private": true,
-  "version": "44.3.0",
+  "version": "44.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,8 +9,8 @@
     "check:layout": "npm run build && npm run check:layout:runtime",
     "check:layout:runtime": "node scripts/check_layout_runtime.mjs",
     "check:layout:runtime:pinned": "node scripts/check_layout_runtime.mjs --expected-browser-major=147",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,html}\" \"tests/**/*.mjs\" \"scripts/**/*.{mjs,mts}\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\" \"v38/**/*.html\" \"v39/**/*.html\" \"v40/**/*.html\" \"v43/**/*.html\" \"index.html\" \"public/helios-entry.js\" \"public/v40-entry.js\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,html}\" \"tests/**/*.mjs\" \"scripts/**/*.{mjs,mts}\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\" \"v38/**/*.html\" \"v39/**/*.html\" \"v40/**/*.html\" \"v43/**/*.html\" \"index.html\" \"public/helios-entry.js\" \"public/v40-entry.js\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,css,html}\" \"tests/**/*.mjs\" \"scripts/**/*.{mjs,mts}\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\" \"v38/**/*.html\" \"v39/**/*.html\" \"v40/**/*.html\" \"v43/**/*.html\" \"index.html\" \"public/helios-entry.js\" \"public/v40-entry.js\" \"public/passage.js\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,css,html}\" \"tests/**/*.mjs\" \"scripts/**/*.{mjs,mts}\" \"*.{js,json,md,ts}\" \"docs/**/*.md\" \".github/**/*.{md,yml,yaml}\" \"public/**/*.json\" \"v38/**/*.html\" \"v39/**/*.html\" \"v40/**/*.html\" \"v43/**/*.html\" \"index.html\" \"public/helios-entry.js\" \"public/v40-entry.js\" \"public/passage.js\"",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
     "test:node": "node --import tsx --test --test-concurrency=1 tests/a11y-performance.test.mjs tests/animation-timing.test.mjs tests/audio-policy.test.mjs tests/client-activation.test.mjs tests/craft-lineage.test.mjs tests/deck-navigation.test.mjs tests/flight-experience.test.mjs tests/flight-plan.test.mjs tests/guided-experience.test.mjs tests/hud-layout.test.mjs tests/layout-verifier.test.mjs tests/mobile-builds-order.test.mjs tests/module-boundaries.test.mjs tests/plate-optimization.test.mjs tests/power-on.test.mjs tests/prerender.test.mjs tests/release-validity.test.mjs tests/stage-textures.test.mjs tests/viewscreen-visibility.test.mjs tests/perspective.test.mjs tests/evidence-console.test.mjs tests/golden-path.test.mjs tests/v40-navigation.test.mjs tests/storm-security.test.mjs tests/v44-drummer.test.mjs",

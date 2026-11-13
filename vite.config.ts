@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { heliosAssetDelivery } from "./scripts/helios-assets.mjs";
@@ -9,8 +9,21 @@ import { v44Status } from "./scripts/v44-status.mjs";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const assetDelivery = heliosAssetDelivery();
 
+// The front door's passage script goes last in its head, after the stylesheet the build adds there, so the
+// browser has the styles that opt the page into the passage before it starts the body. See public/passage.js.
+const passageLast: Plugin = {
+  name: "passage-last",
+  transformIndexHtml: {
+    order: "post",
+    handler(html, ctx) {
+      if (path.resolve(ctx.filename) !== path.join(__dirname, "index.html")) return html;
+      return [{ tag: "script", attrs: { src: "/passage.js" }, injectTo: "head" }];
+    },
+  },
+};
+
 export default defineConfig({
-  plugins: [v44Status(__dirname), react(), tailwindcss(), assetDelivery.plugin],
+  plugins: [v44Status(__dirname), react(), tailwindcss(), assetDelivery.plugin, passageLast],
   experimental: { renderBuiltUrl: assetDelivery.renderBuiltUrl },
   resolve: {
     alias: { "@": path.resolve(__dirname, "src") },

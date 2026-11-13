@@ -15,7 +15,7 @@ const exists = (p) =>
 
 const page = async () => new JSDOM(await read("dist/index.html")).window.document;
 
-test("V44 Heighliner is the built Drummer front door with seven stations in order", async () => {
+test("V44 Holtzman is the built Drummer front door with seven stations in order", async () => {
   const document = await page();
   const receipt = JSON.parse(await read("public/v40/site-release.json"));
   assert.equal(document.title, `Doug Cashio · cAshIo · Local AI workshop · V44 ${receipt.presentation.name}`);
@@ -136,4 +136,71 @@ test("the contact card shows the signature without its painted ground, so no box
   const rule = styles.join("\n").match(/\.signature\{[^}]*\}/)?.[0] ?? "";
   assert.ok(rule, "the signature has its rule");
   assert.doesNotMatch(rule, /mask|mix-blend-mode/);
+});
+
+test("a world card and its room share a name, and the passage script comes after the styles that opt in", async () => {
+  const document = new JSDOM(await read("dist/index.html")).window.document;
+  const door = (
+    await Promise.all(
+      [...document.querySelectorAll('link[rel="stylesheet"]')].map((link) => read(`dist${link.getAttribute("href")}`)),
+    )
+  ).join("\n");
+  const rooms = ["starship", "principles", "studios", "heritage"];
+  assert.deepEqual(
+    [...document.querySelectorAll(".world[data-world]")].map((card) => card.dataset.world),
+    rooms,
+  );
+  // Both pages opt in, and only where the visitor has not asked for less motion.
+  const optIn = /@media ?\(prefers-reduced-motion:\s*no-preference\)\{@view-transition\{navigation:auto\}\}/;
+  assert.match(door, optIn);
+  for (const room of rooms) {
+    const card = document.querySelector(`.world[data-world="${room}"]`);
+    assert.equal(card.querySelector("a").getAttribute("href"), `/rooms/${room}/interactive/`);
+    assert.ok(door.includes(`.world[data-world=${room}]{view-transition-name:world-${room}}`), `${room} card is named`);
+    for (const edition of ["", "interactive/"]) {
+      const page = new JSDOM(await read(`dist/rooms/${room}/${edition}index.html`)).window.document;
+      const sheets = await Promise.all(
+        [...page.querySelectorAll('link[rel="stylesheet"]')].map((link) => read(`dist${link.getAttribute("href")}`)),
+      );
+      const css = sheets.join("\n");
+      assert.match(css, optIn);
+      assert.ok(
+        css.includes(`html[data-room=${room}] main>section.room{view-transition-name:world-${room}}`),
+        `${room} ${edition || "reading"} room is named`,
+      );
+      // A room is set in the front door's faces and preloads those, not the older edition's.
+      assert.match(css, /--display:\s*"Cashio Display"/);
+      assert.match(css, /font-family:Cashio Display;src:url\(\/fonts\/oxanium-latin-variable\.woff2\)/);
+      const fonts = [...page.querySelectorAll('link[rel="preload"][as="font"]')].map((link) =>
+        link.getAttribute("href"),
+      );
+      assert.deepEqual(fonts, ["/fonts/oxanium-latin-variable.woff2", "/fonts/exo2-500.woff2"]);
+    }
+  }
+  // The browser reads the opt in as it starts the body. A script in the head makes it finish the stylesheets
+  // first; before them, or in the body, it would not. So the passage script is the last thing in the head.
+  const heads = [
+    document,
+    ...(await Promise.all(rooms.map((room) => read(`dist/rooms/${room}/interactive/index.html`)))),
+  ]
+    .map((page) => (typeof page === "string" ? new JSDOM(page).window.document : page))
+    .map((page) => page.head);
+  for (const head of heads) {
+    const last = head.lastElementChild;
+    assert.equal(last.tagName, "SCRIPT");
+    assert.equal(last.getAttribute("src"), "/passage.js");
+    for (const attribute of ["async", "defer", "type"]) assert.equal(last.hasAttribute(attribute), false);
+    assert.equal(head.querySelectorAll('script[src="/passage.js"]').length, 1);
+    assert.ok(head.querySelector('link[rel="stylesheet"]'));
+  }
+  const passage = await read("dist/passage.js");
+  assert.match(passage, /addEventListener\(\s*"pagereveal"/);
+  assert.match(passage, /getItem\("cashio-v40-motion"\) === "off"/);
+  assert.match(passage, /skipTransition\(\)/);
+  // A reading edition carries no script at all.
+  for (const room of rooms)
+    assert.equal(new JSDOM(await read(`dist/rooms/${room}/index.html`)).window.document.scripts.length, 0);
+  // Paused motion ends a passage at once, and the widest screens get one more step.
+  assert.match(door, /html\[data-motion=off\]::view-transition-group\(\*\)/);
+  assert.match(door, /@media ?\(min-width:\s*3200px\)\{:root\{--frame-max:\s*2040px\}/);
 });

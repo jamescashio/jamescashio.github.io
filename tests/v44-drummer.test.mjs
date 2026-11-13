@@ -252,3 +252,11 @@ test("the gate is drawn as a hoop with depth, with every edge one pixel sharp", 
   // GLSL ES 1.00 leaves a falling smoothstep undefined, so the shader never writes one.
   assert.doesNotMatch(FRAGMENT_SHADER, /smoothstep\(\s*1\.0\s*,\s*0/);
 });
+
+test("three ships use the gate, in front of the hull and only while it is lit", () => {
+  assert.match(FRAGMENT_SHADER, /for \(int i = 0; i < 3; i\+\+\) \{/);
+  // A ship is seen only while the gate is lit and has not yet been flown through.
+  assert.match(FRAGMENT_SHADER, /float seen = [^;]*uIgnite \* fadeGate;/);
+  // Ships are drawn after the deck, so one passing the near hull is in front of it.
+  assert.ok(FRAGMENT_SHADER.indexOf("float seen =") > FRAGMENT_SHADER.indexOf("float face ="));
+});

@@ -25,7 +25,18 @@ for (const id of roomIds) {
     "meta,link[rel='stylesheet'],link[rel='icon'],link[rel='preload']",
   )) {
     if (/^(og:|twitter:)/.test(element.getAttribute("property") || element.getAttribute("name") || "")) continue;
+    // A room is set in the front door's faces, so it preloads those and not the older edition's.
+    if (element.getAttribute("as") === "font") continue;
     doc.head.append(element.cloneNode(true));
+  }
+  for (const href of ["/fonts/oxanium-latin-variable.woff2", "/fonts/exo2-500.woff2"]) {
+    const font = doc.createElement("link");
+    font.rel = "preload";
+    font.href = href;
+    font.setAttribute("as", "font");
+    font.type = "font/woff2";
+    font.setAttribute("crossorigin", "");
+    doc.head.append(font);
   }
   const roomStyle = doc.createElement("link");
   roomStyle.rel = "stylesheet";
@@ -154,6 +165,11 @@ for (const id of roomIds) {
     link.href = "/assets/" + name;
     interactive.head.append(link);
   }
+  // After every stylesheet: the browser finishes them before it starts the body, so it always knows the room
+  // takes part in the passage from a world card. See public/passage.js.
+  const passage = interactive.createElement("script");
+  passage.src = "/passage.js";
+  interactive.head.append(passage);
   await mkdir(`dist/rooms/${id}/interactive`, { recursive: true });
   await writeFile(
     `dist/rooms/${id}/interactive/index.html`,

@@ -14,15 +14,15 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 
-test("Heighliner identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
-  assert.equal(currentRelease.experienceVersion, "44.3.0");
-  assert.equal(currentRelease.releaseName, "HEIGHLINER");
-  assert.equal(currentRelease.visualEdition, "Heighliner");
+test("Holtzman identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
+  assert.equal(currentRelease.experienceVersion, "44.4.0");
+  assert.equal(currentRelease.releaseName, "HOLTZMAN");
+  assert.equal(currentRelease.visualEdition, "Holtzman");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseId, "heighliner-44.3.0-20261112");
-  assert.equal(currentRelease.updatedDate, "2026-11-12");
+  assert.equal(currentRelease.releaseId, "holtzman-44.4.0-20261113");
+  assert.equal(currentRelease.updatedDate, "2026-11-13");
   assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-06");
-  assert.equal(currentRelease.presentation.preparedDate, "2026-11-12");
+  assert.equal(currentRelease.presentation.preparedDate, "2026-11-13");
   // Doug approved publication; approval sets the release date and published flag together.
   assert.equal(currentRelease.published, currentRelease.status === "released");
   assert.equal(currentRelease.releaseDate === null, !currentRelease.published);
@@ -312,7 +312,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   }
   assert.equal(packageJson.scripts.lint, "eslint . --max-warnings 0");
   const formattingScope =
-    '"src/**/*.{ts,tsx,js,jsx,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "v39/**/*.html" "v40/**/*.html" "v43/**/*.html" "index.html" "public/helios-entry.js" "public/v40-entry.js"';
+    '"src/**/*.{ts,tsx,js,jsx,css,html}" "tests/**/*.mjs" "scripts/**/*.{mjs,mts}" "*.{js,json,md,ts}" "docs/**/*.md" ".github/**/*.{md,yml,yaml}" "public/**/*.json" "v38/**/*.html" "v39/**/*.html" "v40/**/*.html" "v43/**/*.html" "index.html" "public/helios-entry.js" "public/v40-entry.js" "public/passage.js"';
   assert.equal(packageJson.scripts.format, `prettier --write ${formattingScope}`);
   assert.equal(packageJson.scripts["format:check"], `prettier --check ${formattingScope}`);
   const expandedTest = expandScript(packageJson.scripts, "test");
@@ -966,6 +966,11 @@ test("The V39 archive ships Helios directly, with bounded compatibility routing 
     assert.equal(reading.querySelectorAll('a[href^="/v39/"]').length, 0);
     const interactive = new JSDOM(await read(`dist/rooms/${id}/interactive/index.html`)).window.document;
     assert.equal(interactive.querySelectorAll('script[type="module"][src]').length, 1);
+    // The passage script is the last thing in the head, after every stylesheet, so the browser has the styles
+    // that opt the room into the passage before it starts the body.
+    assert.equal(interactive.querySelectorAll("script").length, 2);
+    assert.equal(interactive.head.lastElementChild.getAttribute("src"), "/passage.js");
+    assert.equal(interactive.querySelectorAll("body link[rel=stylesheet]").length, 0);
     assert.equal(interactive.querySelectorAll('a[href^="/v39/"]').length, 0);
     assert.ok(interactive.querySelector('a[href="/#worlds"]'));
     for (const image of reading.querySelectorAll("img"))
