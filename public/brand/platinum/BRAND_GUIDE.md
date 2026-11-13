@@ -32,6 +32,7 @@ Blue is the principal luminous accent; red is smaller and deliberate. Keep neutr
 Canonical published kit: `https://cashio.us/brand/platinum/`.
 
 - Detailed signature: `signature-420.webp`, `signature-840.webp`, `signature-1680.webp`; the full-resolution image is `signature.png`. Aspect ratio is 1847:851 (1680:774 for the largest optimized export).
+- Clear signature, for placing the detailed signature on a surface that is not black: `signature-clear-420.webp` and `signature-clear-840.webp`. They are the approved artwork with its painted ground made transparent by `python scripts/build-signature-clear.py`, so only the letters, the orbits and their light show. The current front door uses them on its contact card.
 - Everyday wordmark: outlined, font-independent `everyday-dark.svg` and `everyday-light.svg`. Use the matching C beside it when space permits.
 - Current site header: the compact outlined `wordmark.svg`, paired with `icon.svg`. The everyday marks remain available for other placements.
 - Small placements: `favicon.svg`, `icon.svg`, and PNGs at 16, 32, 48, 64, 180, 192 and 512 pixels. Use the bold C silhouette at small sizes.
