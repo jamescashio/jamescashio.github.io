@@ -64,6 +64,12 @@ addEventListener("pageshow", (e) => {
 });
 syncMotion();
 setupRoomScenes(motion);
+// The passage to and from the front door stays still while motion is paused.
+for (const moment of ["pageswap", "pagereveal"])
+  addEventListener(moment, (event) => {
+    if (!motion())
+      (event as Event & { viewTransition?: { skipTransition(): void } | null }).viewTransition?.skipTransition();
+  });
 
 async function mount() {
   try {

@@ -1360,7 +1360,7 @@ test("Studios preserve the current page, return focus, Back/Forward and exact si
   assert.equal(await page.evaluate(() => performance.timeOrigin), stamp, "no full-page handoff to V37 occurred");
 });
 
-test("The original studios fit desktop and narrow phones, share Helios type and pass accessibility checks", async (t) => {
+test("The original studios fit desktop and narrow phones, share the room's type and pass accessibility checks", async (t) => {
   for (const width of [1440, 390, 320]) {
     const page = await visit(t, { width, height: width === 1440 ? 1000 : 844, hash: "#studios" });
     await page.screenshot({ path: path.join(output, `studios-${width}.png`) });
@@ -1377,7 +1377,8 @@ test("The original studios fit desktop and narrow phones, share Helios type and 
         .locator(dialog)
         .evaluate((el) => ({ width: el.clientWidth, scroll: el.scrollWidth, font: getComputedStyle(el).fontFamily }));
       assert.ok(box.scroll <= box.width + 1, `${hash} fits ${width}px`);
-      assert.match(box.font, /Instrument Sans/);
+      // A scene opened over a room is set in the room's faces, which are the front door's.
+      assert.match(box.font, /Cashio Text/);
       if (hash === "#signature") {
         await expect(page.locator(".cashio-brand-mark img")).toHaveJSProperty("complete", true);
         const artwork = await page.locator(".cashio-brand-mark img").boundingBox();

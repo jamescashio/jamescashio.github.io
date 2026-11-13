@@ -852,3 +852,76 @@
     font-size: 12px;
   }
 }
+
+/*
+ * The front door's language. A room is a page of the current site, so it speaks in the front door's
+ * faces: Oxanium for display, Exo 2 for text. The faces are named for this site and not for the fonts,
+ * because the film and flight scenes that open over a room register "Oxanium" as a name of their own.
+ */
+@font-face {
+  font-family: "Cashio Display";
+  src: url("/fonts/oxanium-latin-variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cashio Text";
+  src: url("/fonts/exo2-500.woff2") format("woff2");
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cashio Text";
+  src: url("/fonts/exo2-700.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+}
+html[data-room] {
+  --display: "Cashio Display", "Cashio Text", system-ui, sans-serif;
+  --sans: "Cashio Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --void: #05070c;
+}
+/* Oxanium runs narrower and lighter than the face these headings were set in, so they take more weight. */
+html[data-room] :is(h1, h2, h3, .display, .room-title) {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/*
+ * Arriving from a world card on the front door, the card opens into the room; leaving, the room folds
+ * back into its card. A room and its card share a name; the front door's stylesheet holds the other half.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+html[data-room] main > section.room {
+  view-transition-class: world;
+}
+html[data-room="starship"] main > section.room {
+  view-transition-name: world-starship;
+}
+html[data-room="principles"] main > section.room {
+  view-transition-name: world-principles;
+}
+html[data-room="studios"] main > section.room {
+  view-transition-name: world-studios;
+}
+html[data-room="heritage"] main > section.room {
+  view-transition-name: world-heritage;
+}
+::view-transition-group(.world) {
+  animation-duration: 440ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-old(.world),
+::view-transition-new(.world) {
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+}

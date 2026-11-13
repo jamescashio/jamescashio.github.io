@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "44.3.0",
-    "visualEdition": "Heighliner",
+    "experienceVersion": "44.4.0",
+    "visualEdition": "Holtzman",
     "receipt": "/v40/site-release.json"
   }
 }

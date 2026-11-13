@@ -328,6 +328,32 @@ void main() {
   col += beaconTint * beacon * fadeGate * 0.9;
   col += vec3(0.25, 0.45, 1.0) * exp(-abs(d) / (w * 3.2)) * 0.08 * uIgnite * fadeGate * mix(0.4, 1.0, nearSide);
 
+  // Traffic. Three small ships use the gate: two come through toward the viewer and one leaves through
+  // it. Each starts as a point inside the opening and sweeps past in front of the near hull, so nothing
+  // ever has to pass behind the ring. They give the gate its scale.
+  for (int i = 0; i < 3; i++) {
+    float fi = float(i);
+    float u = fract(uTime / (19.0 + fi * 7.0) + fi * 0.37 + 0.11);
+    float heading = 1.0;
+    if (i == 2) {
+      u = 1.0 - u;
+      heading = -1.0;
+    }
+    // Perspective: far beyond the gate a ship crawls, close to the viewer it sweeps by.
+    float k = pow(u, 2.6);
+    vec2 from = R * vec2(0.2 * sin(fi * 2.4 + 1.0), 0.12 * tilt * cos(fi * 1.7));
+    vec2 to = R * vec2(-1.9 + fi * 1.6, -1.5 - 0.3 * fi);
+    vec2 course = normalize(to - from);
+    vec2 q = p - mix(from, to, k);
+    float size = R * mix(0.004, 0.026, k) + px;
+    float behind = -heading * dot(q, course);
+    float across = dot(q, vec2(-course.y, course.x));
+    float wake = exp(-abs(across) / (size * 0.4)) * fall(size * mix(4.0, 11.0, k), 0.0, behind) * step(0.0, behind);
+    float body = exp(-dot(q, q) / (size * size * 0.45));
+    float seen = smoothstep(0.0, 0.08, u) * fall(1.0, 0.88, u) * uIgnite * fadeGate;
+    col += (vec3(1.0, 0.95, 0.86) * body * 1.1 + vec3(0.32, 0.58, 1.0) * wake * 0.55) * seen;
+  }
+
   // Ignition front: on a first visit a bright band races once along both arcs of the lit gate.
   float front = exp(-pow((orderE - uSweep) * 40.0, 2.0)) * step(uSweep, 0.999) * step(0.001, uSweep);
   col += vec3(0.6, 0.8, 1.0) * front * (exp(-abs(d) / (w * 0.45)) * 1.6 + exp(-abs(d) / (w * 1.6)) * 0.25) * fadeGate;

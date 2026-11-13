@@ -296,6 +296,19 @@ html.js[data-motion="on"] .station-head.in h2::after {
   }
 }
 
+/* The widest screens (an ultrawide at full width) get one more step, so the page does not sit as a narrow column in a sea of sky. */
+@media (min-width: 3200px) {
+  :root {
+    --frame-max: 2040px;
+  }
+  body {
+    font-size: 22px;
+  }
+  .arrival-copy {
+    max-width: 1240px;
+  }
+}
+
 /* Pause and reduced motion leave a still page: every transition and animation lands on its final state at once. */
 html[data-motion="off"] *,
 html[data-motion="off"] *::before,
@@ -494,4 +507,49 @@ html.js[data-motion="on"] .station-head.in .station-num {
     content: " (" attr(href) ")";
     font-size: 0.85em;
   }
+}
+
+/*
+ * The passage to a room. Where the browser can carry a view across a page change, the chosen world card
+ * opens into its room and the room folds back into its card: a card and its room share a name, here and
+ * in the rooms' stylesheet. Paused motion ends it at once (src/v44/passage.ts skips it as well).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+.world[data-world] {
+  view-transition-class: world;
+}
+.world[data-world="starship"] {
+  view-transition-name: world-starship;
+}
+.world[data-world="principles"] {
+  view-transition-name: world-principles;
+}
+.world[data-world="studios"] {
+  view-transition-name: world-studios;
+}
+.world[data-world="heritage"] {
+  view-transition-name: world-heritage;
+}
+::view-transition-group(.world) {
+  animation-duration: 440ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-old(.world),
+::view-transition-new(.world) {
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+}
+html[data-motion="off"]::view-transition-group(*),
+html[data-motion="off"]::view-transition-old(*),
+html[data-motion="off"]::view-transition-new(*) {
+  animation-duration: 0s;
 }

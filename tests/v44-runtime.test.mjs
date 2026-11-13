@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Heighliner");
+  await expect(log).toContainText("Holtzman");
 });
 
 test("each station lights the sky in its own color", async (t) => {
@@ -934,4 +934,66 @@ test("Back while a room's film is still loading cancels it, so the room never en
   await expect(page.locator("#helios-studio")).toHaveCount(0);
   assert.equal(await page.evaluate(() => document.querySelector("main").inert), false);
   assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, "/rooms/studios/interactive/");
+});
+
+test("a world card opens into its room, the room folds back, and paused motion holds both still", async (t) => {
+  const page = await visit(t, { hash: "#worlds", motion: "no-preference" });
+  await page.addInitScript(() => {
+    addEventListener("pagereveal", (event) => {
+      const names = (selector) =>
+        [...document.querySelectorAll(selector)].map((el) => getComputedStyle(el).viewTransitionName);
+      window.__names = [...names(".world[data-world]"), ...names("main > section.room")];
+      // The passage ran if the browser got as far as starting it; a passage that is dropped or ended never does.
+      if (!event.viewTransition) window.__passage = false;
+      else
+        event.viewTransition.ready.then(
+          () => (window.__passage = true),
+          () => (window.__passage = false),
+        );
+    });
+  });
+  // The reveal can come a moment after the address changes.
+  const state = async () => {
+    await page.waitForFunction(() => window.__passage !== undefined);
+    return page.evaluate(() => ({ passage: window.__passage, names: window.__names }));
+  };
+  const cards = ["world-starship", "world-principles", "world-studios", "world-heritage"];
+  const enter = async (room) => {
+    await page.locator(`.world[data-world="${room}"] a[href="/rooms/${room}/interactive/"]`).first().click();
+    await page.waitForURL(new RegExp(`/rooms/${room}/interactive/$`));
+  };
+  const leave = async () => {
+    await page.locator("a.room-back").first().click();
+    await page.waitForURL(/\/#worlds$/);
+  };
+  // The card and the room carry one name, and the browser carries the view between them, both ways, every time.
+  for (const room of ["studios", "starship"]) {
+    await enter(room);
+    assert.deepEqual(await state(), { passage: true, names: [`world-${room}`] });
+    await expect(page.locator(`#${room}`)).toHaveAttribute("data-room-state", "ready");
+    await leave();
+    assert.deepEqual(await state(), { passage: true, names: cards });
+  }
+  // A reading edition carries the same name and the front door's faces, and no script.
+  await page.goto(new URL("/rooms/studios/", url).href);
+  assert.deepEqual((await state()).names, ["world-studios"]);
+  assert.equal(await page.evaluate(() => document.scripts.length), 0);
+  assert.match(await page.locator("h1").evaluate((h) => getComputedStyle(h).fontFamily), /^"Cashio Display"/);
+  await expect.poll(() => page.evaluate(() => document.fonts.check('700 30px "Cashio Display"'))).toBe(true);
+  // Paused on the front door: the passage ends before it starts, into the room and back out of it.
+  await page.goto(new URL("/#worlds", url).href, { waitUntil: "networkidle" });
+  await expect(page.locator("[data-motion-toggle]")).toBeEnabled();
+  await page.locator("[data-motion-toggle]").click();
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "off");
+  await enter("studios");
+  assert.equal((await state()).passage, false);
+  await expect(page.locator("#studios")).toHaveAttribute("data-room-state", "ready");
+  await leave();
+  assert.equal((await state()).passage, false);
+  // Paused, arriving from a page that runs no script and so cannot end the passage itself: the room's own
+  // passage script ends it on arrival.
+  await page.goto(new URL("/rooms/studios/", url).href);
+  await page.locator('header a[href="/rooms/studios/interactive/"]').first().click();
+  await page.waitForURL(/\/rooms\/studios\/interactive\/$/);
+  assert.equal((await state()).passage, false);
 });
