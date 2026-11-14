@@ -24,6 +24,8 @@ const UNIFORMS = [
   "uPlanet",
   "uNebA",
   "uNebB",
+  "uJump",
+  "uFar",
 ] as const;
 /** Without scroll, pointer or keys, the sky settles into a still frame: soon behind the reading, later at the gate. */
 const IDLE_DEEP_MS = 2500;
@@ -37,6 +39,8 @@ export type SkyState = {
   layout: SkyLayout;
   /** The station on screen, which picks the nebula's colors. */
   station?: string;
+  /** The far gate, the next in the chain: where it hangs and how large, in the gate's own units. */
+  far: [number, number, number];
 };
 /** Reasons the sky may not animate. Any one of them holds it on its last frame. */
 export type Hold = "motion" | "hidden" | "film" | "lost" | "idle" | "slow";
@@ -74,6 +78,15 @@ export class Sky {
   private pulseStart = -1;
   private pulseLevel = 0;
   private pulseColor: [number, number, number] = [0.45, 0.65, 1];
+  /** A world chosen as a destination holds the far gate lit in its color for as long as it is chosen. */
+  private lockTarget = 0;
+  private lockLevel = 0;
+  /** A jump to the far gate and through it: when it began, how long it takes, and how far along it is. */
+  private jumpStart = -1;
+  private jumpMs = 1;
+  private jumpLevel = 0;
+  /** Where the far gate is drawn; it glides to a new place when the screen changes shape. */
+  private far: [number, number, number] | null = null;
   private warp = 0;
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
@@ -213,6 +226,38 @@ export class Sky {
     this.wake();
   }
 
+  /** Light the far gate in a world's color while that world is chosen, and let it go when none is. */
+  lock(light: Rgb | null) {
+    if (light && motionEnabled()) {
+      this.pulseColor = [...light];
+      this.lockTarget = 0.5;
+    } else this.lockTarget = 0;
+    this.wake();
+  }
+
+  /**
+   * Fly to the far gate and through it, in a world's color. Answers whether the live scene is flying:
+   * a sky that is standing still for any reason leaves the jump to the page.
+   */
+  jump(light: Rgb, ms: number): boolean {
+    if (!this.program || !motionEnabled()) return false;
+    this.wake();
+    if (!this.running) return false;
+    this.pulseColor = [...light];
+    this.jumpMs = Math.max(1, ms);
+    this.jumpStart = performance.now();
+    return true;
+  }
+
+  /** Back from a jump, or one that never left: the far gate returns to its place. */
+  land() {
+    this.jumpStart = -1;
+    this.jumpLevel = 0;
+    this.lockTarget = 0;
+    this.lockLevel = 0;
+    this.redraw();
+  }
+
   /** When the live scene steps aside for the poster mid entrance, the gate still opens. */
   private finishEntrance() {
     if (this.sweepStart < 0) return;
@@ -300,14 +345,20 @@ export class Sky {
     this.tick = now;
     const s = this.state();
     const deep = s.transit >= 1;
-    const settled = this.warp < 0.02 && this.sweepStart < 0 && this.nebulaShift < 0.002 && this.pulseLevel < 0.01;
+    const settled =
+      this.warp < 0.02 &&
+      this.sweepStart < 0 &&
+      this.nebulaShift < 0.002 &&
+      this.pulseLevel < 0.01 &&
+      this.jumpStart < 0 &&
+      Math.abs(this.lockTarget - this.lockLevel) < 0.01;
     if (now - this.lastInput > (deep ? IDLE_DEEP_MS : IDLE_GATE_MS) && settled) {
       this.hold("idle", true);
       return;
     }
     // Sixty frames a second at most, half that behind content, counted in the display's own beats: a 75 Hz
     // screen is drawn on every beat and a 144 Hz one on every third, so none of them ever looks slow to itself.
-    const want = deep && this.warp < 0.02 ? 1000 / 30 : 1000 / 60;
+    const want = deep && this.warp < 0.02 && this.jumpStart < 0 ? 1000 / 30 : 1000 / 60;
     const beat = beatFor(want, this.refresh);
     if (now - this.last >= beat - 2) {
       const dt = this.last ? now - this.last : 16;
@@ -400,6 +451,9 @@ export class Sky {
     // The pulse rises in a tenth of a second and fades over about a second and a half.
     const since = this.pulseStart < 0 ? Infinity : now - this.pulseStart;
     this.pulseLevel = motion && since < 1600 ? Math.min(1, since / 100) * Math.exp(-since / 520) : 0;
+    this.lockLevel = motion ? this.lockLevel + (this.lockTarget - this.lockLevel) * 0.12 : 0;
+    // A jump holds at its far end until the page leaves or lands.
+    this.jumpLevel = motion && this.jumpStart >= 0 ? Math.min(1, Math.max(0, (now - this.jumpStart) / this.jumpMs)) : 0;
     this.pointer[0] += (this.pointerTarget[0] - this.pointer[0]) * 0.04;
     this.pointer[1] += (this.pointerTarget[1] - this.pointer[1]) * 0.04;
     // The nebula eases toward the station's colors over about two seconds, or changes at once when motion is off.
@@ -418,9 +472,12 @@ export class Sky {
     gl.uniform1f(u.uTransit, motion ? s.transit : 0);
     gl.uniform1f(u.uIgnite, this.ignite);
     gl.uniform1f(u.uSweep, this.sweep);
-    gl.uniform1f(u.uPulse, this.pulseLevel);
+    gl.uniform1f(
+      u.uPulse,
+      Math.max(this.pulseLevel, this.lockLevel, this.jumpLevel > 0 ? 0.6 + 0.4 * this.jumpLevel : 0),
+    );
     gl.uniform3f(u.uPulseColor, ...this.pulseColor);
-    gl.uniform1f(u.uWarp, motion ? Math.min(1, this.warp) : 0);
+    gl.uniform1f(u.uWarp, motion ? Math.min(1, Math.max(this.warp, this.jumpLevel > 0 ? 1 : 0)) : 0);
     gl.uniform1f(u.uDim, s.dim);
     gl.uniform2f(u.uPointer, motion ? this.pointer[0] : 0, motion ? this.pointer[1] : 0);
     gl.uniform4f(u.uRing, ...L.ring);
@@ -429,6 +486,10 @@ export class Sky {
     gl.uniform3f(u.uPlanet, ...L.planet);
     gl.uniform3f(u.uNebA, ...this.nebula[0]);
     gl.uniform3f(u.uNebB, ...this.nebula[1]);
+    gl.uniform1f(u.uJump, this.jumpLevel);
+    if (!this.far || !motion || !this.running) this.far = [...s.far];
+    else for (let c = 0; c < 3; c++) this.far[c] += (s.far[c] - this.far[c]) * 0.08;
+    gl.uniform3f(u.uFar, ...this.far);
     if (!timed) {
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       return 0;

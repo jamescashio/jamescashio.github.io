@@ -13,6 +13,7 @@ import { mountCinema } from "./cinema.ts";
 import { mountAge } from "./age.ts";
 import { mountFigures } from "./figures.ts";
 import { mountPassage } from "./passage.ts";
+import { mountJump } from "./jump.ts";
 import "./events.ts";
 import { $, $$ } from "./dom.ts";
 
@@ -31,6 +32,18 @@ const posterImage = $<HTMLImageElement>(".sky-poster")!;
 let heroSpan = innerHeight;
 let docSpan = 1;
 let layout = projectPoster(POSTERS[0], innerWidth, innerHeight);
+// The far gate hangs past the first one, a sixth of its size, a little off its line. On the bridge (a screen
+// at least twice as wide as tall, where the page reads on the left) it hangs large in the middle of the
+// window on the right, where a chosen world lights it and a jump flies to it.
+const bridge = matchMedia("(min-width: 2400px) and (min-aspect-ratio: 2/1)");
+const frame = $(".frame")!;
+const farFrom = (ring: number[]): [number, number, number] => {
+  if (!bridge.matches) return [ring[0] * 0.55 + 0.06, ring[1] * 0.55 + 0.05, ring[2] * 0.17];
+  const edge = frame.getBoundingClientRect().right;
+  const middle = (edge + innerWidth) / 2;
+  return [(middle - innerWidth / 2) / innerHeight, 0.03, Math.min(0.13, ((innerWidth - edge) / innerHeight) * 0.16)];
+};
+let far = farFrom(layout.ring);
 const measure = () => {
   heroSpan = Math.max(1, arrival.offsetHeight * 0.85);
   docSpan = Math.max(1, document.documentElement.scrollHeight - innerHeight);
@@ -39,6 +52,7 @@ const measure = () => {
     .objectPosition.split(" ")
     .map((v) => (v.endsWith("%") ? parseFloat(v) / 100 : 0.5)) as [number, number];
   layout = projectPoster(posterFor(posterImage.currentSrc || posterImage.src), innerWidth, innerHeight, position);
+  far = farFrom(layout.ring);
   // The poster zooms toward its own ring as the camera flies through.
   sky.style.setProperty("--ring-x", `${(innerWidth / 2 + layout.ring[0] * innerHeight).toFixed(1)}px`);
   sky.style.setProperty("--ring-y", `${(innerHeight / 2 - layout.ring[1] * innerHeight).toFixed(1)}px`);
@@ -60,6 +74,7 @@ const state = (): SkyState => {
     warpBoost: now < surgeUntil ? 1 : now - lastT < 160 ? warpBoost : 0,
     layout,
     station,
+    far,
   };
 };
 // A surge flies the live gate's warp; the painted poster answers with a short pulse of light.
@@ -109,7 +124,7 @@ const onScroll = () => {
     root.dataset.stage = stage;
     hud.toggleAttribute("data-scrolled", y > 8);
     trackDirection(y);
-    if (skyWaiting && transit <= 0.001) startSky();
+    if (skyWaiting && (transit <= 0.001 || transit >= 1)) startSky();
     skyEngine?.wake();
     skyEngine?.redraw();
   });
@@ -120,11 +135,12 @@ let skyEngine: Sky | null = null;
 let flareOff = 0;
 let filmPlaying = false;
 const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (el.textContent = text));
-// The live scene takes over from its painting only at the gate, where both show the same frame; a visitor
-// who has already set off keeps the poster until they come back to the top.
+// The live scene takes over from its painting at the gate, where both show the same frame, or past it,
+// where the painting is a dim backdrop behind the reading and the far gate is the thing to see. A visitor
+// caught mid flight, between the two, keeps the painting until they reach either end.
 let skyWaiting = false;
 const startSky = () => {
-  if (transit > 0.001) {
+  if (transit > 0.001 && transit < 1) {
     skyWaiting = true;
     return;
   }
@@ -199,6 +215,13 @@ mountCopyEmail();
 mountAge();
 mountFigures();
 mountPassage();
+// A world card is a destination: chosen, it lights the far gate; opened, the camera flies there and through.
+mountJump({
+  deep: () => transit >= 1,
+  lock: (light) => skyEngine?.lock(light),
+  fly: (light, ms) => skyEngine?.jump(light, ms) ?? false,
+  land: () => skyEngine?.land(),
+});
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
 // A decision at the helm reaches the sky: the far gate flares on the live scene, the painted gate on the poster.
 document.addEventListener("v44:route", (e) => {

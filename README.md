@@ -1,6 +1,8 @@
-# cAshIo V44 · Holtzman
+# cAshIo V44 · Navigator
 
-**Holtzman · Human in command** is V44.4, named for the effect in _Dune_ that folds space, because pages now fold into one another. A world card opens into its room and the room folds back into its card. The four rooms are set in the front door's own typefaces. Three ships use the transit gate. Screens 3200 pixels and wider get a wider page, and the share card loses the box around the signature. Prepared on Fri Nov 13, 2026.
+**Navigator · Human in command** is V44.5, named for the Guild Navigators of _Dune_, who steer a ship through folded space. Opening a world card is now a jump: the page falls away, the camera flies through the far gate in that world's color, and the room opens out of the same light. A chosen card lights the far gate before the jump. On a screen at least twice as wide as it is tall the page reads on the left and the right is a window on the sky, where the far gate hangs large. Prepared on Fri Nov 13, 2026.
+
+**Holtzman** was V44.4, named for the effect in _Dune_ that folds space, because pages now fold into one another. A world card opens into its room and the room folds back into its card. The four rooms are set in the front door's own typefaces. Three ships use the transit gate. Screens 3200 pixels and wider get a wider page, and the share card loses the box around the signature.
 
 **Heighliner** was V44.3, named for the Guild ships of _Dune_ that fold space, because this release belongs to the transit gate. The gate is rebuilt as a hoop with real depth (a lit deck, a far inner wall washed by its own light, a near outer wall with ports and four clamps) and every edge is one pixel sharp. The live gate now climbs to the screen's own resolution on a GPU that can carry it, up to a native 4K screen, and is paced in the display's own beats. Rooms play their films, the lensing observatory, the signature forge and the first flight in place, the preserved V43 edition returns a guest to the room they came from and points to the current site, and the rooms carry the front door's mark. Prepared on Thu Nov 12, 2026.
 

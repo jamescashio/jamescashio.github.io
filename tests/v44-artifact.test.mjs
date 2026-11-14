@@ -15,7 +15,7 @@ const exists = (p) =>
 
 const page = async () => new JSDOM(await read("dist/index.html")).window.document;
 
-test("V44 Holtzman is the built Drummer front door with seven stations in order", async () => {
+test("V44 Navigator is the built Drummer front door with seven stations in order", async () => {
   const document = await page();
   const receipt = JSON.parse(await read("public/v40/site-release.json"));
   assert.equal(document.title, `Doug Cashio · cAshIo · Local AI workshop · V44 ${receipt.presentation.name}`);
@@ -226,6 +226,29 @@ test("a world card and its room share a name, and the passage script comes after
     assert.ok(page.head.querySelector('script[src="/passage.js"]'), `${name} opts in without the passage script`);
   }
   assert.equal(takingPart, 5, "the front door and the four interactive rooms");
+  // The jump: the front door ends on a screen of the world's light and the room opens out of the same one,
+  // so both hold the same four lights. The room's half is marked by the passage script and styled only in
+  // the interactive rooms' own sheet.
+  const jump = await read("src/v44/jump.ts");
+  const roomPassage = await read("src/v40/room-passage.css");
+  for (const room of rooms) {
+    const light = jump.match(new RegExp(`${room}: \\[([\\d.]+), ([\\d.]+), ([\\d.]+)\\]`));
+    assert.ok(light, `${room} has a light on the front door`);
+    const rgb = light
+      .slice(1)
+      .map((v) => Math.round(Number(v) * 255))
+      .join(" ");
+    assert.ok(
+      roomPassage.includes(`html[data-room="${room}"] {\n  --jump-rgb: ${rgb};`),
+      `${room} keeps its light, ${rgb}`,
+    );
+  }
+  assert.equal(document.querySelectorAll("body > .fold[aria-hidden='true']").length, 1);
+  assert.match(passage, /getItem\("cashio-jump"\)/);
+  assert.match(passage, /removeItem\("cashio-jump"\)/);
+  assert.match(passage, /hasAttribute\("data-jump"\)/);
+  assert.match(jump, /sessionStorage\.setItem\(ARRIVING, world\)/);
+  assert.match(jump, /const ARRIVING = "cashio-jump";/);
   // A reading edition carries no script at all.
   for (const room of rooms)
     assert.equal(new JSDOM(await read(`dist/rooms/${room}/index.html`)).window.document.scripts.length, 0);

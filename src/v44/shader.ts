@@ -32,6 +32,8 @@ uniform vec2 uSun;
 uniform vec3 uPlanet;
 uniform vec3 uNebA;
 uniform vec3 uNebB;
+uniform float uJump;
+uniform vec3 uFar;
 
 const float TAU = 6.28318530718;
 const float SEGMENTS = 44.0;
@@ -119,6 +121,9 @@ void main() {
   vec2 uv = (frag - 0.5 * uRes) / uRes.y;
   vec2 par = uPointer * 0.012;
   float transit = clamp(uTransit, 0.0, 1.0);
+  // A jump flies the camera to the far gate and through it; the stars arrive fast at the very end.
+  float jump = clamp(uJump, 0.0, 1.0);
+  float rush = pow(jump, 2.6);
 
   // Deep field.
   vec3 col = vec3(0.006, 0.009, 0.018);
@@ -358,29 +363,68 @@ void main() {
   float front = exp(-pow((orderE - uSweep) * 40.0, 2.0)) * step(uSweep, 0.999) * step(0.001, uSweep);
   col += vec3(0.6, 0.8, 1.0) * front * (exp(-abs(d) / (w * 0.45)) * 1.6 + exp(-abs(d) / (w * 1.6)) * 0.25) * fadeGate;
 
-  // Warp streaks and shooting stars.
-  col += warpField(uv - rc * (1.0 - transit)) * uWarp * 1.4;
+  // Warp streaks and shooting stars. A jump streaks the whole field from the point the camera is heading for.
+  vec2 farAt = mix(uFar.xy, vec2(0.0), smoothstep(0.0, 0.8, jump));
+  col += warpField(uv - rc * (1.0 - transit)) * uWarp * 1.4 * (1.0 - jump);
+  if (jump > 0.0) col += warpField(uv - farAt) * (0.35 + rush * 2.4) * smoothstep(0.02, 0.3, jump);
   col += shootingStar(uv, 0.0) + shootingStar(uv, 1.0);
 
-  // A whisper of light as the gate surface passes the camera.
   // The next gate in the chain: far ahead and faint, so the sky behind the stations still has somewhere to go.
+  // Chosen as a destination it lights in that world's color, and a jump brings it up to and past the camera.
   float ahead = smoothstep(0.85, 1.0, transit);
   if (ahead > 0.0) {
-    vec2 q = uv - (uRing.xy * 0.55 + vec2(0.06, 0.05));
+    vec2 q = uv - farAt;
     q = vec2(cr * q.x + sr * q.y, -sr * q.x + cr * q.y);
-    float R2 = R * 0.17;
+    float R2 = uFar.z * (1.0 + 30.0 * rush);
     vec2 e2 = vec2(q.x, q.y / tilt);
     float th2 = atan(e2.y, e2.x);
     float d2 = (length(e2) - R2) * length(vec2(cos(th2), tilt * sin(th2)));
+    // Seen large, in the window of a wide screen, the far gate shows how it is built: a dark segmented hull
+    // around its light, lit from the sun's side, with a row of ports. Small and far it is only the light.
+    float built = smoothstep(0.085, 0.115, uFar.z);
+    if (built > 0.0) {
+      float px2 = 1.25 / uRes.y;
+      float hullW = R2 * 0.115;
+      float across = d2 / hullW;
+      float band = smoothstep(-px2, px2, d2 - R2 * 0.01) * (1.0 - smoothstep(-px2, px2, d2 - hullW));
+      float seg = fract(th2 / TAU * 28.0 + 0.5);
+      float seam = smoothstep(0.0, 0.03, seg) * (1.0 - smoothstep(0.97, 1.0, seg));
+      float sunward = 0.5 + 0.5 * dot(normalize(q + 1e-4), normalize(uSun - farAt));
+      vec3 hull = (vec3(0.05, 0.058, 0.075) + vec3(0.2, 0.22, 0.28) * pow(sunward, 2.2)) * mix(0.5, 1.0, seam) * mix(1.0, 0.72, across);
+      float port = fract(th2 / TAU * 196.0);
+      float ports = step(0.45, hash21(vec2(floor(th2 / TAU * 196.0), 7.0))) * smoothstep(0.2, 0.3, port) * (1.0 - smoothstep(0.7, 0.8, port));
+      ports *= smoothstep(0.42, 0.48, across) * (1.0 - smoothstep(0.56, 0.62, across));
+      col = mix(col, hull, band * built * ahead * 0.94);
+      col += vec3(1.0, 0.86, 0.62) * ports * band * built * ahead * 0.45;
+    }
     float glow2 = exp(-abs(d2) / (R2 * 0.05)) * 0.55 + exp(-abs(d2) / (R2 * 0.35)) * 0.12;
     float blink = step(0.985, fract(th2 / TAU * 22.0 + 0.5)) * (0.6 + 0.4 * sin(uTime * 2.0 + th2 * 3.0));
-    col += vec3(0.35, 0.58, 1.0) * (glow2 + blink * exp(-abs(d2) / (R2 * 0.08)) * 0.6) * ahead * uIgnite;
+    col += mix(vec3(0.35, 0.58, 1.0), uPulseColor, jump) * (glow2 + blink * exp(-abs(d2) / (R2 * 0.08)) * 0.6) * ahead * uIgnite * (1.0 - jump * 0.6);
     // A decision at the helm reaches the sky: the far gate flares in the lane's color and washes the field around it.
-    col += uPulseColor * uPulse * ahead * (glow2 * 3.0 + exp(-length(q) / (R2 * 2.4)) * 0.55 + exp(-length(q) / (R2 * 9.0)) * 0.12);
+    // The wash keeps the reach it has at rest, so the sky stays dark around a gate that is rushing closer.
+    float reach = min(R2, 0.07);
+    col += uPulseColor * uPulse * ahead * (glow2 * 3.0 * (1.0 - rush * 0.6) + exp(-length(q) / (reach * 2.4)) * 0.55 + exp(-length(q) / (reach * 9.0)) * 0.12);
+    // A chosen world wakes the gate's surface faintly; a jump brings it up to full.
+    float awake = max(smoothstep(0.04, 0.5, jump), uPulse * built * 0.35);
+    if (awake > 0.0) {
+      // The gate's surface: rings of light racing outward and spokes that shear as it nears, in the world's color.
+      float rr2 = length(e2) / R2;
+      float within = fall(0.0, -R2 * 0.1, d2);
+      float pace = mix(0.25, 1.0, smoothstep(0.0, 0.3, jump));
+      float rings = pow(0.5 + 0.5 * sin(rr2 * 34.0 - uTime * 9.0 * pace), 6.0);
+      float spokes = pow(noise(vec2(th2 * 14.0, rr2 * 3.0 - uTime * 2.6 * pace)), 3.0);
+      float surface = (0.1 + rings * 0.5 * smoothstep(0.1, 1.0, rr2) + spokes * 0.9) * awake;
+      col += uPulseColor * surface * within * (0.5 + rush * 1.6);
+      // A hard bright rim, so the hoop reads as a thing passing the camera and not only a glow.
+      col += mix(uPulseColor, vec3(1.0), 0.55) * exp(-abs(d2) / (R2 * 0.012)) * (0.5 + rush * 2.0) * jump;
+    }
   }
+  // The fold: once through, the world's own light takes the whole view.
+  float fold = smoothstep(0.8, 1.0, jump);
+  col = mix(col, mix(uPulseColor * 0.22, mix(uPulseColor, vec3(1.0), 0.4) * 1.5, exp(-length(uv) * 2.2)), fold);
   col += vec3(0.25, 0.45, 1.0) * smoothstep(0.55, 0.85, transit) * fall(1.0, 0.86, transit) * 0.22;
 
-  col *= mix(1.0, 0.5, uDim);
+  col *= mix(1.0, 0.5, uDim * (1.0 - smoothstep(0.0, 0.25, jump)));
   float vig = fall(1.25, 0.25, length(uv * vec2(0.9, 1.1)));
   col *= mix(0.55, 1.0, vig);
   col = 1.0 - exp(-col * 1.35);
