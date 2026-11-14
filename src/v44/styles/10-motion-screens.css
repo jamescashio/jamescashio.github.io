@@ -298,6 +298,20 @@ html.js[data-motion="on"] .station-head.in h2::after {
 
 /* The widest screens (an ultrawide at full width) get one more step, so the page does not sit as a narrow column in a sea of sky. */
 /*
+ * The bridge. On a screen at least twice as wide as it is tall, the page reads on the left and the right
+ * is a window: the gate at the arrival, and past it the far gate, which a chosen world lights and a jump
+ * flies to. The column keeps its width; it moves over instead of sitting in the middle of an empty sky.
+ */
+@media (min-width: 2400px) and (min-aspect-ratio: 2/1) {
+  .frame {
+    margin-inline: max(var(--gutter), 7vw) auto;
+  }
+  .bit {
+    right: max(28px, env(safe-area-inset-right));
+  }
+}
+
+/*
  * The jump to a world (src/v44/jump.ts). The page falls away toward the visitor, the sky flies the camera
  * through the far gate, and the fold takes the view: the world's own light, which is also the first thing
  * the room shows, so the two pages meet on one frame.

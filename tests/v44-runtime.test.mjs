@@ -449,7 +449,7 @@ test("E.V.E. opens with her own reading and stays quiet until the visitor speaks
   await page.locator("#eve-cmd").press("Enter");
   await expect(log.locator(".you")).toHaveText(["version"]);
   await expect(log).toHaveAttribute("aria-live", "polite");
-  await expect(log).toContainText("Holtzman");
+  await expect(log).toContainText("Navigator");
 });
 
 test("each station lights the sky in its own color", async (t) => {
@@ -597,7 +597,7 @@ test("Back hands keyboard focus to the control the journey started from", async 
   await expect(page.locator(".cta[data-transit-go]")).toBeFocused();
 });
 
-test("the live gate takes over from its poster only at the gate, never mid flight", async (t) => {
+test("the live gate takes over from its poster at the gate or past it, never mid flight", async (t) => {
   const gl = await chromium.launch({
     ...CHROME,
     headless: true,
@@ -620,9 +620,24 @@ test("the live gate takes over from its poster only at the gate, never mid fligh
   await page.waitForLoadState("networkidle");
   assert.equal(await page.evaluate(() => scrollY), 300, "the visitor has set off");
   await page.waitForTimeout(1500);
-  assert.equal(await page.evaluate(() => window.__wentLive), false, "the poster keeps the scene while away");
+  assert.equal(await page.evaluate(() => window.__wentLive), false, "the poster keeps the scene mid flight");
   await page.evaluate(() => scrollTo(0, 0));
   await expect.poll(() => page.evaluate(() => window.__wentLive), { timeout: 10000 }).toBe(true);
+  // Past the gate the painting is only a backdrop, so a visit that begins deep in the page goes live there:
+  // the far gate is what a world card lights and a jump flies to.
+  const deep = await context.newPage();
+  await deep.addInitScript(() =>
+    addEventListener(
+      "DOMContentLoaded",
+      () => document.getElementById("worlds").scrollIntoView({ behavior: "instant" }),
+      {
+        once: true,
+      },
+    ),
+  );
+  await deep.goto(new URL("/?gl=force", url).href, { waitUntil: "domcontentloaded" });
+  await expect.poll(() => deep.evaluate(() => window.__wentLive), { timeout: 10000 }).toBe(true);
+  assert.equal(await deep.evaluate(() => document.documentElement.dataset.stage), "deep");
 });
 
 test("a shared route opens the helm on the same decision", async (t) => {
@@ -936,13 +951,15 @@ test("Back while a room's film is still loading cancels it, so the room never en
   assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, "/rooms/studios/interactive/");
 });
 
-test("a world card opens into its room, the room folds back, and paused motion holds both still", async (t) => {
+test("a world card jumps to its room, the room folds back, and paused motion makes both plain links", async (t) => {
   const page = await visit(t, { hash: "#worlds", motion: "no-preference" });
   await page.addInitScript(() => {
     addEventListener("pagereveal", (event) => {
       const names = (selector) =>
         [...document.querySelectorAll(selector)].map((el) => getComputedStyle(el).viewTransitionName);
       window.__names = [...names(".world[data-world]"), ...names("main > section.room")];
+      // How the page was reached: marked as a jump before its first frame, or not.
+      window.__arrival = document.documentElement.dataset.arrival || "";
       // The passage ran if the browser got as far as starting it; a passage that is dropped or ended never does.
       if (!event.viewTransition) window.__passage = false;
       else
@@ -955,30 +972,63 @@ test("a world card opens into its room, the room folds back, and paused motion h
   // The reveal can come a moment after the address changes.
   const state = async () => {
     await page.waitForFunction(() => window.__passage !== undefined);
-    return page.evaluate(() => ({ passage: window.__passage, names: window.__names }));
+    return page.evaluate(() => ({ passage: window.__passage, names: window.__names, arrival: window.__arrival }));
   };
   const cards = ["world-starship", "world-principles", "world-studios", "world-heritage"];
+  const card = (room) => page.locator(`.world[data-world="${room}"] a[href="/rooms/${room}/interactive/"]`).first();
   const enter = async (room) => {
-    await page.locator(`.world[data-world="${room}"] a[href="/rooms/${room}/interactive/"]`).first().click();
+    await card(room).click();
     await page.waitForURL(new RegExp(`/rooms/${room}/interactive/$`));
   };
   const leave = async () => {
     await page.locator("a.room-back").first().click();
     await page.waitForURL(/\/#worlds$/);
   };
-  // The card and the room carry one name, and the browser carries the view between them, both ways, every time.
+  const root = page.locator("html");
+  // Opening a world is a jump: the page falls away, the fold takes the view, and only then does the page leave.
+  // The room is marked as reached by a jump before its first frame, opens out of the same light, and clears
+  // the mark. The browser's own passage stands aside for it. Leaving, the room folds back into its card.
   for (const room of ["studios", "starship"]) {
-    await enter(room);
-    assert.deepEqual(await state(), { passage: true, names: [`world-${room}`] });
+    await card(room).hover();
+    const began = Date.now();
+    await card(room).click();
+    await expect(root).toHaveAttribute("data-jump", room);
+    await expect(page.locator(".fold")).toBeVisible();
+    // Seen on this page, before it leaves: the page has fallen away and the camera is still flying.
+    await page.waitForFunction(
+      () => location.pathname === "/" && getComputedStyle(document.querySelector("main")).opacity === "0",
+      null,
+      { polling: "raf" },
+    );
+    await page.waitForURL(new RegExp(`/rooms/${room}/interactive/$`));
+    assert.ok(Date.now() - began >= 900, "the jump is flown before the page leaves");
+    assert.deepEqual(await state(), { passage: false, names: [`world-${room}`], arrival: "jump" });
+    await expect(root).not.toHaveAttribute("data-arrival", /./);
     await expect(page.locator(`#${room}`)).toHaveAttribute("data-room-state", "ready");
     await leave();
-    assert.deepEqual(await state(), { passage: true, names: cards });
+    assert.deepEqual(await state(), { passage: true, names: cards, arrival: "" });
+    await expect(root).not.toHaveAttribute("data-jump", /./);
+    await expect(page.locator("main")).toHaveCSS("opacity", "1");
   }
+  // Back from the room by the browser's own button: the page that was left mid jump has landed again.
+  await enter("studios");
+  await state();
+  await page.goBack();
+  await page.waitForURL(/\/#worlds$/);
+  await expect(root).not.toHaveAttribute("data-jump", /./);
+  await expect(page.locator("main")).toHaveCSS("opacity", "1");
+  await expect(card("studios")).toBeVisible();
+  // A reload of the room, or a return to it, is not a jump: the mark was read once.
+  await page.goForward();
+  await page.waitForURL(/\/rooms\/studios\/interactive\/$/);
+  await page.reload();
+  assert.equal((await state()).arrival, "");
+  await page.goto(new URL("/#worlds", url).href, { waitUntil: "networkidle" });
   // A reading edition runs no script, so it takes no part: it carries no name and simply opens. It is set in
   // the front door's faces all the same.
   await page.locator('.world[data-world="studios"] a[href="/rooms/studios/"]').first().click();
   await page.waitForURL(/\/rooms\/studios\/$/);
-  assert.deepEqual(await state(), { passage: false, names: ["none"] });
+  assert.deepEqual(await state(), { passage: false, names: ["none"], arrival: "" });
   assert.equal(await page.evaluate(() => document.scripts.length), 0);
   assert.match(await page.locator("h1").evaluate((h) => getComputedStyle(h).fontFamily), /^"Cashio Display"/);
   await expect.poll(() => page.evaluate(() => document.fonts.check('700 30px "Cashio Display"'))).toBe(true);
@@ -1005,14 +1055,15 @@ test("a world card opens into its room, the room folds back, and paused motion h
   await page.locator('header a[href="/rooms/studios/"]').first().click();
   await page.waitForURL(/\/rooms\/studios\/$/);
   assert.equal((await state()).passage, false);
-  // Paused on the front door: the passage ends before it starts, into the room and back out of it.
+  // Paused on the front door: a card is a link. No jump, no passage, into the room and back out of it.
   await page.goto(new URL("/#worlds", url).href, { waitUntil: "networkidle" });
   await expect(page.locator("[data-motion-toggle]")).toBeEnabled();
   await page.locator("[data-motion-toggle]").click();
   await expect(page.locator("html")).toHaveAttribute("data-motion", "off");
   await enter("studios");
-  assert.equal((await state()).passage, false);
+  assert.deepEqual(await state(), { passage: false, names: ["world-studios"], arrival: "" });
   await expect(page.locator("#studios")).toHaveAttribute("data-room-state", "ready");
   await leave();
   assert.equal((await state()).passage, false);
+  await expect(root).not.toHaveAttribute("data-jump", /./);
 });

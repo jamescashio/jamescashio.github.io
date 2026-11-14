@@ -28,8 +28,8 @@
   },
   "frontDoor": {
     "entry": "/",
-    "experienceVersion": "44.4.0",
-    "visualEdition": "Holtzman",
+    "experienceVersion": "44.5.0",
+    "visualEdition": "Navigator",
     "receipt": "/v40/site-release.json"
   }
 }

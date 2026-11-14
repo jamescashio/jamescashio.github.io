@@ -1,5 +1,17 @@
 # Changelog
 
+## V44.5.0 · Navigator · 11-13-2026
+
+Named for the Guild Navigators of _Dune_, who steer a ship through folded space. Doug looked at Holtzman on his own screen and said it was fine and left him without the wow he had hoped for. That was fair: Holtzman was safe polish, and it was never scored for wow. He said go on the two largest ideas, so this release is a swing at the front door's best moment and at how the page sits on his screen.
+
+The jump. Opening a world card used to cut to the room with a short morph. Now it is travel. The page falls away, the sky flies the camera to the far gate and through it in that world's own color (blue for the starship, amber for the principles, violet for the studios, red for the heritage), the view folds into that light, and the room opens out of the same light on the far side, behind a ring that crosses the screen. It takes just over a second. Choosing a card, with a pointer or by focus, lights the far gate in that world's color first, so the gate reads as the door to the worlds before anyone uses it. The room is fetched while the camera flies. Back from the room, by its own link or the browser's button, lands on the page as it was. With motion paused or reduced a card is a plain link, and a new tab or window is left to the browser. Where the sky is a painting (no GPU to speak of) the page draws a plainer version: one ring of the world's light, then the fold.
+
+The bridge. On a screen at least twice as wide as it is tall, from 2400 pixels, the page no longer sits as a column in the middle of an empty sky. It reads on the left, and the right is a window: the gate stands in it at the arrival, unobstructed, and past the gate the far gate hangs large in it, where a chosen world lights it and a jump flies to it. Seen that large the far gate shows a segmented hull and a row of ports. The column keeps the width it had. Bit moves to the corner of the window.
+
+The live sky now starts past the gate as well as at it. A visit that began mid page, such as a reload, used to keep the painting until the visitor returned to the top, which would have left the jump on its plainer version for no good reason. Mid flight, between the two, the painting still holds.
+
+What could not be proven here. The sandbox has no GPU. The shader's frames were rendered directly and the page was stepped through a jump on a held clock, which shows the wiring and the look, but nothing here has seen the jump at full speed on a real screen. Its pace, 1050 milliseconds, is a judgment that needs Doug's eyes.
+
 ## V44.4.0 · Holtzman · 11-13-2026
 
 Named for the effect in _Dune_ that folds space, because pages now fold into one another. Doug asked what else would push the site toward a ten and then authorized a gloves off pass. This release is what that pass found worth building.

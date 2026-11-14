@@ -85,6 +85,8 @@ export class Sky {
   private jumpStart = -1;
   private jumpMs = 1;
   private jumpLevel = 0;
+  /** Where the far gate is drawn; it glides to a new place when the screen changes shape. */
+  private far: [number, number, number] | null = null;
   private warp = 0;
   private pointer = [0, 0];
   private pointerTarget = [0, 0];
@@ -485,7 +487,9 @@ export class Sky {
     gl.uniform3f(u.uNebA, ...this.nebula[0]);
     gl.uniform3f(u.uNebB, ...this.nebula[1]);
     gl.uniform1f(u.uJump, this.jumpLevel);
-    gl.uniform3f(u.uFar, ...s.far);
+    if (!this.far || !motion || !this.running) this.far = [...s.far];
+    else for (let c = 0; c < 3; c++) this.far[c] += (s.far[c] - this.far[c]) * 0.08;
+    gl.uniform3f(u.uFar, ...this.far);
     if (!timed) {
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       return 0;
