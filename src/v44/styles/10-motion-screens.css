@@ -297,6 +297,81 @@ html.js[data-motion="on"] .station-head.in h2::after {
 }
 
 /* The widest screens (an ultrawide at full width) get one more step, so the page does not sit as a narrow column in a sea of sky. */
+/*
+ * The jump to a world (src/v44/jump.ts). The page falls away toward the visitor, the sky flies the camera
+ * through the far gate, and the fold takes the view: the world's own light, which is also the first thing
+ * the room shows, so the two pages meet on one frame.
+ */
+.fold {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  visibility: hidden;
+  pointer-events: none;
+}
+.fold::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, rgb(var(--jump-rgb, 77 163 255)) 60%, white) 0%,
+    color-mix(in srgb, rgb(var(--jump-rgb, 77 163 255)) 75%, #05070c) 40%,
+    color-mix(in srgb, rgb(var(--jump-rgb, 77 163 255)) 28%, #05070c) 100%
+  );
+}
+html[data-jump] .fold {
+  visibility: visible;
+}
+html[data-jump] .fold::after {
+  animation: fold-in var(--jump-ms, 1050ms) linear both;
+}
+@keyframes fold-in {
+  0%,
+  76% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+html[data-jump] :is(main, .hud, .bit) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 340ms ease-in;
+}
+html[data-jump] main > section:has(.world-grid) {
+  transform: scale(1.22);
+  transition: transform 560ms cubic-bezier(0.55, 0, 1, 0.6);
+}
+/* Where the sky is a painting it cannot fly, so the page draws the gate coming: one ring of the world's light. */
+html[data-jump][data-jump-sky="painted"] .fold::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14vmin;
+  height: 8.4vmin;
+  margin: -4.2vmin 0 0 -7vmin;
+  border: 2px solid rgb(var(--jump-rgb));
+  border-radius: 50%;
+  box-shadow:
+    0 0 24px 4px rgb(var(--jump-rgb) / 0.55),
+    inset 0 0 24px 4px rgb(var(--jump-rgb) / 0.35);
+  animation: fold-ring var(--jump-ms, 1050ms) cubic-bezier(0.7, 0, 1, 0.5) both;
+}
+@keyframes fold-ring {
+  from {
+    transform: rotate(-11deg) scale(0.4);
+    opacity: 0.2;
+  }
+  to {
+    transform: rotate(-11deg) scale(34);
+    opacity: 1;
+  }
+}
+
 @media (min-width: 3200px) {
   :root {
     --frame-max: 2040px;

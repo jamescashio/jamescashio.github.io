@@ -13,6 +13,7 @@ import { mountCinema } from "./cinema.ts";
 import { mountAge } from "./age.ts";
 import { mountFigures } from "./figures.ts";
 import { mountPassage } from "./passage.ts";
+import { mountJump } from "./jump.ts";
 import "./events.ts";
 import { $, $$ } from "./dom.ts";
 
@@ -31,6 +32,13 @@ const posterImage = $<HTMLImageElement>(".sky-poster")!;
 let heroSpan = innerHeight;
 let docSpan = 1;
 let layout = projectPoster(POSTERS[0], innerWidth, innerHeight);
+// The far gate hangs past the first one, a sixth of its size, a little off its line.
+const farFrom = (ring: number[]): [number, number, number] => [
+  ring[0] * 0.55 + 0.06,
+  ring[1] * 0.55 + 0.05,
+  ring[2] * 0.17,
+];
+let far = farFrom(layout.ring);
 const measure = () => {
   heroSpan = Math.max(1, arrival.offsetHeight * 0.85);
   docSpan = Math.max(1, document.documentElement.scrollHeight - innerHeight);
@@ -39,6 +47,7 @@ const measure = () => {
     .objectPosition.split(" ")
     .map((v) => (v.endsWith("%") ? parseFloat(v) / 100 : 0.5)) as [number, number];
   layout = projectPoster(posterFor(posterImage.currentSrc || posterImage.src), innerWidth, innerHeight, position);
+  far = farFrom(layout.ring);
   // The poster zooms toward its own ring as the camera flies through.
   sky.style.setProperty("--ring-x", `${(innerWidth / 2 + layout.ring[0] * innerHeight).toFixed(1)}px`);
   sky.style.setProperty("--ring-y", `${(innerHeight / 2 - layout.ring[1] * innerHeight).toFixed(1)}px`);
@@ -60,6 +69,7 @@ const state = (): SkyState => {
     warpBoost: now < surgeUntil ? 1 : now - lastT < 160 ? warpBoost : 0,
     layout,
     station,
+    far,
   };
 };
 // A surge flies the live gate's warp; the painted poster answers with a short pulse of light.
@@ -199,6 +209,13 @@ mountCopyEmail();
 mountAge();
 mountFigures();
 mountPassage();
+// A world card is a destination: chosen, it lights the far gate; opened, the camera flies there and through.
+mountJump({
+  deep: () => transit >= 1,
+  lock: (light) => skyEngine?.lock(light),
+  fly: (light, ms) => skyEngine?.jump(light, ms) ?? false,
+  land: () => skyEngine?.land(),
+});
 mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
 // A decision at the helm reaches the sky: the far gate flares on the live scene, the painted gate on the poster.
 document.addEventListener("v44:route", (e) => {
