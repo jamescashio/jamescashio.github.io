@@ -160,8 +160,8 @@ const startSky = () => {
   if (entrance) gateStatus("Aligning");
   engine.light(entrance);
   engine.hold("film", filmPlaying);
+  // The sky reports itself live with its first drawn frame, which can come a moment later while a cold shader links.
   engine.begin();
-  requestAnimationFrame(() => sky.setAttribute("data-live", ""));
 };
 new MutationObserver(() => root.dataset.gate === "open" && gateStatus("Open")).observe(root, {
   attributes: true,

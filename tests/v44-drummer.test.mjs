@@ -260,3 +260,20 @@ test("three ships use the gate, in front of the hull and only while it is lit", 
   // Ships are drawn after the deck, so one passing the near hull is in front of it.
   assert.ok(FRAGMENT_SHADER.indexOf("float seen =") > FRAGMENT_SHADER.indexOf("float face ="));
 });
+
+test("a cold shader links behind the poster, and the poster hands over only to a drawn frame", async () => {
+  const sky = await read("src/v44/sky.ts");
+  const main = await read("src/v44/main.ts");
+  // Asking whether a program linked waits for the GPU to finish it; on a cold Windows shader cache that froze the
+  // page for over a second. Where the browser links in the background, the sky asks only once the link is done.
+  assert.match(sky, /getExtension\("KHR_parallel_shader_compile"\)/);
+  assert.match(sky, /getProgramParameter\(linking, parallel\.COMPLETION_STATUS_KHR\)/);
+  assert.match(sky, /!parallel && !gl\.getShaderParameter\(s, gl\.COMPILE_STATUS\)/, "nor does it wait on the compile");
+  assert.match(sky, /if \(!parallel\) return this\.finish\(program, shaders\);/, "other browsers link as before");
+  const finish = sky.slice(sky.indexOf("private finish("), sky.indexOf("private linked("));
+  assert.equal(sky.split("gl.LINK_STATUS").length - 1, 1, "the link is checked in one place");
+  assert.ok(finish.includes("gl.LINK_STATUS"), "and only once it is done");
+  // The poster hands over to a frame that has been drawn, the first time only at the gate; the page sets no timer for it.
+  assert.doesNotMatch(main, /setAttribute\("data-live"/);
+  assert.match(sky, /if \(!this\.shown && \(this\.tookOver \|\| s\.transit <= 0\.001\)\) this\.show\(true\);/);
+});

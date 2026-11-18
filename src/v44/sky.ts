@@ -81,6 +81,15 @@ export class Sky {
   private nebulaShift = 0;
   private running = false;
   private holds = new Set<Hold>();
+  /** A program still linking on the GPU's own threads, and the frame that looks in on it. */
+  private linking: WebGLProgram | null = null;
+  private linkCheck = 0;
+  /** Whether the page has asked the sky to begin, so a program that links late still starts it. */
+  private begun = false;
+  /** Whether the live frame is on screen; the poster hands over only once there is a frame to hand over to. */
+  private shown = false;
+  /** Whether the live frame has ever taken the screen. The first time waits for the gate, where poster and scene agree. */
+  private tookOver = false;
   readonly live: boolean;
 
   constructor(
@@ -118,17 +127,18 @@ export class Sky {
     // A lost context shows the poster at once and comes back only once the scene is rebuilt.
     this.canvas.addEventListener("webglcontextlost", (e) => {
       e.preventDefault();
+      cancelAnimationFrame(this.linkCheck);
+      this.linking = null;
       this.hold("lost", true);
       this.finishEntrance();
-      this.onLive(false);
+      this.show(false);
     });
     this.canvas.addEventListener("webglcontextrestored", () => {
       if (!this.build()) return;
       this.hold("lost", false);
-      // A device already judged too slow keeps its poster; otherwise the scene returns once it has drawn.
+      // A device already judged too slow keeps its poster; otherwise the scene returns with its first frame.
       if (this.holds.has("slow")) return;
       this.redraw();
-      if (this.canvas.width > 0) this.onLive(true);
     });
     window.addEventListener(
       "pointermove",
@@ -148,12 +158,20 @@ export class Sky {
     return true;
   }
 
-  /** Compile, link and upload the full screen triangle. Everything allocated is released if a step fails. */
+  /**
+   * Compile, link and upload the full screen triangle. Everything allocated is released if a step fails.
+   * Asking whether a program linked makes the page wait for the GPU to finish it, and on a cold shader cache
+   * that wait passed a full second on Windows. Where the browser links in the background, the question waits
+   * until the answer is ready, and the painted poster keeps the screen in the meantime.
+   */
   private build(): boolean {
     const gl = this.gl!;
+    const parallel = gl.getExtension("KHR_parallel_shader_compile");
     const shaders: WebGLShader[] = [];
     let program: WebGLProgram | null = null;
-    let buffer: WebGLBuffer | null = null;
+    // A program from a lost context is gone; nothing draws until the new one is ready.
+    this.program = null;
+    this.u = null;
     try {
       const compile = (type: number, src: string) => {
         const s = gl.createShader(type);
@@ -161,7 +179,8 @@ export class Sky {
         shaders.push(s);
         gl.shaderSource(s, src);
         gl.compileShader(s);
-        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s) || "shader");
+        if (!parallel && !gl.getShaderParameter(s, gl.COMPILE_STATUS))
+          throw new Error(gl.getShaderInfoLog(s) || "shader");
         return s;
       };
       program = gl.createProgram();
@@ -169,6 +188,34 @@ export class Sky {
       gl.attachShader(program, compile(gl.VERTEX_SHADER, VERTEX_SHADER));
       gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAGMENT_SHADER));
       gl.linkProgram(program);
+      this.canvas.width = 0;
+    } catch {
+      shaders.forEach((s) => gl.deleteShader(s));
+      if (program) gl.deleteProgram(program);
+      return false;
+    }
+    if (!parallel) return this.finish(program, shaders);
+    const linking = program;
+    this.linking = linking;
+    const check = () => {
+      if (this.linking !== linking || gl.isContextLost()) return;
+      if (!gl.getProgramParameter(linking, parallel.COMPLETION_STATUS_KHR)) {
+        this.linkCheck = requestAnimationFrame(check);
+        return;
+      }
+      this.linking = null;
+      if (this.finish(linking, shaders)) this.linked();
+      else this.failed();
+    };
+    this.linkCheck = requestAnimationFrame(check);
+    return true;
+  }
+
+  /** Check the link, then set up the triangle and the uniforms. A failure releases everything it made. */
+  private finish(program: WebGLProgram, shaders: WebGLShader[]): boolean {
+    const gl = this.gl!;
+    let buffer: WebGLBuffer | null = null;
+    try {
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error("link");
       gl.useProgram(program);
       buffer = gl.createBuffer();
@@ -177,20 +224,40 @@ export class Sky {
       const loc = gl.getAttribLocation(program, "aPos");
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-      this.u = Object.fromEntries(UNIFORMS.map((n) => [n, gl.getUniformLocation(program!, n)])) as Uniforms;
+      this.u = Object.fromEntries(UNIFORMS.map((n) => [n, gl.getUniformLocation(program, n)])) as Uniforms;
       this.program = program;
       // Linked programs keep their code; the shader objects are no longer needed.
       shaders.forEach((s) => gl.deleteShader(s));
-      this.canvas.width = 0;
       return true;
     } catch {
       shaders.forEach((s) => gl.deleteShader(s));
-      if (program) gl.deleteProgram(program);
+      gl.deleteProgram(program);
       if (buffer) gl.deleteBuffer(buffer);
       this.program = null;
       this.u = null;
       return false;
     }
+  }
+
+  /** A program that linked in the background starts the sky the way a quick link would have. */
+  private linked() {
+    // The entrance belongs to the gate it lights: the front starts as long after the first frame as it was meant to.
+    if (this.sweepStart > 0) this.sweepStart = performance.now() + 1100;
+    if (this.begun && !this.holds.has("lost")) this.begin();
+  }
+
+  /** A program that failed in the background leaves the poster in charge, as a failed quick link would. */
+  private failed() {
+    this.hold("lost", true);
+    this.finishEntrance();
+    this.show(false);
+  }
+
+  /** Hand the screen to the live frame, or back to the poster. */
+  private show(on: boolean) {
+    this.shown = on;
+    if (on) this.tookOver = true;
+    this.onLive(on);
   }
 
   /**
@@ -223,6 +290,7 @@ export class Sky {
 
   /** First frame, then motion if nothing holds the sky. */
   begin() {
+    this.begun = true;
     this.lastInput = performance.now();
     if (this.holds.size) {
       this.redraw();
@@ -351,7 +419,7 @@ export class Sky {
     if (this.scale <= 0.33 && avg > 70) {
       this.hold("slow", true);
       this.finishEntrance();
-      this.onLive(false);
+      this.show(false);
       return;
     }
     const target = Math.max(this.state().transit >= 1 ? 34 : 18, beat);
@@ -429,6 +497,9 @@ export class Sky {
     gl.uniform3f(u.uPlanet, ...L.planet);
     gl.uniform3f(u.uNebA, ...this.nebula[0]);
     gl.uniform3f(u.uNebB, ...this.nebula[1]);
+    // The first frame takes the screen, the first time only at the gate: a visitor who set off while the shader
+    // linked keeps the poster until they come back to the top. A scene rebuilt after a lost context returns at once.
+    if (!this.shown && (this.tookOver || s.transit <= 0.001)) this.show(true);
     if (!timed) {
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       return 0;
