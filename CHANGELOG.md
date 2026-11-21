@@ -8,6 +8,8 @@ The jump. Opening a world card used to cut to the room with a short morph. Now i
 
 The bridge. On a screen at least twice as wide as it is tall, from 2400 pixels, the page no longer sits as a column in the middle of an empty sky. It reads on the left, and the right is a window: the gate stands in it at the arrival, unobstructed, and past the gate the far gate hangs large in it, where a chosen world lights it and a jump flies to it. Seen that large the far gate shows a segmented hull and a row of ports. The column keeps the width it had. Bit moves to the corner of the window.
 
+The arrival, finished on Sat Nov 21, 2026. Begin the transit now lights the gate's warp for the whole flight down to the screening room instead of only scrolling there. The sky leans further after the pointer, so the stars, the gate and the sun read at different depths. Beside the transit button the arrival offers a second way in, straight to the helm, the most hands on thing aboard. On touch screens the helm's switches and the badge links are a full 44 pixels tall.
+
 The live sky now starts past the gate as well as at it. A visit that began mid page, such as a reload, used to keep the painting until the visitor returned to the top, which would have left the jump on its plainer version for no good reason. Mid flight, between the two, the painting still holds.
 
 What could not be proven here. The sandbox has no GPU. The shader's frames were rendered directly and the page was stepped through a jump on a held clock, which shows the wiring and the look, but nothing here has seen the jump at full speed on a real screen. Its pace, 1050 milliseconds, is a judgment that needs Doug's eyes.

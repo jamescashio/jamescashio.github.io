@@ -83,6 +83,15 @@ html.js[data-motion="on"] .arrival .line.accent {
   .stations a {
     min-height: 44px;
   }
+  .switch {
+    min-height: 44px;
+  }
+  .credentials a,
+  details a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
 }
 @media (max-width: 560px) {
   body {

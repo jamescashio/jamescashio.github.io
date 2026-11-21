@@ -88,6 +88,9 @@ const surge = (ms: number) => {
   pulse = window.setTimeout(() => sky.removeAttribute("data-surge"), Math.min(ms, 900));
 };
 
+// Setting off from the arrival lights the gate's warp for the whole flight down to the screening room.
+$$("[data-transit-go]").forEach((go) => go.addEventListener("click", () => surge(1500)));
+
 // On phones Bit steps aside while the visitor reads downward, and returns when they pause or scroll back.
 let scrollIdle = 0;
 let lastDirectionY = scrollY;

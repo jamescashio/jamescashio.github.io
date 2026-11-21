@@ -119,7 +119,8 @@ vec3 shootingStar(vec2 uv, float slot) {
 void main() {
   vec2 frag = gl_FragCoord.xy;
   vec2 uv = (frag - 0.5 * uRes) / uRes.y;
-  vec2 par = uPointer * 0.012;
+  // The sky leans after the pointer: enough to feel the depth between the stars, the gate and the sun.
+  vec2 par = uPointer * 0.03;
   float transit = clamp(uTransit, 0.0, 1.0);
   // A jump flies the camera to the far gate and through it; the stars arrive fast at the very end.
   float jump = clamp(uJump, 0.0, 1.0);
