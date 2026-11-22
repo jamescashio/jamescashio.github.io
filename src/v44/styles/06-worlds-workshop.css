@@ -449,3 +449,14 @@ html[data-motion="on"] .system-map.in[data-visible] .led-2 {
   font-size: 25px;
   font-weight: 650;
 }
+
+/* In a narrow card the tag tightens its tracking rather than break, so every title in a row starts on one line. */
+.world {
+  container-type: inline-size;
+}
+@container (max-width: 300px) {
+  .world-tag {
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+}

@@ -14,6 +14,7 @@ import { mountAge } from "./age.ts";
 import { mountFigures } from "./figures.ts";
 import { mountPassage } from "./passage.ts";
 import { mountJump } from "./jump.ts";
+import { mountApproach } from "./approach.ts";
 import "./events.ts";
 import { $, $$ } from "./dom.ts";
 
@@ -44,6 +45,8 @@ const farFrom = (ring: number[]): [number, number, number] => {
   return [(middle - innerWidth / 2) / innerHeight, 0.03, Math.min(0.13, ((innerWidth - edge) / innerHeight) * 0.16)];
 };
 let far = farFrom(layout.ring);
+// The approach marks on the gate (src/v44/approach.ts), mounted once the sky's other parts exist.
+let approach: ReturnType<typeof mountApproach> | null = null;
 const measure = () => {
   heroSpan = Math.max(1, arrival.offsetHeight * 0.85);
   docSpan = Math.max(1, document.documentElement.scrollHeight - innerHeight);
@@ -57,6 +60,7 @@ const measure = () => {
   sky.style.setProperty("--ring-x", `${(innerWidth / 2 + layout.ring[0] * innerHeight).toFixed(1)}px`);
   sky.style.setProperty("--ring-y", `${(innerHeight / 2 - layout.ring[1] * innerHeight).toFixed(1)}px`);
   sky.style.setProperty("--ring-r", `${(layout.ring[2] * innerHeight).toFixed(1)}px`);
+  approach?.measure();
 };
 
 let transit = 0;
@@ -127,6 +131,7 @@ const onScroll = () => {
     root.dataset.stage = stage;
     hud.toggleAttribute("data-scrolled", y > 8);
     trackDirection(y);
+    approach?.update(transit);
     if (skyWaiting && (transit <= 0.001 || transit >= 1)) startSky();
     skyEngine?.wake();
     skyEngine?.redraw();
@@ -137,6 +142,16 @@ const onScroll = () => {
 let skyEngine: Sky | null = null;
 let flareOff = 0;
 let filmPlaying = false;
+/** The painted gate's answer when there is no live scene: a short flare, red for a request held for a person. */
+const flarePoster = (held = false) => {
+  if (!motionEnabled()) return;
+  sky.toggleAttribute("data-held", held);
+  sky.removeAttribute("data-flare");
+  void sky.offsetWidth;
+  sky.setAttribute("data-flare", "");
+  clearTimeout(flareOff);
+  flareOff = window.setTimeout(() => sky.removeAttribute("data-flare"), 2400);
+};
 const gateStatus = (text: string) => $$("[data-gate-status]").forEach((el) => (el.textContent = text));
 // The live scene takes over from its painting at the gate, where both show the same frame, or past it,
 // where the painting is a dim backdrop behind the reading and the far gate is the thing to see. A visitor
@@ -230,14 +245,16 @@ mountHelm($<HTMLFormElement>("[data-helm]")!, $("[data-helm-result]")!);
 document.addEventListener("v44:route", (e) => {
   const held = e.detail.id === "hold";
   if (skyEngine) skyEngine.pulse(held);
-  else if (motionEnabled()) {
-    sky.toggleAttribute("data-held", held);
-    sky.removeAttribute("data-flare");
-    void sky.offsetWidth;
-    sky.setAttribute("data-flare", "");
-    clearTimeout(flareOff);
-    flareOff = window.setTimeout(() => sky.removeAttribute("data-flare"), 2400);
-  }
+  else flarePoster(held);
+});
+// The pilot's marks: a lock on the gate that reads range and closing speed, and a gate that answers a knock.
+approach = mountApproach({
+  layout: () => layout,
+  live: () => sky.hasAttribute("data-live"),
+  drawing: () => skyEngine?.drawing ?? false,
+  lean: () => skyEngine?.leanPx() ?? [0, 0],
+  knock: () => skyEngine?.flourish() ?? false,
+  flare: () => flarePoster(),
 });
 const eve = mountEve($("[data-eve]")!, { warp: () => surge(1600), go: stations.go, typing: motionEnabled });
 // E.V.E. reads the record once, the first time the evidence station arrives, as her own line.
@@ -285,8 +302,21 @@ requestAnimationFrame(() => {
 // Everything that needs script is mounted; switch its controls on. Without script they stay honestly off.
 $$<HTMLButtonElement | HTMLInputElement>("[data-needs-js]").forEach((control) => (control.disabled = false));
 
-/* The scene waits for the page to settle so text and controls win the first second. */
+/*
+ * The scene waits for the page to settle so text and controls win the first second. A first visit's arrival
+ * dolly (marked in the head by public/passage.js) finishes first, so the live gate takes over a painting at rest.
+ */
 const idle = (fn: () => void) =>
   "requestIdleCallback" in window ? requestIdleCallback(fn, { timeout: 1200 }) : setTimeout(fn, 300);
-if (document.readyState === "complete") idle(startSky);
-else addEventListener("load", () => idle(startSky), { once: true });
+const arrived = new Promise<void>((resolve) => {
+  if (!root.hasAttribute("data-arrive")) return resolve();
+  const done = () => {
+    root.removeAttribute("data-arrive");
+    resolve();
+  };
+  posterImage.addEventListener("animationend", (e) => e.animationName === "arrive-dolly" && done());
+  window.setTimeout(done, 1900);
+});
+const settle = () => void arrived.then(() => idle(startSky));
+if (document.readyState === "complete") settle();
+else addEventListener("load", settle, { once: true });

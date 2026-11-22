@@ -309,3 +309,189 @@ main,
     display: inline;
   }
 }
+
+/*
+ * The approach marks (src/v44/approach.ts). Four corners hold the gate, a ring marks its heart and a tag reads
+ * range and closing speed. Script places each one every frame from the layout the gate itself is drawn with,
+ * so the marks stay on the gate as it leans after the pointer and as the camera flies in.
+ */
+.approach {
+  --mark: rgba(214, 226, 255, 0.7);
+  --mark-glow: rgba(77, 140, 255, 0.5);
+  position: absolute;
+  inset: 0;
+  display: none;
+  pointer-events: none;
+}
+html.js .approach[data-ready] {
+  display: block;
+}
+.approach[data-gone],
+.sky[data-stage="deep"] .approach {
+  visibility: hidden;
+}
+.approach-corner,
+.approach-aim,
+.approach-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.approach-corner {
+  width: var(--arm, 24px);
+  height: var(--arm, 24px);
+  border: 0 solid var(--mark);
+  filter: drop-shadow(0 0 5px var(--mark-glow));
+  transition:
+    border-color 240ms ease,
+    filter 240ms ease;
+}
+.approach-corner[data-corner="tl"] {
+  border-width: 1.5px 0 0 1.5px;
+}
+.approach-corner[data-corner="tr"] {
+  border-width: 1.5px 1.5px 0 0;
+}
+.approach-corner[data-corner="bl"] {
+  border-width: 0 0 1.5px 1.5px;
+}
+.approach-corner[data-corner="br"] {
+  border-width: 0 1.5px 1.5px 0;
+}
+/* The heart of the gate: a small ring between four ticks, the point a pilot flies through. */
+.approach-aim::before,
+.approach-aim::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+}
+.approach-aim::before {
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--mark);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.approach-aim::after {
+  width: 23px;
+  height: 23px;
+  opacity: 0.45;
+  background:
+    linear-gradient(var(--mark), var(--mark)) 50% 0 / 1.5px 5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 50% 100% / 1.5px 5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 0 50% / 5px 1.5px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 100% 50% / 5px 1.5px no-repeat;
+}
+.approach-tag {
+  margin: 0;
+  min-width: 27ch;
+  font: 500 11px/1.7 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(214, 226, 255, 0.62);
+  text-shadow: 0 0 10px #05070c;
+  font-variant-numeric: tabular-nums;
+}
+.approach-name {
+  color: var(--pearl);
+}
+.approach-state {
+  margin-left: 1.1em;
+  color: var(--blue-text);
+}
+.approach-data {
+  display: flex;
+  gap: 1.3em;
+}
+.approach[data-narrow] .approach-tag {
+  min-width: 0;
+  font-size: 10px;
+}
+@media (min-width: 2400px) {
+  .approach-tag {
+    font-size: 13px;
+  }
+}
+/* A fine pointer over the gate brightens the lock: the gate answers a click. */
+.approach[data-aim] {
+  --mark: rgba(238, 244, 255, 0.96);
+  --mark-glow: rgba(110, 170, 255, 0.85);
+}
+.arrival.gate-under-pointer {
+  cursor: pointer;
+}
+/* A knock lights the corners as the front leaves them; the first visit's lock blinks as it closes. */
+html[data-motion="on"] .approach[data-knock] .approach-corner {
+  animation: approach-knock 760ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes approach-knock {
+  from {
+    border-color: #fff;
+    filter: drop-shadow(0 0 12px rgba(150, 195, 255, 1));
+  }
+}
+html[data-motion="on"] .approach[data-acquire] .approach-corner,
+html[data-motion="on"] .approach[data-acquire] .approach-aim {
+  animation: approach-acquire 1200ms steps(1, end) both;
+}
+@keyframes approach-acquire {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  52% {
+    opacity: 0.35;
+  }
+  62% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 0.5;
+  }
+  88% {
+    opacity: 1;
+  }
+}
+html[data-motion="on"] .approach[data-acquire] .approach-tag {
+  animation: approach-tag-in 700ms 250ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes approach-tag-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/*
+ * A first visit arrives: the painted gate drifts closer out of the dark while the marks find it. The mark is
+ * set in the head (public/passage.js) before the first paint, so the painting never jumps; the live scene
+ * takes over only once the painting is at rest.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-arrive] .sky-poster {
+    animation: arrive-dolly 1700ms cubic-bezier(0.16, 0.8, 0.2, 1) both;
+  }
+}
+@keyframes arrive-dolly {
+  from {
+    scale: 0.86;
+    filter: brightness(0.3) saturate(0.75);
+  }
+  to {
+    scale: 1;
+    filter: brightness(1) saturate(1);
+  }
+}
+/* A corner that would cross the arrival's words steps back, so the lock never sits on top of reading. */
+.approach-corner[data-under] {
+  opacity: 0.16;
+}

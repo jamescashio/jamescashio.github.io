@@ -66,4 +66,20 @@
   } catch {
     /* Storage is optional. */
   }
+
+  // A first visit to the front door arrives by a short dolly toward the gate (src/v44/styles/02-sky-hud.css).
+  // The mark goes on before the first paint, so the painting never jumps; the page's own script lifts it once
+  // the dolly is over. A visit that already saw the gate this session, or arrives at a station, starts still.
+  try {
+    if (
+      (location.pathname === "/" || location.pathname === "/index.html") &&
+      !location.hash &&
+      sessionStorage.getItem("cashio-v44-gate") !== "1" &&
+      !paused() &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      root.dataset.arrive = "";
+  } catch {
+    /* Storage is optional; without it the page simply opens. */
+  }
 })();

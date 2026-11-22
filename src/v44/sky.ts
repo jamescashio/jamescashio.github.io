@@ -74,6 +74,8 @@ export class Sky {
   /** The ignition front's place around the ring, 0 when no front is running. */
   private sweep = 0;
   private sweepStart = -1;
+  /** How long one front takes to race round: slow for the entrance, quick when a visitor knocks on the gate. */
+  private sweepMs = 2600;
   /** A short flare of the far gate, in a lane's color, when the visitor routes a request at the helm. */
   private pulseStart = -1;
   private pulseLevel = 0;
@@ -215,7 +217,35 @@ export class Sky {
       this.onIgnited();
       return;
     }
+    this.sweepMs = 2600;
     this.sweepStart = performance.now() + 1100;
+  }
+
+  /**
+   * A visitor knocked on the gate: one quick light front races round the ring. Answers whether the live
+   * gate showed it; a still sky, or one already mid front, leaves the answer to the page.
+   */
+  flourish(): boolean {
+    if (!this.program || !motionEnabled() || this.sweepStart >= 0) return false;
+    this.wake();
+    if (!this.running) return false;
+    this.sweepMs = 1250;
+    this.sweepStart = performance.now();
+    return true;
+  }
+
+  /** Whether the live scene is drawing frames now, so the page can follow it frame by frame. */
+  get drawing(): boolean {
+    return this.running;
+  }
+
+  /**
+   * How far the gate leans after the pointer, in CSS pixels on screen: the shader moves the gate by
+   * the smoothed pointer times 0.03 of the screen's height, and the approach marks follow it there.
+   */
+  leanPx(): [number, number] {
+    if (!this.program || !motionEnabled()) return [0, 0];
+    return [this.pointer[0] * 0.03 * innerHeight, -this.pointer[1] * 0.03 * innerHeight];
   }
 
   /** Flare the far gate once; red for a request held for a person, blue for every lane. */
@@ -436,7 +466,7 @@ export class Sky {
       gl.viewport(0, 0, w, h);
     }
     if (this.sweepStart > 0 && motion) {
-      const k = Math.min(1, Math.max(0, (now - this.sweepStart) / 2600));
+      const k = Math.min(1, Math.max(0, (now - this.sweepStart) / this.sweepMs));
       this.sweep = k > 0 && k < 1 ? 1 - Math.pow(1 - k, 2.2) : 0;
       if (k >= 1) {
         this.sweepStart = -1;
