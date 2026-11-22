@@ -1079,3 +1079,25 @@ test("current pages, archives and shipped controllers withhold the home city", a
     assert.doesNotMatch(await read(`dist/${path}`), /pensacola/i, path);
   }
 });
+
+test("the repository tracks no link and nothing named node_modules, so a build is stamped from a clean tree", async () => {
+  const { execFileSync } = await import("node:child_process");
+  const root = new URL("../", import.meta.url);
+  const entries = execFileSync("git", ["ls-files", "-s"], { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 })
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [meta, path] = line.split("\t");
+      return { mode: meta.split(" ")[0], path };
+    });
+  assert.ok(entries.length > 100, "the tracked file list must be readable");
+  assert.deepEqual(
+    entries.filter(({ mode }) => mode === "120000").map(({ path }) => path),
+    [],
+  );
+  assert.deepEqual(
+    entries.filter(({ path }) => path.split("/").includes("node_modules")).map(({ path }) => path),
+    [],
+  );
+  assert.match(await read(".gitignore"), /^node_modules$/m);
+});
