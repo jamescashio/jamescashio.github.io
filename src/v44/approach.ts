@@ -127,24 +127,29 @@ export function mountApproach(o: Options) {
       bl: [inX(left), bottom - arm],
       br: [inX(right - arm), bottom - arm],
     };
+    // Words and the header are the page's own business: a mark that would cross them steps back.
     const y0 = scrollY;
+    const blocked = (x: number, y: number, w: number, h: number) =>
+      y < headerBottom || words.some((r) => x < r.right && x + w > r.left && y < r.bottom - y0 && y + h > r.top - y0);
     for (const c of corners) {
       const [cx, cy] = at[c.dataset.corner!];
       c.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
-      const crosses = words.some(
-        (w) => cx < w.right && cx + arm > w.left && cy < w.bottom - y0 && cy + arm > w.top - y0,
-      );
-      c.toggleAttribute("data-under", crosses);
+      c.toggleAttribute("data-under", blocked(cx, cy, arm, arm));
     }
     aim.style.transform = `translate3d(${g.cx.toFixed(1)}px, ${g.cy.toFixed(1)}px, 0)`;
-    // The tag keeps the place it has at rest, above the top left corner (under the gate on a narrow screen),
-    // never under the header; only the corners fly out with the gate.
+    // The tag keeps the place it has at rest; only the corners fly out with the gate. It reads above the top
+    // left corner (under the gate on a narrow screen), tries the other side when that one is taken, and stands
+    // down when both would sit on words or under the header.
     const rest = box(1);
     const tx = Math.max(12, Math.min(rest.left, width - tagW - 12));
-    const ty = narrow
-      ? Math.min(rest.bottom + 10, height - tagH - 12)
-      : Math.max(headerBottom + 10, rest.top - tagH - 12);
+    const above = rest.top - tagH - 12;
+    const below = rest.bottom + 10;
+    const spot = (narrow ? [below, above] : [above, below]).find(
+      (y) => y >= headerBottom + 8 && y + tagH <= height - 12 && !blocked(tx, y, tagW, tagH),
+    );
+    const ty = spot ?? (narrow ? below : Math.max(headerBottom + 10, above));
     tag.style.transform = `translate3d(${tx.toFixed(1)}px, ${ty.toFixed(1)}px, 0)`;
+    tag.toggleAttribute("data-off", spot === undefined);
     // On a phone the tag sits where the words scroll through, so it leaves as soon as the flight begins.
     tag.style.opacity = narrow ? (1 - smooth(0, 0.04, transit)).toFixed(3) : "";
     // The marks fall away as the gate fills the screen; past it they are gone.

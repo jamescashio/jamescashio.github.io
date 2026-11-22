@@ -1,6 +1,6 @@
 # Changelog
 
-## V44.5.0 · Navigator · 11-21-2026
+## V44.5.0 · Navigator · 11-22-2026
 
 Named for the Guild Navigators of _Dune_, who steer a ship through folded space. Doug looked at Holtzman on his own screen and said it was fine and left him without the wow he had hoped for. That was fair: Holtzman was safe polish, and it was never scored for wow. He said go on the two largest ideas, so this release is a swing at the front door's best moment and at how the page sits on his screen.
 
@@ -12,9 +12,9 @@ The arrival, finished on Sat Nov 21, 2026. Begin the transit now lights the gate
 
 The live sky now starts past the gate as well as at it. A visit that began mid page, such as a reload, used to keep the painting until the visitor returned to the top, which would have left the jump on its plainer version for no good reason. Mid flight, between the two, the painting still holds.
 
-The approach, added on Sat Nov 21, 2026. The gate now carries a pilot's marks. Four corners hold it in a lock, a small ring marks the point a pilot flies through, and a tag reads the gate's range and closing speed. Scrolling toward the gate counts the range down and reads the closing speed from how fast you scroll; the corners grow with the gate and fall away as the camera passes through. A first visit arrives instead of simply loading: the painting drifts closer out of the dark while the marks find the gate and read Acquiring, then Locked once the gate opens, and only then does the live scene take over and send its light front round the ring. The gate also answers a knock. Click or tap the gate itself and a light front races round the ring while the marks flash and count the knocks. Knock forty two times and the gate answers the way the Guide would. With motion paused or reduced the marks stand still and the gate stays quiet. Every control on the page works without them, and they are hidden from screen readers along with the rest of the sky.
+The approach, added on Sun Nov 22, 2026. The gate now carries a pilot's marks. Four corners hold it in a lock, a small ring marks the point a pilot flies through, and a tag reads the gate's range and closing speed. Scrolling toward the gate counts the range down and reads the closing speed from how fast you scroll; the corners grow with the gate and fall away as the camera passes through. A first visit arrives instead of simply loading: the painting drifts closer out of the dark while the marks find the gate and read Acquiring, then Locked once the gate opens, and only then does the live scene take over and send its light front round the ring. The gate also answers a knock. Click or tap the gate itself and a light front races round the ring while the marks flash and count the knocks. Knock forty two times and the gate answers the way the Guide would. With motion paused or reduced the marks stand still and the gate stays quiet. Every control on the page works without them, and they are hidden from screen readers along with the rest of the sky.
 
-The record, refreshed on November 21, 2026 from new read only checks of the cluster and the backup store: 20 running containers out of 21, 2 running virtual machines out of 3, 2 hosts reporting running guests, and 23 of 23 latest snapshots verified out of 256 listed. The November 6, 2026 record is archived unchanged at `/evidence/status-2026-11-06.json` and joins the list of earlier records.
+The record, refreshed on November 22, 2026 from new read only checks of the cluster and the backup store: 20 running containers out of 21, 2 running virtual machines out of 3, 2 hosts reporting running guests, and 23 of 23 latest snapshots verified out of 277 listed. The November 6, 2026 record is archived unchanged at `/evidence/status-2026-11-06.json` and joins the list of earlier records.
 
 A narrow world card now tightens the tracking of its tag instead of breaking it onto a second line, so the four titles in a row line up at laptop widths.
 

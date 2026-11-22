@@ -1,9 +1,9 @@
 {
   "release": "V41 Eagle",
-  "revised": "2026-11-21",
+  "revised": "2026-11-22",
   "status": "dated-export",
-  "verified": "2026-11-21",
-  "verifiedLong": "November 21, 2026",
+  "verified": "2026-11-22",
+  "verifiedLong": "November 22, 2026",
   "expires": null,
   "containers": {
     "running": 20,
@@ -35,8 +35,8 @@
     "contextWindow": null
   },
   "backup": {
-    "observedAtUtc": "2026-11-22T00:40:48.515858+00:00",
-    "snapshotsListed": 256,
+    "observedAtUtc": "2026-11-22T21:44:05.632820+00:00",
+    "snapshotsListed": 277,
     "latestChecked": 23,
     "latestVerified": 23,
     "restoredFiles": null,
@@ -44,7 +44,7 @@
   },
   "law": "Quality picks the model. Cost only breaks a tie.",
   "schemaVersion": 2,
-  "note": "Read only observation of November 21, 2026. Running guest counts describe inventory, not application health. This static export makes no production network calls and establishes no future health window. Backup verification describes the latest snapshot reported for each guest only. It does not prove a restore, complete backup coverage or independent offsite recovery.",
+  "note": "Read only observation of November 22, 2026. Running guest counts describe inventory, not application health. This static export makes no production network calls and establishes no future health window. Backup verification describes the latest snapshot reported for each guest only. It does not prove a restore, complete backup coverage or independent offsite recovery.",
   "withheldReasons": {
     "lanes.public": "No fresh inventory and execution record for public capability lanes was measured.",
     "lanes.privateCatalog": "The private model catalog is withheld and is never added to public capability lanes.",
@@ -60,10 +60,10 @@
     "backup.fullSystemRecovery": "Snapshot presence and integrity are not proof of recovery."
   },
   "provenance": {
-    "observedAtUtc": "2026-11-22T00:40:45.611245+00:00",
-    "observedAtAmericaChicago": "2026-11-21T18:40:45.611245-06:00",
-    "auditCollectedAtUtc": "2026-11-22T00:40:48.515858+00:00",
-    "sourceProposalSha256": "04c9db0e333de297fe41601d588341f3748dbc393bcdccb0d00769e41ecf8d8f",
+    "observedAtUtc": "2026-11-22T21:44:02.423903+00:00",
+    "observedAtAmericaChicago": "2026-11-22T15:44:02.423903-06:00",
+    "auditCollectedAtUtc": "2026-11-22T21:44:05.632820+00:00",
+    "sourceProposalSha256": "24d95c7af022feecb4a2b2a5cd258110497fa9c84c4e07a4d3cd74d6c23901ff",
     "methods": {
       "containers": "Counted running, stopped and documented container guests from the cluster guest API.",
       "virtualMachines": "Counted running, stopped and documented virtual machine guests from the cluster guest API.",

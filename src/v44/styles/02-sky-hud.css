@@ -495,3 +495,7 @@ html[data-motion="on"] .approach[data-acquire] .approach-tag {
 .approach-corner[data-under] {
   opacity: 0.16;
 }
+/* With no clear place on this screen, the tag stands down and the corners carry the lock alone. */
+.approach-tag[data-off] {
+  visibility: hidden;
+}
