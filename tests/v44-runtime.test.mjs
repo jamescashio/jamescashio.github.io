@@ -1067,3 +1067,65 @@ test("a world card jumps to its room, the room folds back, and paused motion mak
   assert.equal((await state()).passage, false);
   await expect(root).not.toHaveAttribute("data-jump", /./);
 });
+
+test("the approach marks hold the gate, close the range as the visitor flies in, and the gate answers a knock", async (t) => {
+  const page = await visit(t, { width: 1440, height: 900, motion: "no-preference" });
+  // A first visit arrives: the marks read Acquiring until the gate opens, then Locked.
+  await expect(page.locator("html[data-gate='open']")).toBeAttached({ timeout: 8000 });
+  await expect(page.locator("[data-approach-state]")).toHaveText("Locked");
+  const marks = await page.evaluate(() => {
+    const sky = document.querySelector(".sky");
+    const ring = {
+      x: parseFloat(sky.style.getPropertyValue("--ring-x")),
+      y: parseFloat(sky.style.getPropertyValue("--ring-y")),
+    };
+    const corners = [...document.querySelectorAll("[data-corner]")].map((c) => c.getBoundingClientRect());
+    return {
+      ring,
+      left: Math.min(...corners.map((c) => c.left)),
+      right: Math.max(...corners.map((c) => c.right)),
+      top: Math.min(...corners.map((c) => c.top)),
+      bottom: Math.max(...corners.map((c) => c.bottom)),
+      hidden: document.querySelector(".sky").getAttribute("aria-hidden"),
+    };
+  });
+  assert.equal(marks.hidden, "true", "the marks live inside the sky, hidden from assistive technology");
+  assert.ok(marks.left < marks.ring.x && marks.ring.x < marks.right, "the corners hold the gate across");
+  assert.ok(marks.top < marks.ring.y && marks.ring.y < marks.bottom, "the corners hold the gate up and down");
+
+  // Flying in counts the range down.
+  const range = () => page.locator("[data-approach-range]").textContent();
+  assert.equal(await range(), "Range 6.4 km");
+  await page.evaluate(() => scrollTo(0, document.querySelector("#arrival").offsetHeight * 0.2));
+  await expect.poll(range).not.toBe("Range 6.4 km");
+  await expect(page.locator("[data-approach-state]")).toHaveText("Closing");
+  await page.evaluate(() => scrollTo(0, 0));
+  await expect(page.locator("[data-approach-state]")).toHaveText("Locked");
+
+  // A click on open sky over the gate is a knock; the painted gate flares and the marks count it.
+  await page.mouse.click(marks.ring.x, marks.ring.y);
+  await expect(page.locator("[data-approach-state]")).toHaveText("Pulse 01");
+  await expect(page.locator(".sky[data-flare]")).toBeAttached();
+  // A click on the words is still only a click on the words.
+  const headline = await page.locator(".headline .line").first().boundingBox();
+  await page.mouse.click(headline.x + 10, headline.y + headline.height / 2);
+  await expect(page.locator("[data-approach-state]")).toHaveText("Pulse 01");
+});
+
+test("with reduced motion the marks stand still and the gate stays quiet", async (t) => {
+  const page = await visit(t, { width: 1440, height: 900 });
+  assert.equal(await page.evaluate(() => document.documentElement.hasAttribute("data-arrive")), false);
+  await expect(page.locator("html[data-gate='open']")).toBeAttached({ timeout: 8000 });
+  const ring = await page.evaluate(() => {
+    const sky = document.querySelector(".sky");
+    return {
+      x: parseFloat(sky.style.getPropertyValue("--ring-x")),
+      y: parseFloat(sky.style.getPropertyValue("--ring-y")),
+    };
+  });
+  await page.mouse.click(ring.x, ring.y);
+  await page.waitForTimeout(300);
+  await expect(page.locator("[data-approach-state]")).toHaveText("Locked");
+  assert.equal(await page.locator(".sky[data-flare]").count(), 0, "no flare without motion");
+  assert.equal(await page.locator("[data-approach][data-acquire]").count(), 0, "no lock animation without motion");
+});

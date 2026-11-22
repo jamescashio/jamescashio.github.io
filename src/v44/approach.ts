@@ -187,15 +187,18 @@ export function mountApproach(o: Options) {
     layer.toggleAttribute("data-narrow", narrow);
     tagW = tag.offsetWidth || tagW;
     tagH = tag.offsetHeight || tagH;
+    // Lines of text by the ink they set, not their whole block; chips and buttons by their boxes.
     const y0 = scrollY;
-    words = [
-      ...arrival.querySelectorAll<HTMLElement>(
-        ".kicker, .headline .line, .lede, .creds li, .arrival-actions > *, .gate-readout",
-      ),
-    ].map((el) => {
-      const r = el.getBoundingClientRect();
-      return new DOMRect(r.left - 6, r.top + y0 - 6, r.width + 12, r.height + 12);
+    const pad = (r: DOMRect) => new DOMRect(r.left - 6, r.top + y0 - 6, r.width + 12, r.height + 12);
+    const lines = [...arrival.querySelectorAll<HTMLElement>(".kicker, .headline .line, .lede")].flatMap((el) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return [...range.getClientRects()];
     });
+    const boxes = [...arrival.querySelectorAll<HTMLElement>(".creds li, .arrival-actions > *, .gate-readout")].map(
+      (el) => el.getBoundingClientRect(),
+    );
+    words = [...lines, ...boxes].filter((r) => r.width > 0 && r.height > 0).map(pad);
     place();
   };
 
