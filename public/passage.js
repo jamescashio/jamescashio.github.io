@@ -9,6 +9,9 @@
 // archives, the reading editions, the films. The browser reports an error on such a page when a passage
 // arrives, so a passage toward one is ended here, before it starts.
 //
+// A jump from a world card through the gate ends on a screen of that world's light. Arriving that way,
+// the room opens out of the same light. This marks the arrival before the room is first shown.
+//
 // Pause is one setting across the site: a paused visitor leaves without the passage. This is listening
 // before the page is first shown, which the page's own script, arriving later, cannot promise.
 (function () {
@@ -32,6 +35,51 @@
   addEventListener("pageswap", function (event) {
     if (!event.viewTransition) return;
     var entry = event.activation && event.activation.entry;
-    if (paused() || !takesPart(entry && entry.url)) end(event.viewTransition);
+    // A jump through the gate is its own way of leaving, so the browser's passage stands aside for it.
+    var jumping = document.documentElement.hasAttribute("data-jump");
+    if (paused() || jumping || !takesPart(entry && entry.url)) end(event.viewTransition);
   });
+
+  // Arriving in a room by a jump: the front door left on a screen of this world's light, and the room
+  // opens out of that same light (src/v40/room-passage.css). The note is read once, so a reload or a
+  // return by Back opens the room plainly.
+  var root = document.documentElement;
+  try {
+    var jumped = sessionStorage.getItem("cashio-jump");
+    if (jumped) sessionStorage.removeItem("cashio-jump");
+    if (
+      jumped &&
+      jumped === root.dataset.room &&
+      !paused() &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      root.dataset.arrival = "jump";
+      var arrived = function () {
+        delete root.dataset.arrival;
+      };
+      addEventListener("animationend", function (event) {
+        if (event.animationName === "unfold") arrived();
+      });
+      // A room whose styles never arrived must not stay closed.
+      setTimeout(arrived, 2400);
+    }
+  } catch {
+    /* Storage is optional. */
+  }
+
+  // A first visit to the front door arrives by a short dolly toward the gate (src/v44/styles/02-sky-hud.css).
+  // The mark goes on before the first paint, so the painting never jumps; the page's own script lifts it once
+  // the dolly is over. A visit that already saw the gate this session, or arrives at a station, starts still.
+  try {
+    if (
+      (location.pathname === "/" || location.pathname === "/index.html") &&
+      !location.hash &&
+      sessionStorage.getItem("cashio-v44-gate") !== "1" &&
+      !paused() &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      root.dataset.arrive = "";
+  } catch {
+    /* Storage is optional; without it the page simply opens. */
+  }
 })();

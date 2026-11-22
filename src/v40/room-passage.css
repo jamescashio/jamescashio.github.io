@@ -41,3 +41,70 @@ html[data-room="heritage"] main > section.room {
 ::view-transition-new(root) {
   animation-duration: 260ms;
 }
+
+/*
+ * Arriving by a jump through the gate (src/v44/jump.ts on the front door). The front door's last frame is
+ * a screen of this world's light; the room begins under the same screen, which opens from the middle.
+ * public/passage.js marks the arrival before the first frame and clears the mark when the room is open.
+ * The four lights are the front door's (WORLD_LIGHT), and a test holds the two lists together.
+ */
+html[data-room="starship"] {
+  --jump-rgb: 77 163 255;
+}
+html[data-room="principles"] {
+  --jump-rgb: 255 168 71;
+}
+html[data-room="studios"] {
+  --jump-rgb: 173 128 255;
+}
+html[data-room="heritage"] {
+  --jump-rgb: 255 92 82;
+}
+/* How far the room has opened: one length, so the room's edge and the ring of light on it never part. */
+@property --unfold {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+html[data-arrival="jump"] {
+  animation: unfold 820ms cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+/* The fold lies over the room, which is whole and untouched beneath it, and opens from the middle. */
+html[data-arrival="jump"]::before,
+html[data-arrival="jump"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+html[data-arrival="jump"]::before {
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, rgb(var(--jump-rgb)) 60%, white) 0%,
+    color-mix(in srgb, rgb(var(--jump-rgb)) 75%, #05070c) 40%,
+    color-mix(in srgb, rgb(var(--jump-rgb)) 28%, #05070c) 100%
+  );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--unfold) - 1px), #000 var(--unfold));
+  mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--unfold) - 1px), #000 var(--unfold));
+}
+html[data-arrival="jump"]::after {
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(var(--unfold) - 90px),
+    rgb(var(--jump-rgb) / 0.35) calc(var(--unfold) - 14px),
+    color-mix(in srgb, rgb(var(--jump-rgb)) 50%, white) calc(var(--unfold) - 3px),
+    color-mix(in srgb, rgb(var(--jump-rgb)) 50%, white) var(--unfold),
+    rgb(var(--jump-rgb) / 0.55) calc(var(--unfold) + 10px),
+    transparent calc(var(--unfold) + 80px)
+  );
+}
+/* Just past the corner of the widest and the squarest screen alike. */
+@keyframes unfold {
+  from {
+    --unfold: 0px;
+  }
+  to {
+    --unfold: 72vmax;
+  }
+}

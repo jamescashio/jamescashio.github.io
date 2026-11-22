@@ -14,15 +14,15 @@ const asset = (path) => new URL(`../${path}`, import.meta.url);
 const currentRelease = JSON.parse(await read("public/v40/site-release.json"));
 const currentVersionLabel = `V${currentRelease.experienceVersion.split(".")[0]}`;
 
-test("Holtzman identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
-  assert.equal(currentRelease.experienceVersion, "44.4.0");
-  assert.equal(currentRelease.releaseName, "HOLTZMAN");
-  assert.equal(currentRelease.visualEdition, "Holtzman");
+test("Navigator identity advances the current release and preserves the exact V43 and V42 receipts", async () => {
+  assert.equal(currentRelease.experienceVersion, "44.5.0");
+  assert.equal(currentRelease.releaseName, "NAVIGATOR");
+  assert.equal(currentRelease.visualEdition, "Navigator");
   assert.equal(currentRelease.presentation.name, currentRelease.visualEdition);
-  assert.equal(currentRelease.releaseId, "holtzman-44.4.0-20261113");
-  assert.equal(currentRelease.updatedDate, "2026-11-13");
-  assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-06");
-  assert.equal(currentRelease.presentation.preparedDate, "2026-11-13");
+  assert.equal(currentRelease.releaseId, "navigator-44.5.0-20261122");
+  assert.equal(currentRelease.updatedDate, "2026-11-22");
+  assert.equal(currentRelease.evidenceSnapshot.fleetObserved, "2026-11-22");
+  assert.equal(currentRelease.presentation.preparedDate, "2026-11-22");
   // Doug approved publication; approval sets the release date and published flag together.
   assert.equal(currentRelease.published, currentRelease.status === "released");
   assert.equal(currentRelease.releaseDate === null, !currentRelease.published);
@@ -380,7 +380,7 @@ test("V37 software gates preserve the independent V35 dated evidence", async () 
   assert.equal(archive.expires, "2026-09-27");
   assert.deepEqual(archive.containers, { running: 18, documented: 19, stopped: 1, zeus: null, apollo: null });
   assert.equal(archive.routingVerified, "2026-08-21");
-  assert.equal(status.verified, "2026-11-06");
+  assert.equal(status.verified, "2026-11-22");
   assert.equal(status.routingVerified, null);
   assert.deepEqual(status.lanes, { public: null, privateCatalog: null });
   assert.equal(await read("dist/status.json"), await read("public/status.json"));

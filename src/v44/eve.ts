@@ -34,6 +34,8 @@ const EGGS = new Map<string, string>(
     hotsauce: "Spicy. Carry on.",
     hello: "Hello. Don’t panic.",
     bit: "Bit is in the corner, rehearsing jokes about triangles.",
+    knock: "Knock on the gate at the top of the page. It answers every time, and it keeps count.",
+    navigator: "A Navigator sees the safe path through folded space. You still choose where to go.",
   }),
 );
 

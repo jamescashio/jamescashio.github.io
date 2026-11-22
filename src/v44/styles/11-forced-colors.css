@@ -50,4 +50,8 @@
   .creds li {
     border-color: CanvasText;
   }
+  /* The approach marks are decoration over a sky the mode already hides. */
+  .approach {
+    display: none !important;
+  }
 }

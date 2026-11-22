@@ -66,7 +66,7 @@
       media="(orientation: landscape) and (max-aspect-ratio: 1999/1000)"
       fetchpriority="high"
     />
-    <title>Doug Cashio · cAshIo · Local AI workshop · V44 Holtzman</title>
+    <title>Doug Cashio · cAshIo · Local AI workshop · V44 Navigator</title>
     <script type="module" src="/src/v44/main.ts"></script>
   </head>
   <body>
@@ -113,8 +113,22 @@
         ><span data-tint="helm"></span><span data-tint="evidence"></span><span data-tint="doug"></span>
       </div>
       <div class="sky-scrim"></div>
+      <!-- The approach marks (src/v44/approach.ts): a lock on the gate, its range, and the light a knock sends round it. -->
+      <div class="approach" data-approach>
+        <span class="approach-corner" data-corner="tl"></span><span class="approach-corner" data-corner="tr"></span
+        ><span class="approach-corner" data-corner="bl"></span><span class="approach-corner" data-corner="br"></span>
+        <span class="approach-aim"></span>
+        <p class="approach-tag">
+          <span class="approach-name">Transit gate</span><span class="approach-state" data-approach-state>Locked</span>
+          <span class="approach-data"
+            ><span data-approach-range>Range 6.4 km</span><span data-approach-closing>Closing 0 m/s</span></span
+          >
+        </p>
+      </div>
     </div>
 
+    <!-- The fold at the end of a jump to a world: the last thing seen here, the first thing seen there. -->
+    <div class="fold" aria-hidden="true"></div>
     <header class="hud" data-hud>
       <div class="hud-bar frame">
         <a class="brand" href="#arrival" aria-label="Doug Cashio, back to the top">
@@ -193,6 +207,10 @@
                 <span class="cta-label">Begin the transit</span>
                 <span class="cta-note">First stop: the screening room.</span>
                 <span class="cta-arrow" aria-hidden="true">↓</span>
+              </a>
+              <a class="helm-tease" href="#helm" data-station-link="helm">
+                <span class="helm-tease-kicker">Or try it now</span>
+                <span>Route a private request and watch the helm change course</span>
               </a>
             </div>
           </div>
@@ -1257,8 +1275,9 @@
             panic. Capable tools. Human judgment in command.
           </p>
           <p class="fine">
-            V44 · Holtzman, named for the effect in <cite>Dune</cite> that folds space, because a world card now folds
-            into its room. Built on the Drummer front door. Directed by Doug Cashio. Updated {{release.updated}}.
+            V44 · Navigator, named for the Guild Navigators of <cite>Dune</cite>, who steer a ship through folded space,
+            because a world card now flies you through the gate. Built on the Drummer front door. Directed by Doug
+            Cashio. Updated {{release.updated}}.
           </p>
           <p class="fine">A personal site. The builds and views here are my own and do not speak for my employer.</p>
         </div>
