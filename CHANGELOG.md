@@ -20,6 +20,8 @@ A narrow world card now tightens the tracking of its tag instead of breaking it 
 
 What could not be proven here. The sandbox has no GPU. The shader's frames were rendered directly and the page was stepped through a jump on a held clock, which shows the wiring and the look, but nothing here has seen the jump at full speed on a real screen. Its pace, 1050 milliseconds, is a judgment that needs Doug's eyes.
 
+Housekeeping on Sun Nov 22, 2026. The merge carried a stray link named node_modules that pointed at a build machine's folder. Nothing from it reached the site, but the deploy replaces it while installing packages, so the live build stamp read as built from a changed tree. The link is gone, the ignore rule now covers a link as well as a folder, and a test fails if the repository ever tracks a link or anything named node_modules again.
+
 ## V44.4.0 · Holtzman · 11-13-2026
 
 Named for the effect in _Dune_ that folds space, because pages now fold into one another. Doug asked what else would push the site toward a ten and then authorized a gloves off pass. This release is what that pass found worth building.
